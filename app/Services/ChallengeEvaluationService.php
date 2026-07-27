@@ -28,8 +28,7 @@ class ChallengeEvaluationService
             - $codeMaximum;
 
         $lineScore =
-            $selectedLine ===
-            $challenge->buggy_line
+            $selectedLine === $challenge->buggy_line
                 ? $lineMaximum
                 : 0;
 
@@ -46,21 +45,18 @@ class ChallengeEvaluationService
             $challenge,
         );
 
-        $matchedKeywords =
-            $this->matchedKeywords(
-                $submittedExplanation,
-                $keywords,
-            );
+        $matchedKeywords = $this->matchedKeywords(
+            $submittedExplanation,
+            $keywords,
+        );
 
-        $keywordRatio =
-            $keywords->isEmpty()
-                ? 1
-                : $matchedKeywords->count()
-                    / $keywords->count();
+        $keywordRatio = $keywords->isEmpty()
+            ? 1
+            : $matchedKeywords->count()
+                / $keywords->count();
 
         $explanationScore = (int) round(
-            $explanationMaximum
-            * $keywordRatio,
+            $explanationMaximum * $keywordRatio,
         );
 
         $rawScore =
@@ -68,12 +64,14 @@ class ChallengeEvaluationService
             + $codeScore
             + $explanationScore;
 
+        $normalizedPenalty = min(
+            100,
+            max(0, $hintPenalty),
+        );
+
         $finalScore = (int) round(
             $rawScore
-            * max(
-                0,
-                100 - $hintPenalty,
-            )
+            * (100 - $normalizedPenalty)
             / 100,
         );
 
@@ -95,7 +93,8 @@ class ChallengeEvaluationService
             'code_score' => $codeScore,
             'explanation_score' =>
                 $explanationScore,
-            'hint_penalty' => $hintPenalty,
+            'hint_penalty' =>
+                $normalizedPenalty,
             'final_score' => $finalScore,
             'status' => $status,
             'matched_keywords' =>
@@ -104,9 +103,7 @@ class ChallengeEvaluationService
                     ->all(),
             'missing_keywords' =>
                 $keywords
-                    ->diff(
-                        $matchedKeywords,
-                    )
+                    ->diff($matchedKeywords)
                     ->values()
                     ->all(),
         ];
@@ -116,26 +113,38 @@ class ChallengeEvaluationService
         string $submittedCode,
         Collection $solutions
     ): bool {
-        $submissionHash = hash(
-            'sha256',
+        $normalizedSubmission =
             $this->normalizeCode(
                 $submittedCode,
-            ),
+            );
+
+        if ($normalizedSubmission === '') {
+            return false;
+        }
+
+        $submissionHash = hash(
+            'sha256',
+            $normalizedSubmission,
         );
 
         return $solutions->contains(
             function ($solution) use (
                 $submissionHash
-            ) {
-                $solutionHash = hash(
-                    'sha256',
+            ): bool {
+                $normalizedSolution =
                     $this->normalizeCode(
                         $solution->solution_code,
-                    ),
-                );
+                    );
+
+                if ($normalizedSolution === '') {
+                    return false;
+                }
 
                 return hash_equals(
-                    $solutionHash,
+                    hash(
+                        'sha256',
+                        $normalizedSolution,
+                    ),
                     $submissionHash,
                 );
             },
@@ -151,19 +160,15 @@ class ChallengeEvaluationService
                     'solution_type',
                     'primary',
                 )
-            ?? $challenge->solutions
-                ->first();
+            ?? $challenge->solutions->first();
 
         return collect(
             $primary?->required_keywords ?? [],
         )
             ->map(
-                fn ($keyword) =>
-                    mb_strtolower(
-                        trim(
-                            (string) $keyword,
-                        ),
-                    ),
+                fn ($keyword) => mb_strtolower(
+                    trim((string) $keyword),
+                ),
             )
             ->filter()
             ->unique()
@@ -184,11 +189,10 @@ class ChallengeEvaluationService
             );
 
         return $keywords->filter(
-            fn ($keyword) =>
-                str_contains(
-                    $normalizedExplanation,
-                    $keyword,
-                ),
+            fn ($keyword) => str_contains(
+                $normalizedExplanation,
+                $keyword,
+            ),
         );
     }
 
@@ -201,17 +205,120 @@ class ChallengeEvaluationService
             trim($code),
         );
 
-        return collect(
-            explode("\n", $code),
-        )
-            ->map(
-                fn ($line) =>
-                    rtrim($line),
-            )
-            ->filter(
-                fn ($line) =>
-                    trim($line) !== '',
-            )
-            ->implode("\n");
+        $code = preg_replace(
+            '/^[\t ]+|[\t ]+$/m',
+            '',
+            $code,
+        ) ?? $code;
+
+        $code = preg_replace(
+            '/^\s*$(?:\n|$)/m',
+            '',
+            $code,
+        ) ?? $code;
+
+        $normalized = '';
+        $quote = null;
+        $escaped = false;
+        $pendingWhitespace = false;
+        $length = strlen($code);
+
+        for ($index = 0; $index < $length; $index++) {
+            $character = $code[$index];
+
+            if ($quote !== null) {
+                $normalized .= $character;
+
+                if ($escaped) {
+                    $escaped = false;
+
+                    continue;
+                }
+
+                if ($character === '\\') {
+                    $escaped = true;
+
+                    continue;
+                }
+
+                if ($character === $quote) {
+                    $quote = null;
+                }
+
+                continue;
+            }
+
+            if (
+                $character === "'"
+                || $character === '"'
+                || $character === '`'
+            ) {
+                if (
+                    $pendingWhitespace
+                    && $this->requiresSeparator(
+                        $normalized,
+                        $character,
+                    )
+                ) {
+                    $normalized .= ' ';
+                }
+
+                $pendingWhitespace = false;
+                $quote = $character;
+                $normalized .= $character;
+
+                continue;
+            }
+
+            if (ctype_space($character)) {
+                $pendingWhitespace = true;
+
+                continue;
+            }
+
+            if (
+                $pendingWhitespace
+                && $this->requiresSeparator(
+                    $normalized,
+                    $character,
+                )
+            ) {
+                $normalized .= ' ';
+            }
+
+            $pendingWhitespace = false;
+            $normalized .= $character;
+        }
+
+        return trim($normalized);
+    }
+
+    private function requiresSeparator(
+        string $normalized,
+        string $nextCharacter
+    ): bool {
+        if ($normalized === '') {
+            return false;
+        }
+
+        $previousCharacter =
+            $normalized[
+                strlen($normalized) - 1
+            ];
+
+        return $this->isWordCharacter(
+            $previousCharacter,
+        ) && $this->isWordCharacter(
+            $nextCharacter,
+        );
+    }
+
+    private function isWordCharacter(
+        string $character
+    ): bool {
+        return preg_match(
+            '/[A-Za-z0-9_$]/',
+            $character,
+        ) === 1;
     }
 }

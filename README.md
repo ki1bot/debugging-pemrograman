@@ -1,58 +1,257 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# BugHunt
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+BugHunt adalah platform pembelajaran debugging pemrograman berbasis web. Pengguna mengerjakan tantangan berupa kode yang sengaja memiliki kesalahan, memilih lokasi bug, menulis kode perbaikan, dan menjelaskan penyebab kesalahan tersebut.
 
-## About Laravel
+## Latar Belakang
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Kemampuan debugging tidak hanya membutuhkan kemampuan menulis kode, tetapi juga kemampuan membaca, menganalisis, dan memahami penyebab sebuah program gagal berjalan.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Banyak pemula dapat menyalin kode yang benar tanpa memahami kesalahan pada kode sebelumnya. BugHunt dibuat untuk menyediakan proses latihan debugging yang terstruktur dan interaktif.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Tujuan
 
-## Learning Laravel
+- Membantu pengguna meningkatkan kemampuan membaca kode.
+- Melatih kemampuan menemukan lokasi kesalahan.
+- Melatih kemampuan memperbaiki kode.
+- Membiasakan pengguna menjelaskan penyebab teknis suatu error.
+- Menyediakan pembelajaran debugging yang interaktif.
+- Menyediakan data perkembangan belajar melalui poin dan riwayat.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Kategori MVP
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+BugHunt versi awal mendukung:
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- JavaScript
+- PHP
+- SQL
 
-## Agentic Development
+Setiap kategori memiliki:
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+| Kesulitan          | Jumlah |
+| ------------------ | -----: |
+| Mudah              |      3 |
+| Menengah           |      3 |
+| Sulit              |      2 |
+| Total per kategori |      8 |
 
-```bash
-composer require laravel/boost --dev
+Total tantangan awal adalah 24 tantangan.
 
-php artisan boost:install
+## Tahapan Tantangan
+
+Setiap tantangan terdiri dari tiga tahapan:
+
+1. Memilih baris yang dianggap mengandung bug.
+2. Menulis kode perbaikan melalui CodeMirror.
+3. Menjelaskan penyebab kesalahan secara teknis.
+
+## Fitur Pengguna
+
+- Registrasi.
+- Login dan logout.
+- Dashboard pengguna.
+- Melihat daftar tantangan.
+- Pencarian tantangan.
+- Filter berdasarkan kategori.
+- Filter berdasarkan tingkat kesulitan.
+- Melihat detail tantangan.
+- Memilih baris yang salah.
+- Mengedit kode melalui CodeMirror.
+- Mengirim penjelasan.
+- Membuka hint secara berurutan.
+- Melihat hasil penilaian.
+- Melihat pembahasan.
+- Melihat solusi utama dan alternatif.
+- Melihat riwayat pengerjaan.
+- Melihat total poin.
+- Melihat leaderboard.
+- Mengubah profil dan password.
+
+## Fitur Administrator
+
+- Login sebagai administrator.
+- Dashboard administrator.
+- Statistik aplikasi.
+- Mengelola kategori.
+- Mengelola tingkat kesulitan.
+- Menambahkan tantangan.
+- Mengubah tantangan.
+- Menonaktifkan atau mengarsipkan tantangan.
+- Mengatur kode yang bermasalah.
+- Mengatur lokasi baris bug.
+- Mengatur solusi utama.
+- Mengatur solusi alternatif.
+- Mengatur kata kunci penjelasan.
+- Mengatur hint.
+- Mengatur penalti hint.
+- Mengatur poin.
+- Mengatur status publikasi.
+- Melihat pengguna.
+- Mengubah role pengguna.
+- Melihat seluruh submission.
+- Melihat detail hasil penilaian.
+
+## Role
+
+### User
+
+User dapat mengerjakan tantangan, menggunakan hint, mendapatkan poin, melihat riwayat, dan melihat leaderboard.
+
+### Admin
+
+Admin dapat mengelola kategori, tingkat kesulitan, tantangan, hint, solusi, pengguna, submission, publikasi, dan statistik.
+
+## Sistem Penilaian
+
+| Bagian                     | Persentase |
+| -------------------------- | ---------: |
+| Menemukan baris yang salah |        30% |
+| Memperbaiki kode           |        50% |
+| Menjelaskan penyebab       |        20% |
+
+Poin maksimum berdasarkan tingkat kesulitan:
+
+| Kesulitan | Poin maksimum |
+| --------- | ------------: |
+| Mudah     |            50 |
+| Menengah  |           100 |
+| Sulit     |           150 |
+
+Penalti hint:
+
+| Hint         | Penalti |
+| ------------ | ------: |
+| Hint pertama |     10% |
+| Hint kedua   |     20% |
+
+Total poin pengguna berasal dari skor terbaik yang diperoleh pada setiap tantangan. Mengerjakan tantangan yang sama berulang kali tidak menggandakan poin.
+
+## Validasi Jawaban
+
+BugHunt tidak menjalankan kode pengguna menggunakan `eval`, perintah shell, compiler, atau terminal server.
+
+Validasi dilakukan dengan:
+
+- Membandingkan baris yang dipilih dengan lokasi bug.
+- Menormalisasi line ending.
+- Mengabaikan spasi format yang tidak penting.
+- Mengabaikan baris kosong.
+- Membandingkan jawaban dengan solusi utama.
+- Membandingkan jawaban dengan alternatif solusi.
+- Memeriksa kata kunci penjelasan.
+- Menghitung penalti berdasarkan hint yang dibuka.
+
+Penilaian penjelasan menggunakan pencocokan kata kunci sederhana. Sistem tidak mengklaim memahami penjelasan pengguna secara semantik.
+
+## Teknologi
+
+### Backend
+
+- PHP 8.3 atau lebih baru
+- Laravel 13
+- Laravel Breeze
+- Inertia.js
+- PostgreSQL
+
+### Frontend
+
+- React 18
+- TypeScript
+- Tailwind CSS 4
+- CodeMirror
+- Recharts
+- Vite
+
+### Peralatan
+
+- Composer
+- Node.js
+- npm
+- Git
+- Browser modern
+
+## Struktur Database
+
+Tabel utama:
+
+- `users`
+- `categories`
+- `difficulties`
+- `challenges`
+- `challenge_hints`
+- `challenge_solutions`
+- `submissions`
+- `submission_attempts`
+- `user_challenge_progress`
+
+### users
+
+Menyimpan akun, role, dan total poin pengguna.
+
+### categories
+
+Menyimpan kategori bahasa pemrograman.
+
+### difficulties
+
+Menyimpan tingkat kesulitan dan poin dasar.
+
+### challenges
+
+Menyimpan deskripsi, kode rusak, lokasi bug, pembahasan, poin, serta status publikasi.
+
+### challenge_hints
+
+Menyimpan hint dan penalti poin.
+
+### challenge_solutions
+
+Menyimpan solusi utama, alternatif solusi, dan kata kunci penjelasan.
+
+### submissions
+
+Menyimpan setiap jawaban yang dikirim pengguna.
+
+### submission_attempts
+
+Menyimpan snapshot hasil penilaian setiap submission.
+
+### user_challenge_progress
+
+Menyimpan skor terbaik, jumlah percobaan, hint yang dibuka, dan status penyelesaian.
+
+## Keamanan
+
+BugHunt menerapkan aturan berikut:
+
+- Tidak menggunakan `eval`.
+- Tidak menjalankan kode pengguna pada terminal server.
+- Password disimpan menggunakan hashing Laravel.
+- Request divalidasi pada backend.
+- Halaman admin dilindungi middleware role.
+- CSRF protection menggunakan Laravel.
+- Panjang kode dan penjelasan dibatasi.
+- Kode ditampilkan sebagai teks.
+- Submission dan pembukaan hint memiliki rate limit.
+- Solusi tidak dikirim sebelum pengguna mengirim jawaban.
+- Query database menggunakan Eloquent dan Query Builder.
+
+## Persyaratan Sistem
+
+Pastikan perangkat sudah memiliki:
+
+```text
+PHP 8.3+
+Composer
+Node.js
+npm
+PostgreSQL
+Git
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Credits & Contact
 
-## Contributing
+**Rifqi**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+GitHub: [ki1bot](https://github.com/ki1bot)
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+⭐ Jika project ini membantu atau menarik, jangan lupa beri star di GitHub!

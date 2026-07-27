@@ -16,6 +16,11 @@ const navigation = [
         pattern: "admin.dashboard",
     },
     {
+        label: "Statistik",
+        routeName: "admin.statistics.index",
+        pattern: "admin.statistics.*",
+    },
+    {
         label: "Tantangan",
         routeName: "admin.challenges.index",
         pattern: "admin.challenges.*",
