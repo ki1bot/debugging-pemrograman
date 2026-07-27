@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\UserChallengeProgress;
 use Database\Seeders\BugHuntSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class ChallengeSubmissionTest extends TestCase
@@ -81,6 +82,7 @@ class ChallengeSubmissionTest extends TestCase
     {
         $user = $this->user();
         $challenge = $this->challenge();
+
         $payload =
             $this->correctPayload(
                 $challenge,
@@ -140,6 +142,7 @@ class ChallengeSubmissionTest extends TestCase
     {
         $user = $this->user();
         $challenge = $this->challenge();
+
         $hint = $challenge
             ->hints()
             ->orderBy('hint_order')
@@ -208,14 +211,9 @@ class ChallengeSubmissionTest extends TestCase
                     'challenges.submit',
                     $challenge,
                 ),
-                [
-                    'selected_line' => 1,
-                    'submitted_code' =>
-                        $challenge
-                            ->broken_code,
-                    'submitted_explanation' =>
-                        'Saya belum menemukan penyebab kesalahan pada kode ini.',
-                ],
+                $this->incorrectPayload(
+                    $challenge,
+                ),
             )
             ->assertRedirect();
 
@@ -243,6 +241,124 @@ class ChallengeSubmissionTest extends TestCase
         $this->assertFalse(
             $progress->is_completed,
         );
+    }
+
+    public function test_solution_is_hidden_before_challenge_is_completed(): void
+    {
+        $user = $this->user();
+        $challenge = $this->challenge();
+
+        $this->actingAs($user)
+            ->post(
+                route(
+                    'challenges.submit',
+                    $challenge,
+                ),
+                $this->incorrectPayload(
+                    $challenge,
+                ),
+            )
+            ->assertRedirect();
+
+        $submission =
+            Submission::query()
+                ->firstOrFail();
+
+        $this->actingAs($user)
+            ->get(
+                route(
+                    'submissions.show',
+                    $submission,
+                ),
+            )
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component(
+                        'Submissions/Show',
+                    )
+                    ->where(
+                        'submission.challenge.can_view_solution',
+                        false,
+                    )
+                    ->where(
+                        'submission.challenge.buggy_line',
+                        null,
+                    )
+                    ->where(
+                        'submission.challenge.explanation',
+                        null,
+                    )
+                    ->where(
+                        'submission.challenge.primary_solution',
+                        null,
+                    )
+                    ->where(
+                        'submission.challenge.alternative_solutions',
+                        [],
+                    ),
+            );
+    }
+
+    public function test_solution_is_visible_after_challenge_is_completed(): void
+    {
+        $user = $this->user();
+        $challenge = $this->challenge();
+
+        $this->actingAs($user)
+            ->post(
+                route(
+                    'challenges.submit',
+                    $challenge,
+                ),
+                $this->correctPayload(
+                    $challenge,
+                ),
+            )
+            ->assertRedirect();
+
+        $submission =
+            Submission::query()
+                ->firstOrFail();
+
+        $primary =
+            $challenge
+                ->solutions
+                ->firstWhere(
+                    'solution_type',
+                    'primary',
+                );
+
+        $this->actingAs($user)
+            ->get(
+                route(
+                    'submissions.show',
+                    $submission,
+                ),
+            )
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component(
+                        'Submissions/Show',
+                    )
+                    ->where(
+                        'submission.challenge.can_view_solution',
+                        true,
+                    )
+                    ->where(
+                        'submission.challenge.buggy_line',
+                        $challenge->buggy_line,
+                    )
+                    ->where(
+                        'submission.challenge.explanation',
+                        $challenge->explanation,
+                    )
+                    ->where(
+                        'submission.challenge.primary_solution',
+                        $primary->solution_code,
+                    ),
+            );
     }
 
     private function user(): User
@@ -293,6 +409,18 @@ class ChallengeSubmissionTest extends TestCase
                 $primary->solution_code,
             'submitted_explanation' =>
                 "Kesalahan terjadi karena {$keywords}. Kondisi perulangan harus dihentikan sebelum indeks mencapai panjang array.",
+        ];
+    }
+
+    private function incorrectPayload(
+        Challenge $challenge
+    ): array {
+        return [
+            'selected_line' => 1,
+            'submitted_code' =>
+                $challenge->broken_code,
+            'submitted_explanation' =>
+                'Saya belum menemukan penyebab kesalahan pada kode ini.',
         ];
     }
 }

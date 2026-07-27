@@ -91,7 +91,10 @@ export interface ProgressCard {
     latest_score?: number | null;
 }
 
-export type SubmissionStatus = "incorrect" | "partially_correct" | "completed";
+export type SubmissionStatus =
+    | "incorrect"
+    | "partially_correct"
+    | "completed";
 
 export interface ChallengeHint {
     id: number;
@@ -122,8 +125,9 @@ export interface SubmissionResult {
     attempts_count: number;
     challenge: ChallengeCard & {
         broken_code: string;
-        buggy_line: number;
-        explanation: string;
+        can_view_solution: boolean;
+        buggy_line: number | null;
+        explanation: string | null;
         primary_solution: string | null;
         alternative_solutions: string[];
     };
@@ -173,8 +177,14 @@ export interface AdminSubmission {
 declare global {
     const route: {
         (): {
-            current: (name?: string) => string | boolean | undefined;
+            current: (
+                name?: string,
+            ) => string | boolean | undefined;
         };
-        (name: string, params?: unknown, absolute?: boolean): string;
+        (
+            name: string,
+            params?: unknown,
+            absolute?: boolean,
+        ): string;
     };
 }

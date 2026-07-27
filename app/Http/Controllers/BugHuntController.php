@@ -84,7 +84,11 @@ class BugHuntController extends Controller
                     $query->where(function ($nested) use ($search) {
                         $nested
                             ->where('title', 'ilike', "%{$search}%")
-                            ->orWhere('description', 'ilike', "%{$search}%");
+                            ->orWhere(
+                                'description',
+                                'ilike',
+                                "%{$search}%",
+                            );
                     });
                 },
             )
@@ -268,10 +272,13 @@ class BugHuntController extends Controller
             ],
             'progress' => [
                 'best_score' => (int) ($progress->best_score ?? 0),
-                'attempts_count' => (int) ($progress->attempts_count ?? 0),
+                'attempts_count' =>
+                    (int) ($progress->attempts_count ?? 0),
                 'hints_used' => (int) ($progress->hints_used ?? 0),
-                'hint_penalty' => (int) ($progress->hint_penalty ?? 0),
-                'is_completed' => (bool) ($progress->is_completed ?? false),
+                'hint_penalty' =>
+                    (int) ($progress->hint_penalty ?? 0),
+                'is_completed' =>
+                    (bool) ($progress->is_completed ?? false),
             ],
         ]);
     }
@@ -403,10 +410,17 @@ class BugHuntController extends Controller
                     ]);
                 }
 
-                $hintPenalty = (int) ($progress->hint_penalty ?? 0);
-                $attemptsCount = (int) ($progress->attempts_count ?? 0);
-                $previousBest = (int) ($progress->best_score ?? 0);
-                $wasCompleted = (bool) ($progress->is_completed ?? false);
+                $hintPenalty =
+                    (int) ($progress->hint_penalty ?? 0);
+
+                $attemptsCount =
+                    (int) ($progress->attempts_count ?? 0);
+
+                $previousBest =
+                    (int) ($progress->best_score ?? 0);
+
+                $wasCompleted =
+                    (bool) ($progress->is_completed ?? false);
 
                 $result = $this->evaluationService->evaluate(
                     $challenge,
@@ -430,9 +444,10 @@ class BugHuntController extends Controller
                     'hint_penalty' => $result['hint_penalty'],
                     'final_score' => $result['final_score'],
                     'status' => $result['status'],
-                    'completed_at' => $result['status'] === 'completed'
-                        ? now()
-                        : null,
+                    'completed_at' =>
+                        $result['status'] === 'completed'
+                            ? now()
+                            : null,
                 ]);
 
                 SubmissionAttempt::query()->create([
@@ -444,8 +459,10 @@ class BugHuntController extends Controller
                         $result['matched_keywords'],
                     'missing_keywords' =>
                         $result['missing_keywords'],
-                    'score_snapshot' => $result['final_score'],
-                    'status_snapshot' => $result['status'],
+                    'score_snapshot' =>
+                        $result['final_score'],
+                    'status_snapshot' =>
+                        $result['status'],
                 ]);
 
                 $newBest = max(
@@ -502,52 +519,115 @@ class BugHuntController extends Controller
         $submission->load([
             'challenge.category',
             'challenge.difficulty',
-            'challenge.solutions',
             'attempts',
         ]);
 
-        $primary = $submission->challenge->solutions
-            ->firstWhere('solution_type', 'primary')
-            ?? $submission->challenge->solutions->first();
+        $challengeCompleted =
+            UserChallengeProgress::query()
+                ->where(
+                    'user_id',
+                    $submission->user_id,
+                )
+                ->where(
+                    'challenge_id',
+                    $submission->challenge_id,
+                )
+                ->where('is_completed', true)
+                ->exists();
+
+        $canViewSolution =
+            $request->user()->isAdmin()
+            || $challengeCompleted;
+
+        $primarySolution = null;
+        $alternativeSolutions = [];
+
+        if ($canViewSolution) {
+            $submission->load('challenge.solutions');
+
+            $primary =
+                $submission->challenge->solutions
+                    ->firstWhere(
+                        'solution_type',
+                        'primary',
+                    )
+                ?? $submission
+                    ->challenge
+                    ->solutions
+                    ->first();
+
+            $primarySolution =
+                $primary?->solution_code;
+
+            $alternativeSolutions =
+                $submission
+                    ->challenge
+                    ->solutions
+                    ->where(
+                        'solution_type',
+                        'alternative',
+                    )
+                    ->pluck('solution_code')
+                    ->values()
+                    ->all();
+        }
 
         return Inertia::render('Submissions/Show', [
             'submission' => [
                 'id' => $submission->id,
-                'selected_line' => $submission->selected_line,
-                'submitted_code' => $submission->submitted_code,
+                'selected_line' =>
+                    $submission->selected_line,
+                'submitted_code' =>
+                    $submission->submitted_code,
                 'submitted_explanation' =>
                     $submission->submitted_explanation,
-                'line_score' => $submission->line_score,
-                'code_score' => $submission->code_score,
+                'line_score' =>
+                    $submission->line_score,
+                'code_score' =>
+                    $submission->code_score,
                 'explanation_score' =>
                     $submission->explanation_score,
-                'hint_penalty' => $submission->hint_penalty,
-                'final_score' => $submission->final_score,
-                'status' => $submission->status,
-                'completed_at' => $submission->completed_at,
+                'hint_penalty' =>
+                    $submission->hint_penalty,
+                'final_score' =>
+                    $submission->final_score,
+                'status' =>
+                    $submission->status,
+                'completed_at' =>
+                    $submission->completed_at,
                 'attempts_count' =>
-                    $submission->attempts->first()?->attempt_number
-                    ?? 1,
+                    (int) (
+                        $submission
+                            ->attempts
+                            ->max('attempt_number')
+                        ?? 1
+                    ),
                 'challenge' => [
                     ...$this->challengeCard(
                         $submission->challenge,
                     ),
                     'broken_code' =>
-                        $submission->challenge->broken_code,
+                        $submission
+                            ->challenge
+                            ->broken_code,
+                    'can_view_solution' =>
+                        $canViewSolution,
                     'buggy_line' =>
-                        $submission->challenge->buggy_line,
+                        $canViewSolution
+                            ? $submission
+                                ->challenge
+                                ->buggy_line
+                            : null,
                     'explanation' =>
-                        $submission->challenge->explanation,
+                        $canViewSolution
+                            ? $submission
+                                ->challenge
+                                ->explanation
+                            : null,
                     'primary_solution' =>
-                        $primary?->solution_code,
+                        $primarySolution,
                     'alternative_solutions' =>
-                        $submission->challenge->solutions
-                            ->where(
-                                'solution_type',
-                                'alternative',
-                            )
-                            ->pluck('solution_code')
-                            ->values(),
+                        $alternativeSolutions,
                 ],
             ],
         ]);
@@ -595,10 +675,12 @@ class BugHuntController extends Controller
                     'rank' => $index + 1,
                     'id' => $user->id,
                     'name' => $user->name,
-                    'total_points' => $user->total_points,
+                    'total_points' =>
+                        $user->total_points,
                     'completed_challenges' =>
                         $user->completed_challenges,
-                    'joined_at' => $user->created_at,
+                    'joined_at' =>
+                        $user->created_at,
                 ],
             );
 
@@ -627,28 +709,47 @@ class BugHuntController extends Controller
             'id' => $challenge->id,
             'title' => $challenge->title,
             'slug' => $challenge->slug,
-            'description' => $challenge->description,
-            'base_points' => $challenge->base_points,
+            'description' =>
+                $challenge->description,
+            'base_points' =>
+                $challenge->base_points,
             'category' => [
-                'id' => $challenge->category->id,
-                'name' => $challenge->category->name,
-                'slug' => $challenge->category->slug,
+                'id' =>
+                    $challenge->category->id,
+                'name' =>
+                    $challenge->category->name,
+                'slug' =>
+                    $challenge->category->slug,
             ],
             'difficulty' => [
-                'id' => $challenge->difficulty->id,
-                'name' => $challenge->difficulty->name,
-                'slug' => $challenge->difficulty->slug,
+                'id' =>
+                    $challenge->difficulty->id,
+                'name' =>
+                    $challenge->difficulty->name,
+                'slug' =>
+                    $challenge->difficulty->slug,
                 'base_points' =>
-                    $challenge->difficulty->base_points,
+                    $challenge
+                        ->difficulty
+                        ->base_points,
             ],
             'progress' => $progress
                 ? [
                     'best_score' =>
-                        (int) ($progress->best_score ?? 0),
+                        (int) (
+                            $progress->best_score
+                            ?? 0
+                        ),
                     'attempts_count' =>
-                        (int) ($progress->attempts_count ?? 0),
+                        (int) (
+                            $progress->attempts_count
+                            ?? 0
+                        ),
                     'is_completed' =>
-                        (bool) ($progress->is_completed ?? false),
+                        (bool) (
+                            $progress->is_completed
+                            ?? false
+                        ),
                 ]
                 : null,
         ];
@@ -662,19 +763,29 @@ class BugHuntController extends Controller
             'best_score' =>
                 (int) ($progress->best_score ?? 0),
             'attempts_count' =>
-                (int) ($progress->attempts_count ?? 0),
+                (int) (
+                    $progress->attempts_count
+                    ?? 0
+                ),
             'hints_used' =>
                 (int) ($progress->hints_used ?? 0),
             'is_completed' =>
-                (bool) ($progress->is_completed ?? false),
-            'completed_at' => $progress->completed_at,
-            'updated_at' => $progress->updated_at,
+                (bool) (
+                    $progress->is_completed
+                    ?? false
+                ),
+            'completed_at' =>
+                $progress->completed_at,
+            'updated_at' =>
+                $progress->updated_at,
             'submission_id' =>
                 $progress->bestSubmission?->id,
             'latest_status' =>
                 $progress->bestSubmission?->status,
             'latest_score' =>
-                $progress->bestSubmission?->final_score,
+                $progress
+                    ->bestSubmission
+                    ?->final_score,
             'challenge' => $this->challengeCard(
                 $progress->challenge,
                 $progress,
