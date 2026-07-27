@@ -228,7 +228,12 @@ class BugHuntController extends Controller
                 'challenge_id' => $challenge->id,
             ],
             [
+                'best_score' => 0,
+                'attempts_count' => 0,
+                'hints_used' => 0,
+                'hint_penalty' => 0,
                 'unlocked_hint_ids' => [],
+                'is_completed' => false,
             ],
         );
 
@@ -262,11 +267,11 @@ class BugHuntController extends Controller
                 ),
             ],
             'progress' => [
-                'best_score' => $progress->best_score,
-                'attempts_count' => $progress->attempts_count,
-                'hints_used' => $progress->hints_used,
-                'hint_penalty' => $progress->hint_penalty,
-                'is_completed' => $progress->is_completed,
+                'best_score' => (int) ($progress->best_score ?? 0),
+                'attempts_count' => (int) ($progress->attempts_count ?? 0),
+                'hints_used' => (int) ($progress->hints_used ?? 0),
+                'hint_penalty' => (int) ($progress->hint_penalty ?? 0),
+                'is_completed' => (bool) ($progress->is_completed ?? false),
             ],
         ]);
     }
@@ -288,7 +293,12 @@ class BugHuntController extends Controller
                 'challenge_id' => $challenge->id,
             ],
             [
+                'best_score' => 0,
+                'attempts_count' => 0,
+                'hints_used' => 0,
+                'hint_penalty' => 0,
                 'unlocked_hint_ids' => [],
+                'is_completed' => false,
             ],
         );
 
@@ -316,15 +326,17 @@ class BugHuntController extends Controller
 
         $unlockedIds->push($hint->id);
 
+        $uniqueUnlockedIds = $unlockedIds
+            ->unique()
+            ->values();
+
         $progress->update([
-            'unlocked_hint_ids' => $unlockedIds
-                ->unique()
-                ->values()
-                ->all(),
-            'hints_used' => $unlockedIds->unique()->count(),
+            'unlocked_hint_ids' => $uniqueUnlockedIds->all(),
+            'hints_used' => $uniqueUnlockedIds->count(),
             'hint_penalty' => min(
                 100,
-                $progress->hint_penalty + $hint->point_penalty,
+                (int) ($progress->hint_penalty ?? 0)
+                    + (int) $hint->point_penalty,
             ),
         ]);
 
@@ -382,16 +394,26 @@ class BugHuntController extends Controller
                     $progress = UserChallengeProgress::query()->create([
                         'user_id' => $user->id,
                         'challenge_id' => $challenge->id,
+                        'best_score' => 0,
+                        'attempts_count' => 0,
+                        'hints_used' => 0,
+                        'hint_penalty' => 0,
                         'unlocked_hint_ids' => [],
+                        'is_completed' => false,
                     ]);
                 }
+
+                $hintPenalty = (int) ($progress->hint_penalty ?? 0);
+                $attemptsCount = (int) ($progress->attempts_count ?? 0);
+                $previousBest = (int) ($progress->best_score ?? 0);
+                $wasCompleted = (bool) ($progress->is_completed ?? false);
 
                 $result = $this->evaluationService->evaluate(
                     $challenge,
                     (int) $validated['selected_line'],
                     $validated['submitted_code'],
                     $validated['submitted_explanation'],
-                    $progress->hint_penalty,
+                    $hintPenalty,
                 );
 
                 $submission = Submission::query()->create([
@@ -415,8 +437,7 @@ class BugHuntController extends Controller
 
                 SubmissionAttempt::query()->create([
                     'submission_id' => $submission->id,
-                    'attempt_number' =>
-                        $progress->attempts_count + 1,
+                    'attempt_number' => $attemptsCount + 1,
                     'line_correct' => $result['line_score'] > 0,
                     'code_correct' => $result['code_score'] > 0,
                     'matched_keywords' =>
@@ -427,14 +448,13 @@ class BugHuntController extends Controller
                     'status_snapshot' => $result['status'],
                 ]);
 
-                $previousBest = $progress->best_score;
                 $newBest = max(
                     $previousBest,
-                    $result['final_score'],
+                    (int) $result['final_score'],
                 );
 
                 $becameCompleted =
-                    ! $progress->is_completed
+                    ! $wasCompleted
                     && $result['status'] === 'completed';
 
                 $progress->update([
@@ -443,10 +463,9 @@ class BugHuntController extends Controller
                             ? $submission->id
                             : $progress->best_submission_id,
                     'best_score' => $newBest,
-                    'attempts_count' =>
-                        $progress->attempts_count + 1,
+                    'attempts_count' => $attemptsCount + 1,
                     'is_completed' =>
-                        $progress->is_completed
+                        $wasCompleted
                         || $result['status'] === 'completed',
                     'completed_at' => $becameCompleted
                         ? now()
@@ -624,11 +643,12 @@ class BugHuntController extends Controller
             ],
             'progress' => $progress
                 ? [
-                    'best_score' => $progress->best_score,
+                    'best_score' =>
+                        (int) ($progress->best_score ?? 0),
                     'attempts_count' =>
-                        $progress->attempts_count,
+                        (int) ($progress->attempts_count ?? 0),
                     'is_completed' =>
-                        $progress->is_completed,
+                        (bool) ($progress->is_completed ?? false),
                 ]
                 : null,
         ];
@@ -639,10 +659,14 @@ class BugHuntController extends Controller
     ): array {
         return [
             'id' => $progress->id,
-            'best_score' => $progress->best_score,
-            'attempts_count' => $progress->attempts_count,
-            'hints_used' => $progress->hints_used,
-            'is_completed' => $progress->is_completed,
+            'best_score' =>
+                (int) ($progress->best_score ?? 0),
+            'attempts_count' =>
+                (int) ($progress->attempts_count ?? 0),
+            'hints_used' =>
+                (int) ($progress->hints_used ?? 0),
+            'is_completed' =>
+                (bool) ($progress->is_completed ?? false),
             'completed_at' => $progress->completed_at,
             'updated_at' => $progress->updated_at,
             'submission_id' =>

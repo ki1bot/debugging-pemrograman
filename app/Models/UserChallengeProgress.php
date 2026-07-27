@@ -23,9 +23,19 @@ class UserChallengeProgress extends Model
         'completed_at',
     ];
 
+    protected $attributes = [
+        'best_score' => 0,
+        'attempts_count' => 0,
+        'hints_used' => 0,
+        'hint_penalty' => 0,
+        'unlocked_hint_ids' => '[]',
+        'is_completed' => false,
+    ];
+
     protected function casts(): array
     {
         return [
+            'best_submission_id' => 'integer',
             'best_score' => 'integer',
             'attempts_count' => 'integer',
             'hints_used' => 'integer',
@@ -48,6 +58,9 @@ class UserChallengeProgress extends Model
 
     public function bestSubmission(): BelongsTo
     {
-        return $this->belongsTo(Submission::class, 'best_submission_id');
+        return $this->belongsTo(
+            Submission::class,
+            'best_submission_id',
+        );
     }
 }
