@@ -1,0 +1,196 @@
+import PublicLayout from "@/Layouts/PublicLayout";
+import { PageProps } from "@/types";
+import { Head, Link, usePage } from "@inertiajs/react";
+
+type Leader = {
+    rank: number;
+    id: number;
+    name: string;
+    total_points: number;
+    completed_challenges: number;
+    joined_at: string;
+};
+
+type LeaderboardProps = {
+    leaders: Leader[];
+};
+
+const podiumBackground: Record<number, string> = {
+    1: "bg-[#ffd93d]",
+    2: "bg-[#d6d6d6]",
+    3: "bg-[#ffbd70]",
+};
+
+export default function Leaderboard({ leaders }: LeaderboardProps) {
+    const { auth } = usePage<PageProps>().props;
+    const topThree = leaders.slice(0, 3);
+
+    return (
+        <PublicLayout>
+            <Head title="Leaderboard" />
+
+            <section className="border-b-[3px] border-black bg-[#b7a4ff]">
+                <div className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
+                    <p className="text-sm font-black uppercase tracking-[0.18em]">
+                        Bug Hunter Rankings
+                    </p>
+
+                    <h1 className="page-title mt-4">
+                        Siapa pemburu bug terbaik?
+                    </h1>
+
+                    <p className="mx-auto mt-6 max-w-2xl text-lg font-semibold leading-8">
+                        Peringkat dihitung berdasarkan total poin terbaik dari
+                        setiap tantangan yang telah dikerjakan.
+                    </p>
+                </div>
+            </section>
+
+            <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+                {topThree.length > 0 && (
+                    <section className="grid gap-6 md:grid-cols-3 md:items-end">
+                        {topThree.map((leader) => (
+                            <article
+                                key={leader.id}
+                                className={`nb-card p-6 text-center ${
+                                    podiumBackground[leader.rank] ?? "bg-white"
+                                } ${
+                                    leader.rank === 1
+                                        ? "md:order-2 md:min-h-[330px]"
+                                        : leader.rank === 2
+                                          ? "md:order-1 md:min-h-[280px]"
+                                          : "md:order-3 md:min-h-[250px]"
+                                }`}
+                            >
+                                <div className="mx-auto grid h-16 w-16 place-items-center rounded-full border-[3px] border-black bg-white text-2xl font-black shadow-[4px_4px_0_#111]">
+                                    #{leader.rank}
+                                </div>
+
+                                <h2 className="mt-6 text-2xl font-black">
+                                    {leader.name}
+                                </h2>
+
+                                <p className="mt-5 text-5xl font-black tracking-[-0.06em]">
+                                    {leader.total_points}
+                                </p>
+
+                                <p className="mt-1 text-sm font-black uppercase tracking-wide">
+                                    poin
+                                </p>
+
+                                <div className="mt-6 border-[3px] border-black bg-white p-3 font-bold">
+                                    {leader.completed_challenges} tantangan
+                                    selesai
+                                </div>
+                            </article>
+                        ))}
+                    </section>
+                )}
+
+                {leaders.length > 0 ? (
+                    <section className="mt-12 overflow-x-auto border-[3px] border-black bg-white shadow-[7px_7px_0_#111]">
+                        <table className="nb-table min-w-[700px]">
+                            <thead>
+                                <tr>
+                                    <th>Peringkat</th>
+                                    <th>Bug Hunter</th>
+                                    <th>Tantangan Selesai</th>
+                                    <th>Total Poin</th>
+                                    <th>Bergabung</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {leaders.map((leader) => {
+                                    const currentUser =
+                                        auth.user?.id === leader.id;
+
+                                    return (
+                                        <tr
+                                            key={leader.id}
+                                            className={
+                                                currentUser
+                                                    ? "bg-[#fff1a8]"
+                                                    : ""
+                                            }
+                                        >
+                                            <td>
+                                                <span className="grid h-10 w-10 place-items-center border-2 border-black bg-[#ffd93d] font-black shadow-[2px_2px_0_#111]">
+                                                    {leader.rank}
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <p className="font-black">
+                                                    {leader.name}
+                                                </p>
+
+                                                {currentUser && (
+                                                    <span className="mt-2 inline-flex border-2 border-black bg-[#9ef0b8] px-2 py-1 text-xs font-black">
+                                                        POSISI ANDA
+                                                    </span>
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                <strong>
+                                                    {
+                                                        leader.completed_challenges
+                                                    }
+                                                </strong>
+                                            </td>
+
+                                            <td>
+                                                <strong className="text-lg">
+                                                    {leader.total_points}
+                                                </strong>
+                                            </td>
+
+                                            <td>
+                                                {new Date(
+                                                    leader.joined_at,
+                                                ).toLocaleDateString("id-ID", {
+                                                    dateStyle: "medium",
+                                                })}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </section>
+                ) : (
+                    <div className="nb-card bg-[#fff1a8] p-10 text-center">
+                        <h2 className="text-2xl font-black">
+                            Leaderboard masih kosong.
+                        </h2>
+
+                        <p className="mt-4 font-semibold">
+                            Jadilah pengguna pertama yang memperoleh poin.
+                        </p>
+                    </div>
+                )}
+
+                {!auth.user && (
+                    <section className="nb-card mt-12 bg-[#9ef0b8] p-8 text-center">
+                        <h2 className="text-3xl font-black tracking-[-0.04em]">
+                            Nama Anda belum ada di sini?
+                        </h2>
+
+                        <p className="mt-4 font-semibold">
+                            Daftar dan selesaikan tantangan untuk masuk ke
+                            leaderboard.
+                        </p>
+
+                        <Link
+                            href={route("register")}
+                            className="nb-button mt-6 bg-[#ffd93d]"
+                        >
+                            Daftar Sekarang
+                        </Link>
+                    </section>
+                )}
+            </div>
+        </PublicLayout>
+    );
+}

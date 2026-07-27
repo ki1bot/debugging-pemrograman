@@ -1,11 +1,17 @@
-import Checkbox from '@/Components/Checkbox';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import Checkbox from "@/Components/Checkbox";
+import InputError from "@/Components/InputError";
+import InputLabel from "@/Components/InputLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
+import TextInput from "@/Components/TextInput";
+import GuestLayout from "@/Layouts/GuestLayout";
+import { Head, Link, useForm } from "@inertiajs/react";
+import { FormEventHandler } from "react";
+
+type LoginForm = {
+    email: string;
+    password: string;
+    remember: boolean;
+};
 
 export default function Login({
     status,
@@ -14,31 +20,43 @@ export default function Login({
     status?: string;
     canResetPassword: boolean;
 }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        email: '',
-        password: '',
-        remember: false as boolean,
-    });
+    const { data, setData, post, processing, errors, reset } =
+        useForm<LoginForm>({
+            email: "",
+            password: "",
+            remember: false,
+        });
 
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
+    const submit: FormEventHandler<HTMLFormElement> = (event) => {
+        event.preventDefault();
 
-        post(route('login'), {
-            onFinish: () => reset('password'),
+        post(route("login"), {
+            onFinish: () => reset("password"),
         });
     };
 
     return (
         <GuestLayout>
-            <Head title="Log in" />
+            <Head title="Masuk" />
+
+            <span className="nb-badge bg-[#9ed8ff]">Selamat Datang</span>
+
+            <h1 className="mt-5 text-4xl font-black tracking-[-0.06em]">
+                Masuk ke BugHunt
+            </h1>
+
+            <p className="mt-3 font-semibold leading-7 text-neutral-700">
+                Lanjutkan tantangan, kumpulkan poin, dan tingkatkan kemampuan
+                debugging Anda.
+            </p>
 
             {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
+                <div className="mt-6 border-[3px] border-black bg-[#9ef0b8] p-4 font-bold shadow-[3px_3px_0_#111]">
                     {status}
                 </div>
             )}
 
-            <form onSubmit={submit}>
+            <form onSubmit={submit} className="mt-7 space-y-6">
                 <div>
                     <InputLabel htmlFor="email" value="Email" />
 
@@ -47,16 +65,17 @@ export default function Login({
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full"
+                        isFocused
                         autoComplete="username"
-                        isFocused={true}
-                        onChange={(e) => setData('email', e.target.value)}
+                        onChange={(event) =>
+                            setData("email", event.target.value)
+                        }
                     />
 
-                    <InputError message={errors.email} className="mt-2" />
+                    <InputError message={errors.email} className="mt-3" />
                 </div>
 
-                <div className="mt-4">
+                <div>
                     <InputLabel htmlFor="password" value="Password" />
 
                     <TextInput
@@ -64,45 +83,49 @@ export default function Login({
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
                         autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
+                        onChange={(event) =>
+                            setData("password", event.target.value)
+                        }
                     />
 
-                    <InputError message={errors.password} className="mt-2" />
+                    <InputError message={errors.password} className="mt-3" />
                 </div>
 
-                <div className="mt-4 block">
-                    <label className="flex items-center">
-                        <Checkbox
-                            name="remember"
-                            checked={data.remember}
-                            onChange={(e) =>
-                                setData(
-                                    'remember',
-                                    (e.target.checked || false) as false,
-                                )
-                            }
-                        />
-                        <span className="ms-2 text-sm text-gray-600">
-                            Remember me
-                        </span>
-                    </label>
-                </div>
+                <label className="flex cursor-pointer items-center gap-3 font-bold">
+                    <Checkbox
+                        name="remember"
+                        checked={data.remember}
+                        onChange={(event) =>
+                            setData("remember", event.target.checked)
+                        }
+                    />
+                    Ingat sesi masuk saya
+                </label>
 
-                <div className="mt-4 flex items-center justify-end">
+                <PrimaryButton className="w-full py-4" disabled={processing}>
+                    {processing ? "Memproses..." : "Masuk"}
+                </PrimaryButton>
+
+                <div className="grid gap-3 text-center text-sm font-bold">
                     {canResetPassword && (
                         <Link
-                            href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            href={route("password.request")}
+                            className="underline decoration-2 underline-offset-4"
                         >
-                            Forgot your password?
+                            Lupa password?
                         </Link>
                     )}
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
+                    <p>
+                        Belum memiliki akun?{" "}
+                        <Link
+                            href={route("register")}
+                            className="font-black underline decoration-2 underline-offset-4"
+                        >
+                            Daftar sekarang
+                        </Link>
+                    </p>
                 </div>
             </form>
         </GuestLayout>

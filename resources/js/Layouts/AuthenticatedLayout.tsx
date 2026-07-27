@@ -1,176 +1,175 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link, usePage } from '@inertiajs/react';
-import { PropsWithChildren, ReactNode, useState } from 'react';
+import ApplicationLogo from "@/Components/ApplicationLogo";
+import FlashMessage from "@/Components/FlashMessage";
+import { PageProps } from "@/types";
+import { Link, usePage } from "@inertiajs/react";
+import { PropsWithChildren, ReactNode, useState } from "react";
 
-export default function Authenticated({
+type AuthenticatedLayoutProps = PropsWithChildren<{
+    header?: ReactNode;
+}>;
+
+const navigation = [
+    {
+        label: "Dashboard",
+        routeName: "dashboard",
+    },
+    {
+        label: "Tantangan",
+        routeName: "challenges.index",
+    },
+    {
+        label: "Riwayat",
+        routeName: "history.index",
+    },
+    {
+        label: "Leaderboard",
+        routeName: "leaderboard",
+    },
+];
+
+export default function AuthenticatedLayout({
     header,
     children,
-}: PropsWithChildren<{ header?: ReactNode }>) {
-    const user = usePage().props.auth.user;
-
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+}: AuthenticatedLayoutProps) {
+    const { auth } = usePage<PageProps>().props;
+    const user = auth.user;
+    const [open, setOpen] = useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 justify-between">
-                        <div className="flex">
-                            <div className="flex shrink-0 items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+        <div className="min-h-screen">
+            <FlashMessage />
+
+            <header className="sticky top-0 z-50 border-b-[3px] border-black bg-[#fff7e6]">
+                <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+                    <ApplicationLogo />
+
+                    <nav className="hidden items-center gap-2 xl:flex">
+                        {navigation.map((item) => (
+                            <Link
+                                key={item.routeName}
+                                href={route(item.routeName)}
+                                className={`border-2 border-black px-3 py-2 text-sm font-black shadow-[2px_2px_0_#111] ${
+                                    route().current(item.routeName)
+                                        ? "bg-[#ffd93d]"
+                                        : "bg-white hover:bg-[#fff1a8]"
+                                }`}
+                            >
+                                {item.label}
+                            </Link>
+                        ))}
+
+                        {user?.role === "admin" && (
+                            <Link
+                                href={route("admin.dashboard")}
+                                className="border-2 border-black bg-[#b7a4ff] px-3 py-2 text-sm font-black shadow-[2px_2px_0_#111]"
+                            >
+                                Admin
+                            </Link>
+                        )}
+                    </nav>
+
+                    <div className="hidden items-center gap-3 xl:flex">
+                        <div className="border-2 border-black bg-white px-3 py-2 shadow-[2px_2px_0_#111]">
+                            <p className="text-xs font-black uppercase tracking-wide">
+                                {user?.name}
+                            </p>
+
+                            <p className="text-xs font-bold text-neutral-600">
+                                {user?.total_points ?? 0} poin
+                            </p>
+                        </div>
+
+                        <Link
+                            href={route("profile.edit")}
+                            className="nb-button bg-[#9ed8ff] text-sm"
+                        >
+                            Profil
+                        </Link>
+
+                        <Link
+                            href={route("logout")}
+                            method="post"
+                            as="button"
+                            className="nb-button bg-[#ff9c9c] text-sm"
+                        >
+                            Keluar
+                        </Link>
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={() => setOpen((value) => !value)}
+                        className="grid h-11 w-11 place-items-center border-[3px] border-black bg-[#ffd93d] text-xl font-black shadow-[3px_3px_0_#111] xl:hidden"
+                        aria-label="Buka navigasi"
+                    >
+                        {open ? "×" : "☰"}
+                    </button>
+                </div>
+
+                {open && (
+                    <div className="border-t-[3px] border-black bg-white px-4 py-4 xl:hidden">
+                        <div className="mx-auto grid max-w-7xl gap-2">
+                            <div className="border-2 border-black bg-[#fff1a8] p-3">
+                                <p className="font-black">{user?.name}</p>
+
+                                <p className="text-sm font-bold">
+                                    {user?.email} · {user?.total_points ?? 0}{" "}
+                                    poin
+                                </p>
+                            </div>
+
+                            {navigation.map((item) => (
+                                <Link
+                                    key={item.routeName}
+                                    href={route(item.routeName)}
+                                    onClick={() => setOpen(false)}
+                                    className={`border-2 border-black px-4 py-3 font-black ${
+                                        route().current(item.routeName)
+                                            ? "bg-[#ffd93d]"
+                                            : "bg-white"
+                                    }`}
+                                >
+                                    {item.label}
+                                </Link>
+                            ))}
+
+                            {user?.role === "admin" && (
+                                <Link
+                                    href={route("admin.dashboard")}
+                                    className="border-2 border-black bg-[#b7a4ff] px-4 py-3 font-black"
+                                >
+                                    Dashboard Admin
+                                </Link>
+                            )}
+
+                            <div className="grid grid-cols-2 gap-2">
+                                <Link
+                                    href={route("profile.edit")}
+                                    className="border-2 border-black bg-[#9ed8ff] px-4 py-3 text-center font-black"
+                                >
+                                    Profil
+                                </Link>
+
+                                <Link
+                                    href={route("logout")}
+                                    method="post"
+                                    as="button"
+                                    className="border-2 border-black bg-[#ff9c9c] px-4 py-3 text-center font-black"
+                                >
+                                    Keluar
                                 </Link>
                             </div>
-
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
-                                </NavLink>
-                            </div>
-                        </div>
-
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
-                                            >
-                                                {user.name}
-
-                                                <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Dropdown.Trigger>
-
-                                    <Dropdown.Content>
-                                        <Dropdown.Link
-                                            href={route('profile.edit')}
-                                        >
-                                            Profile
-                                        </Dropdown.Link>
-                                        <Dropdown.Link
-                                            href={route('logout')}
-                                            method="post"
-                                            as="button"
-                                        >
-                                            Log Out
-                                        </Dropdown.Link>
-                                    </Dropdown.Content>
-                                </Dropdown>
-                            </div>
-                        </div>
-
-                        <div className="-me-2 flex items-center sm:hidden">
-                            <button
-                                onClick={() =>
-                                    setShowingNavigationDropdown(
-                                        (previousState) => !previousState,
-                                    )
-                                }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
-                            >
-                                <svg
-                                    className="h-6 w-6"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        className={
-                                            !showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={
-                                            showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
                         </div>
                     </div>
-                </div>
-
-                <div
-                    className={
-                        (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
-                    }
-                >
-                    <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
-
-                    <div className="border-t border-gray-200 pb-1 pt-4">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800">
-                                {user.name}
-                            </div>
-                            <div className="text-sm font-medium text-gray-500">
-                                {user.email}
-                            </div>
-                        </div>
-
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
-                                href={route('logout')}
-                                as="button"
-                            >
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+                )}
+            </header>
 
             {header && (
-                <header className="bg-white shadow">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <section className="border-b-[3px] border-black bg-[#ffd93d]">
+                    <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-8">
                         {header}
                     </div>
-                </header>
+                </section>
             )}
 
             <main>{children}</main>

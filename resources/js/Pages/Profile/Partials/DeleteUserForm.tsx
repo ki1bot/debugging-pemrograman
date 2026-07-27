@@ -1,18 +1,19 @@
-import DangerButton from '@/Components/DangerButton';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import Modal from '@/Components/Modal';
-import SecondaryButton from '@/Components/SecondaryButton';
-import TextInput from '@/Components/TextInput';
-import { useForm } from '@inertiajs/react';
-import { FormEventHandler, useRef, useState } from 'react';
+import DangerButton from "@/Components/DangerButton";
+import InputError from "@/Components/InputError";
+import InputLabel from "@/Components/InputLabel";
+import Modal from "@/Components/Modal";
+import SecondaryButton from "@/Components/SecondaryButton";
+import TextInput from "@/Components/TextInput";
+import { useForm } from "@inertiajs/react";
+import { FormEventHandler, useRef, useState } from "react";
 
 export default function DeleteUserForm({
-    className = '',
+    className = "",
 }: {
     className?: string;
 }) {
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
+
     const passwordInput = useRef<HTMLInputElement>(null);
 
     const {
@@ -24,17 +25,23 @@ export default function DeleteUserForm({
         errors,
         clearErrors,
     } = useForm({
-        password: '',
+        password: "",
     });
 
     const confirmUserDeletion = () => {
         setConfirmingUserDeletion(true);
     };
 
-    const deleteUser: FormEventHandler = (e) => {
-        e.preventDefault();
+    const closeModal = () => {
+        setConfirmingUserDeletion(false);
+        clearErrors();
+        reset();
+    };
 
-        destroy(route('profile.destroy'), {
+    const deleteUser: FormEventHandler<HTMLFormElement> = (event) => {
+        event.preventDefault();
+
+        destroy(route("profile.destroy"), {
             preserveScroll: true,
             onSuccess: () => closeModal(),
             onError: () => passwordInput.current?.focus(),
@@ -42,79 +49,68 @@ export default function DeleteUserForm({
         });
     };
 
-    const closeModal = () => {
-        setConfirmingUserDeletion(false);
-
-        clearErrors();
-        reset();
-    };
-
     return (
-        <section className={`space-y-6 ${className}`}>
-            <header>
-                <h2 className="text-lg font-medium text-gray-900">
-                    Delete Account
-                </h2>
+        <section className={className}>
+            <span className="nb-badge bg-white">Zona Berbahaya</span>
 
-                <p className="mt-1 text-sm text-gray-600">
-                    Once your account is deleted, all of its resources and data
-                    will be permanently deleted. Before deleting your account,
-                    please download any data or information that you wish to
-                    retain.
-                </p>
-            </header>
+            <h2 className="mt-5 text-2xl font-black tracking-[-0.04em]">
+                Hapus Akun
+            </h2>
 
-            <DangerButton onClick={confirmUserDeletion}>
-                Delete Account
+            <p className="mt-3 max-w-2xl font-semibold leading-7 text-neutral-800">
+                Penghapusan akun akan menghapus data pengguna, submission, poin,
+                dan riwayat tantangan secara permanen.
+            </p>
+
+            <DangerButton
+                type="button"
+                className="mt-6"
+                onClick={confirmUserDeletion}
+            >
+                Hapus Akun Saya
             </DangerButton>
 
             <Modal show={confirmingUserDeletion} onClose={closeModal}>
-                <form onSubmit={deleteUser} className="p-6">
-                    <h2 className="text-lg font-medium text-gray-900">
-                        Are you sure you want to delete your account?
+                <form onSubmit={deleteUser}>
+                    <span className="nb-badge bg-[#ff9c9c]">Konfirmasi</span>
+
+                    <h2 className="mt-5 text-3xl font-black tracking-[-0.05em]">
+                        Hapus akun secara permanen?
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-600">
-                        Once your account is deleted, all of its resources and
-                        data will be permanently deleted. Please enter your
-                        password to confirm you would like to permanently delete
-                        your account.
+                    <p className="mt-4 font-semibold leading-7 text-neutral-700">
+                        Masukkan password untuk memastikan bahwa Anda
+                        benar-benar ingin menghapus akun.
                     </p>
 
                     <div className="mt-6">
-                        <InputLabel
-                            htmlFor="password"
-                            value="Password"
-                            className="sr-only"
-                        />
+                        <InputLabel htmlFor="password" value="Password" />
 
                         <TextInput
                             id="password"
                             type="password"
-                            name="password"
                             ref={passwordInput}
                             value={data.password}
-                            onChange={(e) =>
-                                setData('password', e.target.value)
-                            }
-                            className="mt-1 block w-3/4"
                             isFocused
-                            placeholder="Password"
+                            onChange={(event) =>
+                                setData("password", event.target.value)
+                            }
+                            placeholder="Password akun"
                         />
 
                         <InputError
                             message={errors.password}
-                            className="mt-2"
+                            className="mt-3"
                         />
                     </div>
 
-                    <div className="mt-6 flex justify-end">
+                    <div className="mt-7 flex flex-wrap justify-end gap-4">
                         <SecondaryButton onClick={closeModal}>
-                            Cancel
+                            Batal
                         </SecondaryButton>
 
-                        <DangerButton className="ms-3" disabled={processing}>
-                            Delete Account
+                        <DangerButton disabled={processing}>
+                            {processing ? "Menghapus..." : "Hapus Permanen"}
                         </DangerButton>
                     </div>
                 </form>

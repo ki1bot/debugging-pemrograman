@@ -1,3 +1,230 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+:root {
+    color: #111111;
+    background: #fff7e6;
+    font-family: "Trebuchet MS", Arial, sans-serif;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #fff7e6;
+    background-image:
+        linear-gradient(rgba(17, 17, 17, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(17, 17, 17, 0.045) 1px, transparent 1px);
+    background-size: 28px 28px;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+    color: #111111;
+    background: #ffd93d;
+}
+
+@layer components {
+    .nb-card {
+        border: 3px solid #111111;
+        background-color: #ffffff;
+        box-shadow: 7px 7px 0 #111111;
+    }
+
+    .nb-card-soft {
+        border: 3px solid #111111;
+        background-color: #fffdf7;
+        box-shadow: 5px 5px 0 #111111;
+    }
+}
+
+.nb-button {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 3px solid #111111;
+    padding: 0.65rem 1rem;
+    font-weight: 900;
+    line-height: 1;
+    box-shadow: 4px 4px 0 #111111;
+    transition:
+        transform 120ms ease,
+        box-shadow 120ms ease,
+        filter 120ms ease;
+}
+
+.nb-button:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 #111111;
+    filter: brightness(0.98);
+}
+
+.nb-button:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 #111111;
+}
+
+.nb-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
+    box-shadow: 4px 4px 0 #111111;
+}
+
+.nb-input {
+    width: 100%;
+    border: 3px solid #111111;
+    background: #ffffff;
+    padding: 0.72rem 0.85rem;
+    color: #111111;
+    outline: none;
+    box-shadow: 3px 3px 0 #111111;
+}
+
+.nb-input:focus {
+    background: #fff8c9;
+    box-shadow: 5px 5px 0 #111111;
+}
+
+.nb-label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.nb-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+}
+
+.nb-table th,
+.nb-table td {
+    border: 2px solid #111111;
+    padding: 0.75rem;
+    text-align: left;
+    vertical-align: top;
+}
+
+.nb-table th {
+    background: #ffd93d;
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.nb-badge {
+    display: inline-flex;
+    align-items: center;
+    border: 2px solid #111111;
+    padding: 0.2rem 0.55rem;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    box-shadow: 2px 2px 0 #111111;
+}
+
+.code-editor-shell {
+    overflow: hidden;
+    border: 3px solid #111111;
+    background: #1f1f1f;
+    box-shadow: 5px 5px 0 #111111;
+}
+
+.code-editor-shell .cm-editor {
+    font-size: 14px;
+}
+
+.code-editor-shell .cm-scroller {
+    font-family: "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+}
+
+.code-line {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    width: 100%;
+    border-bottom: 1px solid rgba(17, 17, 17, 0.15);
+    text-align: left;
+}
+
+.code-line:last-child {
+    border-bottom: 0;
+}
+
+.code-line-number {
+    border-right: 2px solid #111111;
+    background: #e8e8e8;
+    padding: 0.45rem 0.5rem;
+    text-align: right;
+    font-family: "Cascadia Code", Consolas, monospace;
+    font-weight: 900;
+}
+
+.code-line-content {
+    overflow-x: auto;
+    padding: 0.45rem 0.65rem;
+    white-space: pre;
+    font-family: "Cascadia Code", Consolas, monospace;
+}
+
+.code-line-selected .code-line-number,
+.code-line-selected .code-line-content {
+    background: #ff9cc2;
+}
+
+.page-title {
+    font-size: clamp(2rem, 6vw, 4.5rem);
+    font-weight: 1000;
+    letter-spacing: -0.055em;
+    line-height: 0.92;
+}
+
+.section-title {
+    font-size: clamp(1.6rem, 4vw, 2.7rem);
+    font-weight: 1000;
+    letter-spacing: -0.04em;
+    line-height: 1;
+}
+
+.text-balance {
+    text-wrap: balance;
+}
+
+@media (max-width: 640px) {
+    .nb-card,
+    .nb-card-soft {
+        box-shadow: 4px 4px 0 #111111;
+    }
+
+    .nb-table th,
+    .nb-table td {
+        padding: 0.55rem;
+    }
+}
