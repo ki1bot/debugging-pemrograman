@@ -91,21 +91,17 @@ class ChallengeEvaluationService
         return [
             'line_score' => $lineScore,
             'code_score' => $codeScore,
-            'explanation_score' =>
-                $explanationScore,
-            'hint_penalty' =>
-                $normalizedPenalty,
+            'explanation_score' => $explanationScore,
+            'hint_penalty' => $normalizedPenalty,
             'final_score' => $finalScore,
             'status' => $status,
-            'matched_keywords' =>
-                $matchedKeywords
-                    ->values()
-                    ->all(),
-            'missing_keywords' =>
-                $keywords
-                    ->diff($matchedKeywords)
-                    ->values()
-                    ->all(),
+            'matched_keywords' => $matchedKeywords
+                ->values()
+                ->all(),
+            'missing_keywords' => $keywords
+                ->diff($matchedKeywords)
+                ->values()
+                ->all(),
         ];
     }
 

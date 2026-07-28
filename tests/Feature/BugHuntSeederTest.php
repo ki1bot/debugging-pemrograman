@@ -119,8 +119,7 @@ class BugHuntSeederTest extends TestCase
         ];
 
         foreach (
-            ['javascript', 'php', 'sql']
-            as $categorySlug
+            ['javascript', 'php', 'sql'] as $categorySlug
         ) {
             $category = Category::query()
                 ->where(
@@ -130,8 +129,7 @@ class BugHuntSeederTest extends TestCase
                 ->firstOrFail();
 
             foreach (
-                $expected
-                as $difficultySlug => $count
+                $expected as $difficultySlug => $count
             ) {
                 $difficulty =
                     Difficulty::query()

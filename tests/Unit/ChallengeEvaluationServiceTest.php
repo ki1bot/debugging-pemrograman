@@ -81,12 +81,9 @@ CODE;
             'solutions',
             collect([
                 new ChallengeSolution([
-                    'solution_code' =>
-                        "const message = 'Hello World';",
-                    'solution_type' =>
-                        'primary',
-                    'required_keywords' =>
-                        ['string'],
+                    'solution_code' => "const message = 'Hello World';",
+                    'solution_type' => 'primary',
+                    'required_keywords' => ['string'],
                 ]),
             ]),
         );
@@ -116,12 +113,9 @@ CODE;
             'solutions',
             collect([
                 new ChallengeSolution([
-                    'solution_code' =>
-                        'const message = 10;',
-                    'solution_type' =>
-                        'primary',
-                    'required_keywords' =>
-                        ['variabel'],
+                    'solution_code' => 'const message = 10;',
+                    'solution_type' => 'primary',
+                    'required_keywords' => ['variabel'],
                 ]),
             ]),
         );
@@ -163,7 +157,7 @@ CODE;
 
     private function service(): ChallengeEvaluationService
     {
-        return new ChallengeEvaluationService();
+        return new ChallengeEvaluationService;
     }
 
     private function challenge(): Challenge
@@ -177,10 +171,8 @@ CODE;
             'solutions',
             collect([
                 new ChallengeSolution([
-                    'solution_code' =>
-                        $this->correctCode(),
-                    'solution_type' =>
-                        'primary',
+                    'solution_code' => $this->correctCode(),
+                    'solution_type' => 'primary',
                     'required_keywords' => [
                         'array',
                         'indeks',

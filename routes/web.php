@@ -1,9 +1,17 @@
 <?php
 
+use App\Http\Controllers\AdminCategoryController;
+use App\Http\Controllers\AdminChallengeController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminDifficultyController;
 use App\Http\Controllers\AdminStatisticsController;
+use App\Http\Controllers\AdminSubmissionController;
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\BugHuntController;
+use App\Http\Controllers\ChallengeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SubmissionController;
+use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get(
@@ -18,7 +26,7 @@ Route::get(
 
 Route::get(
     '/challenges',
-    [BugHuntController::class, 'challenges'],
+    [ChallengeController::class, 'index'],
 )->name('challenges.index');
 
 Route::get(
@@ -30,80 +38,51 @@ Route::middleware('auth')->group(
     function (): void {
         Route::get(
             '/dashboard',
-            [
-                BugHuntController::class,
-                'dashboard',
-            ],
+            UserDashboardController::class,
         )->name('dashboard');
 
         Route::get(
             '/challenges/{challenge:slug}',
-            [
-                BugHuntController::class,
-                'showChallenge',
-            ],
+            [ChallengeController::class, 'show'],
         )->name('challenges.show');
 
         Route::post(
             '/challenges/{challenge:slug}/hints/{hint}',
-            [
-                BugHuntController::class,
-                'unlockHint',
-            ],
+            [ChallengeController::class, 'unlockHint'],
         )
             ->middleware('throttle:20,1')
-            ->name(
-                'challenges.hints.store',
-            );
+            ->name('challenges.hints.store');
 
         Route::post(
             '/challenges/{challenge:slug}/submit',
-            [
-                BugHuntController::class,
-                'submitChallenge',
-            ],
+            [ChallengeController::class, 'submit'],
         )
             ->middleware('throttle:10,1')
             ->name('challenges.submit');
 
         Route::get(
             '/submissions/{submission}',
-            [
-                BugHuntController::class,
-                'submission',
-            ],
+            [SubmissionController::class, 'show'],
         )->name('submissions.show');
 
         Route::get(
             '/history',
-            [
-                BugHuntController::class,
-                'history',
-            ],
+            [SubmissionController::class, 'history'],
         )->name('history.index');
 
         Route::get(
             '/profile',
-            [
-                ProfileController::class,
-                'edit',
-            ],
+            [ProfileController::class, 'edit'],
         )->name('profile.edit');
 
         Route::patch(
             '/profile',
-            [
-                ProfileController::class,
-                'update',
-            ],
+            [ProfileController::class, 'update'],
         )->name('profile.update');
 
         Route::delete(
             '/profile',
-            [
-                ProfileController::class,
-                'destroy',
-            ],
+            [ProfileController::class, 'destroy'],
         )->name('profile.destroy');
     },
 );
@@ -114,10 +93,7 @@ Route::prefix('admin')
     ->group(function (): void {
         Route::get(
             '/',
-            [
-                AdminController::class,
-                'dashboard',
-            ],
+            [AdminController::class, 'dashboard'],
         )->name('dashboard');
 
         Route::get(
@@ -127,146 +103,92 @@ Route::prefix('admin')
 
         Route::get(
             '/categories',
-            [
-                AdminController::class,
-                'categories',
-            ],
+            [AdminCategoryController::class, 'index'],
         )->name('categories.index');
 
         Route::post(
             '/categories',
-            [
-                AdminController::class,
-                'storeCategory',
-            ],
+            [AdminCategoryController::class, 'store'],
         )->name('categories.store');
 
         Route::put(
             '/categories/{category}',
-            [
-                AdminController::class,
-                'updateCategory',
-            ],
+            [AdminCategoryController::class, 'update'],
         )->name('categories.update');
 
         Route::delete(
             '/categories/{category}',
-            [
-                AdminController::class,
-                'destroyCategory',
-            ],
+            [AdminCategoryController::class, 'destroy'],
         )->name('categories.destroy');
 
         Route::get(
             '/difficulties',
-            [
-                AdminController::class,
-                'difficulties',
-            ],
+            [AdminDifficultyController::class, 'index'],
         )->name('difficulties.index');
 
         Route::post(
             '/difficulties',
-            [
-                AdminController::class,
-                'storeDifficulty',
-            ],
+            [AdminDifficultyController::class, 'store'],
         )->name('difficulties.store');
 
         Route::put(
             '/difficulties/{difficulty}',
-            [
-                AdminController::class,
-                'updateDifficulty',
-            ],
+            [AdminDifficultyController::class, 'update'],
         )->name('difficulties.update');
 
         Route::delete(
             '/difficulties/{difficulty}',
-            [
-                AdminController::class,
-                'destroyDifficulty',
-            ],
+            [AdminDifficultyController::class, 'destroy'],
         )->name('difficulties.destroy');
 
         Route::get(
             '/challenges',
-            [
-                AdminController::class,
-                'challenges',
-            ],
+            [AdminChallengeController::class, 'index'],
         )->name('challenges.index');
 
         Route::get(
             '/challenges/create',
-            [
-                AdminController::class,
-                'createChallenge',
-            ],
+            [AdminChallengeController::class, 'create'],
         )->name('challenges.create');
 
         Route::post(
             '/challenges',
-            [
-                AdminController::class,
-                'storeChallenge',
-            ],
+            [AdminChallengeController::class, 'store'],
         )->name('challenges.store');
 
         Route::get(
             '/challenges/{challenge:slug}/edit',
-            [
-                AdminController::class,
-                'editChallenge',
-            ],
+            [AdminChallengeController::class, 'edit'],
         )->name('challenges.edit');
 
         Route::put(
             '/challenges/{challenge:slug}',
-            [
-                AdminController::class,
-                'updateChallenge',
-            ],
+            [AdminChallengeController::class, 'update'],
         )->name('challenges.update');
 
         Route::delete(
             '/challenges/{challenge:slug}',
-            [
-                AdminController::class,
-                'destroyChallenge',
-            ],
+            [AdminChallengeController::class, 'destroy'],
         )->name('challenges.destroy');
 
         Route::get(
             '/users',
-            [
-                AdminController::class,
-                'users',
-            ],
+            [AdminUserController::class, 'index'],
         )->name('users.index');
 
         Route::put(
             '/users/{user}',
-            [
-                AdminController::class,
-                'updateUser',
-            ],
+            [AdminUserController::class, 'update'],
         )->name('users.update');
 
         Route::get(
             '/submissions',
-            [
-                AdminController::class,
-                'submissions',
-            ],
+            [AdminSubmissionController::class, 'index'],
         )->name('submissions.index');
 
         Route::get(
             '/submissions/{submission}',
-            [
-                AdminController::class,
-                'showSubmission',
-            ],
+            [AdminSubmissionController::class, 'show'],
         )->name('submissions.show');
     });
 

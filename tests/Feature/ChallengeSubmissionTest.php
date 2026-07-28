@@ -68,11 +68,9 @@ class ChallengeSubmissionTest extends TestCase
             'user_challenge_progress',
             [
                 'user_id' => $user->id,
-                'challenge_id' =>
-                    $challenge->id,
-                'best_score' =>
-                    $challenge
-                        ->base_points,
+                'challenge_id' => $challenge->id,
+                'best_score' => $challenge
+                    ->base_points,
                 'is_completed' => true,
             ],
         );
@@ -153,8 +151,7 @@ class ChallengeSubmissionTest extends TestCase
                 route(
                     'challenges.hints.store',
                     [
-                        'challenge' =>
-                            $challenge,
+                        'challenge' => $challenge,
                         'hint' => $hint,
                     ],
                 ),
@@ -403,12 +400,9 @@ class ChallengeSubmissionTest extends TestCase
         )->implode(' ');
 
         return [
-            'selected_line' =>
-                $challenge->buggy_line,
-            'submitted_code' =>
-                $primary->solution_code,
-            'submitted_explanation' =>
-                "Kesalahan terjadi karena {$keywords}. Kondisi perulangan harus dihentikan sebelum indeks mencapai panjang array.",
+            'selected_line' => $challenge->buggy_line,
+            'submitted_code' => $primary->solution_code,
+            'submitted_explanation' => "Kesalahan terjadi karena {$keywords}. Kondisi perulangan harus dihentikan sebelum indeks mencapai panjang array.",
         ];
     }
 
@@ -417,10 +411,8 @@ class ChallengeSubmissionTest extends TestCase
     ): array {
         return [
             'selected_line' => 1,
-            'submitted_code' =>
-                $challenge->broken_code,
-            'submitted_explanation' =>
-                'Saya belum menemukan penyebab kesalahan pada kode ini.',
+            'submitted_code' => $challenge->broken_code,
+            'submitted_explanation' => 'Saya belum menemukan penyebab kesalahan pada kode ini.',
         ];
     }
 }

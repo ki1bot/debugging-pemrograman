@@ -57,8 +57,7 @@ class AdminStatisticsController extends Controller
 
         $statusChart = collect([
             'incorrect' => 'Belum tepat',
-            'partially_correct' =>
-                'Sebagian benar',
+            'partially_correct' => 'Sebagian benar',
             'completed' => 'Selesai',
         ])->map(
             fn (
@@ -90,10 +89,9 @@ class AdminStatisticsController extends Controller
                     'created_at',
                 ])
                 ->groupBy(
-                    fn (Submission $submission) =>
-                        $submission
-                            ->created_at
-                            ->format('Y-m-d'),
+                    fn (Submission $submission) => $submission
+                        ->created_at
+                        ->format('Y-m-d'),
                 );
 
         $dailySubmissions =
@@ -118,23 +116,19 @@ class AdminStatisticsController extends Controller
                             );
 
                         return [
-                            'date' =>
-                                $date->format(
-                                    'Y-m-d',
-                                ),
-                            'label' =>
-                                $date->format(
-                                    'd M',
-                                ),
-                            'total' =>
-                                $items->count(),
-                            'completed' =>
-                                $items
-                                    ->where(
-                                        'status',
-                                        'completed',
-                                    )
-                                    ->count(),
+                            'date' => $date->format(
+                                'Y-m-d',
+                            ),
+                            'label' => $date->format(
+                                'd M',
+                            ),
+                            'total' => $items->count(),
+                            'completed' => $items
+                                ->where(
+                                    'status',
+                                    'completed',
+                                )
+                                ->count(),
                         ];
                     },
                 );
@@ -174,15 +168,13 @@ class AdminStatisticsController extends Controller
                 ->map(
                     fn ($row) => [
                         'name' => $row->name,
-                        'submissions' =>
-                            (int) $row
-                                ->total_submissions,
-                        'average_score' =>
-                            round(
-                                (float) $row
-                                    ->average_score,
-                                2,
-                            ),
+                        'submissions' => (int) $row
+                            ->total_submissions,
+                        'average_score' => round(
+                            (float) $row
+                                ->average_score,
+                            2,
+                        ),
                     ],
                 );
 
@@ -223,18 +215,15 @@ class AdminStatisticsController extends Controller
                 ->map(
                     fn ($row) => [
                         'name' => $row->name,
-                        'base_points' =>
-                            (int) $row
-                                ->base_points,
-                        'submissions' =>
-                            (int) $row
-                                ->total_submissions,
-                        'average_score' =>
-                            round(
-                                (float) $row
-                                    ->average_score,
-                                2,
-                            ),
+                        'base_points' => (int) $row
+                            ->base_points,
+                        'submissions' => (int) $row
+                            ->total_submissions,
+                        'average_score' => round(
+                            (float) $row
+                                ->average_score,
+                            2,
+                        ),
                     ],
                 );
 
@@ -246,12 +235,10 @@ class AdminStatisticsController extends Controller
                 ])
                 ->withCount('submissions')
                 ->withCount([
-                    'submissions as completed_submissions_count' =>
-                        fn ($query) =>
-                            $query->where(
-                                'status',
-                                'completed',
-                            ),
+                    'submissions as completed_submissions_count' => fn ($query) => $query->where(
+                        'status',
+                        'completed',
+                    ),
                 ])
                 ->orderByDesc(
                     'submissions_count',
@@ -277,28 +264,20 @@ class AdminStatisticsController extends Controller
                                 : 0;
 
                         return [
-                            'id' =>
-                                $challenge->id,
-                            'title' =>
-                                $challenge->title,
-                            'slug' =>
-                                $challenge->slug,
-                            'category' =>
-                                $challenge
-                                    ->category
-                                    ->name,
-                            'difficulty' =>
-                                $challenge
-                                    ->difficulty
-                                    ->name,
-                            'submissions_count' =>
-                                $challenge
-                                    ->submissions_count,
-                            'completed_count' =>
-                                $challenge
-                                    ->completed_submissions_count,
-                            'completion_rate' =>
-                                $completionRate,
+                            'id' => $challenge->id,
+                            'title' => $challenge->title,
+                            'slug' => $challenge->slug,
+                            'category' => $challenge
+                                ->category
+                                ->name,
+                            'difficulty' => $challenge
+                                ->difficulty
+                                ->name,
+                            'submissions_count' => $challenge
+                                ->submissions_count,
+                            'completed_count' => $challenge
+                                ->completed_submissions_count,
+                            'completion_rate' => $completionRate,
                         ];
                     },
                 );
@@ -308,12 +287,10 @@ class AdminStatisticsController extends Controller
                 ->where('role', 'user')
                 ->withCount('submissions')
                 ->withCount([
-                    'challengeProgress as completed_challenges' =>
-                        fn ($query) =>
-                            $query->where(
-                                'is_completed',
-                                true,
-                            ),
+                    'challengeProgress as completed_challenges' => fn ($query) => $query->where(
+                        'is_completed',
+                        true,
+                    ),
                 ])
                 ->orderByDesc(
                     'total_points',
@@ -333,35 +310,24 @@ class AdminStatisticsController extends Controller
             'Admin/Statistics/Index',
             [
                 'summary' => [
-                    'users' =>
-                        User::query()
-                            ->where(
-                                'role',
-                                'user',
-                            )
-                            ->count(),
-                    'challenges' =>
-                        Challenge::query()
-                            ->count(),
-                    'submissions' =>
-                        $totalSubmissions,
-                    'completedSubmissions' =>
-                        $completedSubmissions,
-                    'completionRate' =>
-                        $completionRate,
-                    'averageScore' =>
-                        $averageScore,
+                    'users' => User::query()
+                        ->where(
+                            'role',
+                            'user',
+                        )
+                        ->count(),
+                    'challenges' => Challenge::query()
+                        ->count(),
+                    'submissions' => $totalSubmissions,
+                    'completedSubmissions' => $completedSubmissions,
+                    'completionRate' => $completionRate,
+                    'averageScore' => $averageScore,
                 ],
-                'statusChart' =>
-                    $statusChart,
-                'dailySubmissions' =>
-                    $dailySubmissions,
-                'categoryPerformance' =>
-                    $categoryPerformance,
-                'difficultyPerformance' =>
-                    $difficultyPerformance,
-                'topChallenges' =>
-                    $topChallenges,
+                'statusChart' => $statusChart,
+                'dailySubmissions' => $dailySubmissions,
+                'categoryPerformance' => $categoryPerformance,
+                'difficultyPerformance' => $difficultyPerformance,
+                'topChallenges' => $topChallenges,
                 'topUsers' => $topUsers,
             ],
         );
