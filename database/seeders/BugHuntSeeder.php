@@ -19,16 +19,43 @@ class BugHuntSeeder extends Seeder
     public function run(): void
     {
         DB::transaction(function (): void {
-            $adminEmail = trim((string) env('BUGHUNT_ADMIN_EMAIL', ''));
-            $adminPassword = (string) env('BUGHUNT_ADMIN_PASSWORD', '');
+            $isTesting = app()->environment('testing');
+            $isLocal = app()->environment('local');
 
-            if ($adminEmail === '' || ! filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
+            if ($isTesting) {
+                $adminEmail = 'admin@bughunt.test';
+                $adminPassword = 'password';
+            } else {
+                $adminEmail = trim(
+                    (string) env(
+                        'BUGHUNT_ADMIN_EMAIL',
+                        $isLocal ? 'admin@bughunt.test' : '',
+                    ),
+                );
+
+                $adminPassword = (string) env(
+                    'BUGHUNT_ADMIN_PASSWORD',
+                    $isLocal ? 'password' : '',
+                );
+            }
+
+            if (
+                $adminEmail === ''
+                || filter_var(
+                    $adminEmail,
+                    FILTER_VALIDATE_EMAIL,
+                ) === false
+            ) {
                 throw new RuntimeException(
                     'BUGHUNT_ADMIN_EMAIL wajib diisi dengan alamat email yang valid.',
                 );
             }
 
-            if (strlen($adminPassword) < 16) {
+            if (
+                ! $isTesting
+                && ! $isLocal
+                && strlen($adminPassword) < 16
+            ) {
                 throw new RuntimeException(
                     'BUGHUNT_ADMIN_PASSWORD wajib diisi minimal 16 karakter.',
                 );
@@ -40,21 +67,25 @@ class BugHuntSeeder extends Seeder
                 ],
                 [
                     'name' => 'Administrator BugHunt',
-                    'password' => Hash::make($adminPassword),
+                    'password' => Hash::make(
+                        $adminPassword,
+                    ),
                     'role' => 'admin',
                     'total_points' => 0,
                     'email_verified_at' => now(),
                 ],
             );
 
-            if (! app()->environment('production')) {
+            if ($isTesting || $isLocal) {
                 User::query()->updateOrCreate(
                     [
                         'email' => 'user@bughunt.test',
                     ],
                     [
                         'name' => 'Pengguna Demo',
-                        'password' => Hash::make('password'),
+                        'password' => Hash::make(
+                            'password',
+                        ),
                         'role' => 'user',
                         'total_points' => 0,
                         'email_verified_at' => now(),
@@ -78,21 +109,23 @@ class BugHuntSeeder extends Seeder
                     'slug' => 'sql',
                     'description' => 'Tantangan debugging query SQL, JOIN, GROUP BY, subquery, agregasi, dan window function.',
                 ],
-            ])->mapWithKeys(function (array $category): array {
-                $model = Category::query()->updateOrCreate(
-                    [
-                        'slug' => $category['slug'],
-                    ],
-                    [
-                        ...$category,
-                        'is_active' => true,
-                    ],
-                );
+            ])->mapWithKeys(
+                function (array $category): array {
+                    $model = Category::query()->updateOrCreate(
+                        [
+                            'slug' => $category['slug'],
+                        ],
+                        [
+                            ...$category,
+                            'is_active' => true,
+                        ],
+                    );
 
-                return [
-                    $category['slug'] => $model,
-                ];
-            });
+                    return [
+                        $category['slug'] => $model,
+                    ];
+                },
+            );
 
             $difficulties = collect([
                 [
@@ -110,23 +143,27 @@ class BugHuntSeeder extends Seeder
                     'slug' => 'sulit',
                     'base_points' => 150,
                 ],
-            ])->mapWithKeys(function (array $difficulty): array {
-                $model = Difficulty::query()->updateOrCreate(
-                    [
-                        'slug' => $difficulty['slug'],
-                    ],
-                    [
-                        ...$difficulty,
-                        'is_active' => true,
-                    ],
-                );
+            ])->mapWithKeys(
+                function (array $difficulty): array {
+                    $model = Difficulty::query()->updateOrCreate(
+                        [
+                            'slug' => $difficulty['slug'],
+                        ],
+                        [
+                            ...$difficulty,
+                            'is_active' => true,
+                        ],
+                    );
 
-                return [
-                    $difficulty['slug'] => $model,
-                ];
-            });
+                    return [
+                        $difficulty['slug'] => $model,
+                    ];
+                },
+            );
 
-            app(ChallengeCatalogWriter::class)->write(
+            app(
+                ChallengeCatalogWriter::class,
+            )->write(
                 $categories,
                 $difficulties,
                 $admin,
