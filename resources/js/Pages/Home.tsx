@@ -45,27 +45,27 @@ type PreviewMode = "idle" | "answer" | "hint";
 const features: Feature[] = [
     {
         number: "01",
-        title: "Temukan akar masalah",
+        title: "Cari sumber bug",
         description:
-            "Analisis struktur program dan identifikasi baris yang menyebabkan perilaku tidak sesuai.",
+            "Baca alur program dengan teliti, lalu tandai bagian yang membuat hasilnya tidak sesuai harapan.",
         icon: SearchCode,
         background: "bg-[#fff8d9]",
         iconBackground: "bg-gradient-to-br from-[#ffc84a] to-[#ff9b67]",
     },
     {
         number: "02",
-        title: "Tulis perbaikan",
+        title: "Perbaiki kodenya",
         description:
-            "Perbaiki kode langsung melalui editor dengan syntax highlighting yang nyaman digunakan.",
+            "Tulis versi perbaikan langsung di editor yang sudah dilengkapi syntax highlighting.",
         icon: Wrench,
         background: "bg-[#e8f6ff]",
         iconBackground: "bg-gradient-to-br from-[#8dd4fa] to-[#9c88f7]",
     },
     {
         number: "03",
-        title: "Jelaskan penyebab",
+        title: "Jelaskan penyebabnya",
         description:
-            "Bangun pemahaman teknis dengan menjelaskan penyebab error, bukan sekadar menyalin jawaban.",
+            "Ceritakan kenapa bug muncul dan kenapa solusi yang kamu tulis dapat memperbaikinya.",
         icon: Lightbulb,
         background: "bg-[#ffe8f2]",
         iconBackground: "bg-gradient-to-br from-[#ff9b67] to-[#f56eb3]",
@@ -89,7 +89,7 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
 
     return (
         <PublicLayout>
-            <Head title="Platform Tantangan Debugging" />
+            <Head title="Rifqi | Debugging Pemrograman" />
 
             <section className="neo-grid-background relative overflow-hidden">
                 <div
@@ -109,22 +109,23 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                                 className="h-4 w-4"
                                 strokeWidth={2.8}
                             />
-                            Belajar debugging secara aman
+                            Latihan tanpa menjalankan kode di server
                         </div>
 
                         <h1 className="page-title text-balance text-[#21162f]">
-                            Latih logika.
+                            Baca kodenya.
                             <br />
                             Temukan{" "}
-                            <span className="neo-gradient-text">bug</span>.
+                            <span className="neo-gradient-text">bug-nya</span>.
                             <br />
-                            Kuasai solusinya.
+                            Pahami perbaikannya.
                         </h1>
 
                         <p className="mt-7 max-w-2xl text-base font-semibold leading-8 text-[#665f73] sm:text-lg">
-                            BugHunt membantu Anda melatih kemampuan membaca
-                            kode, menemukan kesalahan, memperbaiki program, dan
-                            menjelaskan akar masalah secara teknis.
+                            BugHunt berisi potongan kode yang sengaja dibuat
+                            bermasalah. Tugasmu adalah mencari sumber bug,
+                            memperbaiki kodenya, lalu menjelaskan kenapa solusi
+                            tersebut bekerja.
                         </p>
 
                         <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-2">
@@ -133,7 +134,7 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                                     className="h-5 w-5 text-[#17a56d]"
                                     strokeWidth={2.8}
                                 />
-                                Analisis tanpa kode berbahaya
+                                Jawaban tidak dijalankan di server
                             </div>
 
                             <div className="flex items-center gap-3 text-sm font-extrabold text-[#4f4859]">
@@ -149,7 +150,7 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                                     className="h-5 w-5 text-[#17a56d]"
                                     strokeWidth={2.8}
                                 />
-                                Penilaian dan leaderboard
+                                Skor dan peringkat tersimpan
                             </div>
 
                             <div className="flex items-center gap-3 text-sm font-extrabold text-[#4f4859]">
@@ -157,7 +158,7 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                                     className="h-5 w-5 text-[#17a56d]"
                                     strokeWidth={2.8}
                                 />
-                                Tantangan berbagai tingkat
+                                Tingkat kesulitan bertahap
                             </div>
                         </div>
 
@@ -166,7 +167,7 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                                 href={route("challenges.index")}
                                 className="nb-button nb-button-primary px-6 py-4 text-base"
                             >
-                                Jelajahi Tantangan
+                                Lihat Tantangan
                                 <ArrowRight
                                     className="h-5 w-5"
                                     strokeWidth={2.8}
@@ -178,7 +179,7 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                                 className="nb-button nb-button-secondary px-6 py-4 text-base"
                             >
                                 <Code2 className="h-5 w-5" strokeWidth={2.8} />
-                                Mulai Berlatih
+                                Buat Akun
                             </Link>
                         </div>
                     </div>
@@ -206,7 +207,7 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
 
                                     <div>
                                         <p className="font-black tracking-[-0.025em] text-[#21162f]">
-                                            Interactive challenge
+                                            Contoh tantangan
                                         </p>
 
                                         <p className="text-xs font-bold text-[#777080]">
@@ -216,7 +217,7 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                                 </div>
 
                                 <span className="nb-badge bg-[#d4f8e5]">
-                                    Ready
+                                    Siap dicoba
                                 </span>
                             </div>
 
@@ -280,12 +281,13 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
 
                             <div className="mt-6 rounded-2xl border border-[#21162f]/10 bg-[#f8f6fc] p-5">
                                 <p className="text-xs font-black uppercase tracking-[0.13em] text-[#8d5bc1]">
-                                    Misi Anda
+                                    Tugasmu
                                 </p>
 
                                 <p className="mt-2 font-extrabold leading-7 text-[#21162f]">
-                                    Temukan penyebab nilai undefined, perbaiki
-                                    perulangan, lalu jelaskan akar masalahnya.
+                                    Cari penyebab nilai undefined, perbaiki
+                                    kondisi perulangan, lalu jelaskan kenapa
+                                    perubahan tersebut diperlukan.
                                 </p>
                             </div>
 
@@ -305,7 +307,8 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
 
                                         <div>
                                             <p className="font-black text-[#21162f]">
-                                                Bug berhasil ditemukan
+                                                Benar, bug-nya ada di kondisi
+                                                perulangan
                                             </p>
 
                                             <p className="mt-1 text-sm font-semibold leading-6 text-[#4f665b]">
@@ -313,9 +316,10 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                                                 <code className="rounded bg-white px-1.5 py-0.5 font-mono font-black text-[#21162f]">
                                                     i &lt;= numbers.length
                                                 </code>{" "}
-                                                membuat perulangan mengakses
-                                                indeks ke-4, sedangkan indeks
-                                                terakhir array adalah 3. Gunakan{" "}
+                                                membuat program mencoba membaca
+                                                indeks ke-4. Padahal array
+                                                tersebut hanya memiliki indeks 0
+                                                sampai 3. Gunakan{" "}
                                                 <code className="rounded bg-white px-1.5 py-0.5 font-mono font-black text-[#21162f]">
                                                     i &lt; numbers.length
                                                 </code>
@@ -346,11 +350,10 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                                             </p>
 
                                             <p className="mt-1 text-sm font-semibold leading-6 text-[#6f6031]">
-                                                Panjang array adalah 4, tetapi
-                                                indeksnya dimulai dari 0.
-                                                Perulangan harus berhenti
-                                                sebelum nilai indeks sama dengan
-                                                panjang array.
+                                                Array ini memiliki empat data
+                                                dengan indeks 0 sampai 3.
+                                                Pastikan perulangan berhenti
+                                                sebelum nilai indeks menjadi 4.
                                             </p>
                                         </div>
                                     </div>
@@ -375,11 +378,11 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                                                 className="h-4 w-4"
                                                 strokeWidth={2.8}
                                             />
-                                            Ulangi Preview
+                                            Coba Lagi
                                         </>
                                     ) : (
                                         <>
-                                            Periksa Jawaban
+                                            Periksa Perbaikan
                                             <ArrowRight
                                                 className="h-4 w-4"
                                                 strokeWidth={2.8}
@@ -404,8 +407,8 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                                         strokeWidth={2.8}
                                     />
                                     {previewMode === "hint"
-                                        ? "Tutup Petunjuk"
-                                        : "Lihat Petunjuk"}
+                                        ? "Sembunyikan Petunjuk"
+                                        : "Buka Petunjuk"}
                                 </button>
                             </div>
                         </div>
@@ -418,23 +421,23 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                     <StatCard
                         label="Tantangan tersedia"
                         value={stats.challenges}
-                        description="Beragam kasus JavaScript, PHP, dan SQL."
+                        description="Latihan JavaScript, PHP, dan SQL yang bisa langsung dicoba."
                         background="bg-[#fff8d9]"
                         icon={Target}
                     />
 
                     <StatCard
-                        label="Bug hunters"
+                        label="Pengguna terdaftar"
                         value={stats.hunters}
-                        description="Pengguna yang terus melatih kemampuan debugging."
+                        description="Orang-orang yang sedang belajar menemukan dan memperbaiki bug."
                         background="bg-[#e8f6ff]"
                         icon={Users}
                     />
 
                     <StatCard
-                        label="Tantangan dituntaskan"
+                        label="Jawaban berhasil"
                         value={stats.completedSubmissions}
-                        description="Submission yang berhasil diselesaikan pengguna."
+                        description="Tantangan yang sudah berhasil diselesaikan oleh pengguna."
                         background="bg-[#e7f9ef]"
                         icon={Trophy}
                     />
@@ -445,17 +448,17 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                 <div className="mx-auto max-w-3xl text-center">
                     <div className="inline-flex items-center gap-2 rounded-full border border-[#21162f]/10 bg-white px-4 py-2 text-sm font-black text-[#7b5aaa] shadow-sm">
                         <Sparkles className="h-4 w-4" strokeWidth={2.7} />
-                        Alur pembelajaran
+                        Cara berlatih
                     </div>
 
                     <h2 className="section-title mt-5 text-balance text-[#21162f]">
-                        Bukan sekadar menebak jawaban.
+                        Kamu tidak perlu menebak-nebak.
                     </h2>
 
                     <p className="mx-auto mt-5 max-w-2xl font-semibold leading-8 text-[#665f73]">
-                        Setiap tantangan dirancang untuk memaksa Anda memahami
-                        lokasi bug, solusi yang benar, dan alasan teknis di
-                        balik perbaikannya.
+                        Setiap tantangan meminta kamu menunjukkan lokasi bug,
+                        menulis kode yang benar, dan menjelaskan alasan
+                        perbaikannya.
                     </p>
                 </div>
 
@@ -500,16 +503,17 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                         <div className="max-w-3xl">
                             <div className="inline-flex items-center gap-2 rounded-full border border-[#21162f]/10 bg-[#f8f6fc] px-4 py-2 text-sm font-black text-[#7b5aaa]">
                                 <Bug className="h-4 w-4" strokeWidth={2.7} />
-                                Tantangan terbaru
+                                Pilihan tantangan
                             </div>
 
                             <h2 className="section-title mt-5 text-[#21162f]">
-                                Pilih bug pertama Anda.
+                                Mulai dari latihan yang paling cocok.
                             </h2>
 
                             <p className="mt-4 max-w-2xl font-semibold leading-7 text-[#665f73]">
-                                Mulai dari tantangan yang sesuai kemampuan,
-                                analisis kode, dan tingkatkan skor Anda.
+                                Pilih tingkat kesulitan yang nyaman, baca
+                                kodenya, lalu kerjakan satu langkah demi satu
+                                langkah.
                             </p>
                         </div>
 
@@ -538,11 +542,12 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                             </span>
 
                             <p className="mt-6 text-2xl font-black text-[#21162f]">
-                                Tantangan belum tersedia.
+                                Belum ada tantangan yang ditampilkan.
                             </p>
 
                             <p className="mt-2 font-semibold text-[#665f73]">
-                                Tantangan baru akan muncul di bagian ini.
+                                Tantangan baru akan muncul di sini setelah
+                                diterbitkan.
                             </p>
                         </div>
                     )}
@@ -567,23 +572,24 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                         </span>
 
                         <p className="mt-7 text-sm font-black uppercase tracking-[0.16em] text-[#7b5aaa]">
-                            Siap menguji logika?
+                            Mau mencoba sekarang?
                         </p>
 
                         <h2 className="mx-auto mt-4 max-w-4xl text-balance text-4xl font-black tracking-[-0.06em] text-[#21162f] sm:text-6xl">
-                            Jadikan setiap kesalahan sebagai bahan latihan.
+                            Pilih satu tantangan dan selesaikan dengan caramu
+                            sendiri.
                         </h2>
 
                         <p className="mx-auto mt-6 max-w-2xl text-base font-semibold leading-8 text-[#665f73] sm:text-lg">
-                            Buat akun, selesaikan tantangan, kumpulkan poin, dan
-                            tingkatkan posisi Anda pada leaderboard.
+                            Buat akun agar poin, riwayat, dan perkembangan
+                            latihanmu dapat tersimpan.
                         </p>
 
                         <Link
                             href={route("register")}
                             className="nb-button nb-button-primary mt-9 px-7 py-4 text-base"
                         >
-                            Daftar Sekarang
+                            Buat Akun
                             <ArrowRight className="h-5 w-5" strokeWidth={2.8} />
                         </Link>
                     </div>

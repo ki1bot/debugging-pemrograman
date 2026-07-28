@@ -34,44 +34,44 @@ export default function Dashboard({
             header={
                 <div>
                     <p className="text-sm font-black uppercase tracking-[0.18em]">
-                        Pusat Aktivitas
+                        Ringkasan Latihan
                     </p>
 
                     <h1 className="mt-2 text-4xl font-black tracking-[-0.05em]">
-                        Dashboard Bug Hunter
+                        Perkembangan latihanmu
                     </h1>
                 </div>
             }
         >
-            <Head title="Dashboard" />
+            <Head title="Ringkasan Latihan" />
 
             <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
                 <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
                     <StatCard
                         label="Total Poin"
                         value={summary.totalPoints}
-                        description="Poin terbaik dari setiap tantangan"
+                        description="Diambil dari skor terbaik setiap tantangan"
                         background="bg-[#ffd93d]"
                     />
 
                     <StatCard
                         label="Tantangan Selesai"
                         value={summary.completedChallenges}
-                        description={`Dari ${summary.totalChallenges} tantangan`}
+                        description={`Dari ${summary.totalChallenges} tantangan yang tersedia`}
                         background="bg-[#9ef0b8]"
                     />
 
                     <StatCard
-                        label="Total Percobaan"
+                        label="Jawaban Dikirim"
                         value={summary.totalAttempts}
-                        description="Seluruh jawaban yang pernah dikirim"
+                        description="Jumlah seluruh percobaan yang pernah kamu kirim"
                         background="bg-[#9ed8ff]"
                     />
 
                     <StatCard
                         label="Progres"
                         value={`${completionPercentage}%`}
-                        description="Persentase tantangan yang dituntaskan"
+                        description="Persentase tantangan yang sudah kamu selesaikan"
                         background="bg-[#ff9c9c]"
                     />
                 </section>
@@ -80,11 +80,11 @@ export default function Dashboard({
                     <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
                         <div>
                             <p className="text-sm font-black uppercase tracking-[0.16em]">
-                                Aktivitas Terakhir
+                                Terakhir Dikerjakan
                             </p>
 
                             <h2 className="section-title mt-3">
-                                Lanjutkan perburuan.
+                                Lanjutkan dari tempat terakhir.
                             </h2>
                         </div>
 
@@ -137,7 +137,7 @@ export default function Dashboard({
                                             </span>
 
                                             <span>
-                                                Hint digunakan:{" "}
+                                                Petunjuk dibuka:{" "}
                                                 {progress.hints_used}
                                             </span>
                                         </div>
@@ -164,7 +164,7 @@ export default function Dashboard({
                                                 )}
                                                 className="nb-button bg-[#ffd93d] text-sm"
                                             >
-                                                Hasil Terbaik
+                                                Lihat Hasil Terbaik
                                             </Link>
                                         )}
                                     </div>
@@ -174,8 +174,8 @@ export default function Dashboard({
                     ) : (
                         <div className="mt-8">
                             <EmptyState
-                                title="Belum ada aktivitas"
-                                description="Pilih satu tantangan dan mulai analisis bug pertama Anda."
+                                title="Belum ada latihan yang dikerjakan"
+                                description="Pilih satu tantangan untuk memulai latihan debugging pertamamu."
                             />
                         </div>
                     )}
@@ -184,11 +184,11 @@ export default function Dashboard({
                 <section className="mt-14">
                     <div>
                         <p className="text-sm font-black uppercase tracking-[0.16em]">
-                            Rekomendasi
+                            Coba Berikutnya
                         </p>
 
                         <h2 className="section-title mt-3">
-                            Tantangan berikutnya.
+                            Pilih latihan berikutnya.
                         </h2>
                     </div>
 
@@ -204,8 +204,8 @@ export default function Dashboard({
                     ) : (
                         <div className="mt-8">
                             <EmptyState
-                                title="Semua tantangan selesai"
-                                description="Anda telah menuntaskan seluruh tantangan yang sedang diterbitkan."
+                                title="Semua tantangan sudah selesai"
+                                description="Kamu sudah menyelesaikan seluruh tantangan yang tersedia saat ini."
                             />
                         </div>
                     )}

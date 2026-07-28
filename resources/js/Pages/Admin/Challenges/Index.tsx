@@ -1,19 +1,24 @@
+import ChallengeCard from "@/Components/ChallengeCard";
+import EmptyState from "@/Components/EmptyState";
 import Pagination from "@/Components/Pagination";
-import StatusBadge from "@/Components/StatusBadge";
-import AdminLayout from "@/Layouts/AdminLayout";
-import { AdminChallenge, Category, Difficulty, Paginator } from "@/types";
-import { Head, Link, router } from "@inertiajs/react";
+import PublicLayout from "@/Layouts/PublicLayout";
+import {
+    Category,
+    ChallengeCard as ChallengeCardType,
+    Difficulty,
+    Paginator,
+} from "@/types";
+import { Head, router } from "@inertiajs/react";
 import { FormEvent, useState } from "react";
 
 type ChallengeIndexProps = {
-    challenges: Paginator<AdminChallenge>;
+    challenges: Paginator<ChallengeCardType>;
     categories: Category[];
     difficulties: Difficulty[];
     filters: {
         search: string;
-        category: string | number;
-        difficulty: string | number;
-        status: string;
+        category: string;
+        difficulty: string;
     };
 };
 
@@ -24,25 +29,18 @@ export default function ChallengeIndex({
     filters,
 }: ChallengeIndexProps) {
     const [search, setSearch] = useState(filters.search);
-
-    const [category, setCategory] = useState(String(filters.category ?? ""));
-
-    const [difficulty, setDifficulty] = useState(
-        String(filters.difficulty ?? ""),
-    );
-
-    const [status, setStatus] = useState(filters.status);
+    const [category, setCategory] = useState(filters.category);
+    const [difficulty, setDifficulty] = useState(filters.difficulty);
 
     const submit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         router.get(
-            route("admin.challenges.index"),
+            route("challenges.index"),
             {
                 search: search || undefined,
                 category: category || undefined,
                 difficulty: difficulty || undefined,
-                status: status || undefined,
             },
             {
                 preserveState: true,
@@ -51,176 +49,164 @@ export default function ChallengeIndex({
         );
     };
 
-    const remove = (challenge: AdminChallenge) => {
-        if (!window.confirm(`Nonaktifkan dan arsipkan "${challenge.title}"?`)) {
-            return;
-        }
+    const reset = () => {
+        setSearch("");
+        setCategory("");
+        setDifficulty("");
 
-        router.delete(route("admin.challenges.destroy", challenge.slug));
+        router.get(
+            route("challenges.index"),
+            {},
+            {
+                preserveState: false,
+                replace: true,
+            },
+        );
     };
 
     return (
-        <AdminLayout
-            title="Kelola Tantangan"
-            description="Tambah, ubah, terbitkan, nonaktifkan, dan tinjau statistik setiap tantangan."
-        >
-            <Head title="Kelola Tantangan" />
+        <PublicLayout>
+            <Head title="Daftar Tantangan" />
 
-            <div className="flex justify-end">
-                <Link
-                    href={route("admin.challenges.create")}
-                    className="nb-button bg-[#9ef0b8]"
+            <section className="border-b-[3px] border-black bg-[#9ed8ff]">
+                <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+                    <p className="text-sm font-black uppercase tracking-[0.18em]">
+                        Daftar Latihan
+                    </p>
+
+                    <h1 className="page-title mt-4">
+                        Pilih bug yang ingin kamu pecahkan.
+                    </h1>
+
+                    <p className="mt-6 max-w-3xl text-lg font-semibold leading-8">
+                        Gunakan pencarian dan filter untuk menemukan latihan
+                        yang sesuai. Kode jawabanmu tidak akan dijalankan di
+                        server.
+                    </p>
+                </div>
+            </section>
+
+            <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+                <form
+                    onSubmit={submit}
+                    className="nb-card grid gap-5 bg-[#fff1a8] p-5 lg:grid-cols-[minmax(0,1fr)_220px_220px_auto]"
                 >
-                    Tambah Tantangan
-                </Link>
+                    <div>
+                        <label htmlFor="search" className="nb-label">
+                            Cari Tantangan
+                        </label>
+
+                        <input
+                            id="search"
+                            type="search"
+                            value={search}
+                            onChange={(event) => setSearch(event.target.value)}
+                            className="nb-input"
+                            placeholder="Contoh: array, JOIN, atau session"
+                        />
+                    </div>
+
+                    <div>
+                        <label htmlFor="category" className="nb-label">
+                            Bahasa
+                        </label>
+
+                        <select
+                            id="category"
+                            value={category}
+                            onChange={(event) =>
+                                setCategory(event.target.value)
+                            }
+                            className="nb-input"
+                        >
+                            <option value="">Semua bahasa</option>
+
+                            {categories.map((item) => (
+                                <option key={item.id} value={item.slug}>
+                                    {item.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label htmlFor="difficulty" className="nb-label">
+                            Tingkat Kesulitan
+                        </label>
+
+                        <select
+                            id="difficulty"
+                            value={difficulty}
+                            onChange={(event) =>
+                                setDifficulty(event.target.value)
+                            }
+                            className="nb-input"
+                        >
+                            <option value="">Semua tingkat</option>
+
+                            {difficulties.map((item) => (
+                                <option key={item.id} value={item.slug}>
+                                    {item.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="flex items-end gap-3">
+                        <button
+                            type="submit"
+                            className="nb-button flex-1 bg-[#ffd93d]"
+                        >
+                            Cari
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={reset}
+                            className="nb-button bg-white"
+                        >
+                            Hapus Filter
+                        </button>
+                    </div>
+                </form>
+
+                <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
+                    <p className="font-black">
+                        Menampilkan {challenges.from ?? 0}–{challenges.to ?? 0}{" "}
+                        dari {challenges.total} tantangan
+                    </p>
+
+                    {(filters.search ||
+                        filters.category ||
+                        filters.difficulty) && (
+                        <span className="nb-badge bg-[#b7a4ff]">
+                            Filter sedang digunakan
+                        </span>
+                    )}
+                </div>
+
+                {challenges.data.length > 0 ? (
+                    <>
+                        <div className="mt-7 grid gap-7 md:grid-cols-2 xl:grid-cols-3">
+                            {challenges.data.map((challenge) => (
+                                <ChallengeCard
+                                    key={challenge.id}
+                                    challenge={challenge}
+                                />
+                            ))}
+                        </div>
+
+                        <Pagination links={challenges.links} />
+                    </>
+                ) : (
+                    <div className="mt-8">
+                        <EmptyState
+                            title="Tantangan tidak ditemukan"
+                            description="Coba gunakan kata pencarian lain atau hapus beberapa filter."
+                        />
+                    </div>
+                )}
             </div>
-
-            <form
-                onSubmit={submit}
-                className="nb-card mt-6 grid gap-4 bg-[#fff1a8] p-5 xl:grid-cols-[minmax(0,1fr)_180px_180px_180px_auto]"
-            >
-                <input
-                    value={search}
-                    onChange={(event) => setSearch(event.target.value)}
-                    className="nb-input"
-                    placeholder="Cari judul tantangan"
-                />
-
-                <select
-                    value={category}
-                    onChange={(event) => setCategory(event.target.value)}
-                    className="nb-input"
-                >
-                    <option value="">Semua kategori</option>
-
-                    {categories.map((item) => (
-                        <option key={item.id} value={item.id}>
-                            {item.name}
-                        </option>
-                    ))}
-                </select>
-
-                <select
-                    value={difficulty}
-                    onChange={(event) => setDifficulty(event.target.value)}
-                    className="nb-input"
-                >
-                    <option value="">Semua kesulitan</option>
-
-                    {difficulties.map((item) => (
-                        <option key={item.id} value={item.id}>
-                            {item.name}
-                        </option>
-                    ))}
-                </select>
-
-                <select
-                    value={status}
-                    onChange={(event) => setStatus(event.target.value)}
-                    className="nb-input"
-                >
-                    <option value="">Semua status</option>
-                    <option value="draft">Draft</option>
-                    <option value="published">Terbit</option>
-                    <option value="inactive">Nonaktif</option>
-                </select>
-
-                <button className="nb-button bg-[#ffd93d]">Filter</button>
-            </form>
-
-            <div className="mt-7 overflow-x-auto border-[3px] border-black bg-white shadow-[6px_6px_0_#111]">
-                <table className="nb-table min-w-[1150px]">
-                    <thead>
-                        <tr>
-                            <th>Tantangan</th>
-                            <th>Kategori</th>
-                            <th>Kesulitan</th>
-                            <th>Status</th>
-                            <th>Poin</th>
-                            <th>Konten</th>
-                            <th>Submission</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {challenges.data.map((challenge) => (
-                            <tr key={challenge.id}>
-                                <td>
-                                    <strong>{challenge.title}</strong>
-
-                                    <p className="mt-1 max-w-sm text-xs font-bold text-neutral-600">
-                                        {challenge.slug}
-                                    </p>
-                                </td>
-
-                                <td>
-                                    <span className="nb-badge bg-[#9ed8ff]">
-                                        {challenge.category.name}
-                                    </span>
-                                </td>
-
-                                <td className="font-bold">
-                                    {challenge.difficulty.name}
-                                </td>
-
-                                <td>
-                                    <StatusBadge status={challenge.status} />
-                                </td>
-
-                                <td className="font-black">
-                                    {challenge.base_points}
-                                </td>
-
-                                <td className="text-sm font-bold">
-                                    {challenge.hints_count} hint
-                                    <br />
-                                    {challenge.solutions_count} solusi
-                                </td>
-
-                                <td className="font-black">
-                                    {challenge.submissions_count}
-                                </td>
-
-                                <td>
-                                    <div className="flex gap-3">
-                                        <Link
-                                            href={route(
-                                                "admin.challenges.edit",
-                                                challenge.slug,
-                                            )}
-                                            className="nb-button bg-[#ffd93d] text-xs"
-                                        >
-                                            Edit
-                                        </Link>
-
-                                        <button
-                                            type="button"
-                                            onClick={() => remove(challenge)}
-                                            className="nb-button bg-[#ff9c9c] text-xs"
-                                        >
-                                            Arsipkan
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-
-                        {challenges.data.length === 0 && (
-                            <tr>
-                                <td
-                                    colSpan={8}
-                                    className="text-center font-black"
-                                >
-                                    Tantangan tidak ditemukan.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
-
-            <Pagination links={challenges.links} />
-        </AdminLayout>
+        </PublicLayout>
     );
 }

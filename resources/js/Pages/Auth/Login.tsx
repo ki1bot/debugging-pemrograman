@@ -39,15 +39,17 @@ export default function Login({
         <GuestLayout>
             <Head title="Masuk" />
 
-            <span className="nb-badge bg-[#9ed8ff]">Selamat Datang</span>
+            <span className="nb-badge bg-[#9ed8ff]">
+                Selamat Datang Kembali
+            </span>
 
             <h1 className="mt-5 text-4xl font-black tracking-[-0.06em]">
-                Masuk ke BugHunt
+                Masuk ke akunmu
             </h1>
 
             <p className="mt-3 font-semibold leading-7 text-neutral-700">
-                Lanjutkan tantangan, kumpulkan poin, dan tingkatkan kemampuan
-                debugging Anda.
+                Masuk untuk melanjutkan latihan dan melihat perkembangan yang
+                sudah kamu kumpulkan.
             </p>
 
             {status && (
@@ -100,11 +102,11 @@ export default function Login({
                             setData("remember", event.target.checked)
                         }
                     />
-                    Ingat sesi masuk saya
+                    Tetap masuk di perangkat ini
                 </label>
 
                 <PrimaryButton className="w-full py-4" disabled={processing}>
-                    {processing ? "Memproses..." : "Masuk"}
+                    {processing ? "Sedang Masuk..." : "Masuk"}
                 </PrimaryButton>
 
                 <div className="grid gap-3 text-center text-sm font-bold">
@@ -118,12 +120,12 @@ export default function Login({
                     )}
 
                     <p>
-                        Belum memiliki akun?{" "}
+                        Belum punya akun?{" "}
                         <Link
                             href={route("register")}
                             className="font-black underline decoration-2 underline-offset-4"
                         >
-                            Daftar sekarang
+                            Buat akun
                         </Link>
                     </p>
                 </div>

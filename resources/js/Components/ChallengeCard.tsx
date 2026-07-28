@@ -76,8 +76,8 @@ export default function ChallengeCard({ challenge }: ChallengeCardProps) {
                                 strokeWidth={2.8}
                             />
                             {challenge.progress.is_completed
-                                ? "Selesai"
-                                : "Sedang dikerjakan"}
+                                ? "Sudah selesai"
+                                : "Belum selesai"}
                         </span>
 
                         <span>{challenge.progress.best_score} poin</span>
@@ -97,14 +97,14 @@ export default function ChallengeCard({ challenge }: ChallengeCardProps) {
             <div className="relative mt-6 flex items-center justify-between gap-4 border-t border-[#21162f]/10 pt-5">
                 <strong className="inline-flex items-center gap-2 text-sm font-black text-[#21162f]">
                     <Trophy className="h-4 w-4" strokeWidth={2.7} />
-                    Maks. {challenge.base_points} poin
+                    Hingga {challenge.base_points} poin
                 </strong>
 
                 <Link
                     href={route("challenges.show", challenge.slug)}
                     className="nb-button nb-button-primary text-sm"
                 >
-                    Buru Bug
+                    Buka Tantangan
                     <ArrowRight className="h-4 w-4" strokeWidth={2.8} />
                 </Link>
             </div>

@@ -27,21 +27,21 @@ export default function Leaderboard({ leaders }: LeaderboardProps) {
 
     return (
         <PublicLayout>
-            <Head title="Leaderboard" />
+            <Head title="Peringkat" />
 
             <section className="border-b-[3px] border-black bg-[#b7a4ff]">
                 <div className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
                     <p className="text-sm font-black uppercase tracking-[0.18em]">
-                        Bug Hunter Rankings
+                        Peringkat Pengguna
                     </p>
 
                     <h1 className="page-title mt-4">
-                        Siapa pemburu bug terbaik?
+                        Lihat siapa yang mengumpulkan poin terbanyak.
                     </h1>
 
                     <p className="mx-auto mt-6 max-w-2xl text-lg font-semibold leading-8">
-                        Peringkat dihitung berdasarkan total poin terbaik dari
-                        setiap tantangan yang telah dikerjakan.
+                        Peringkat dihitung dari skor terbaik setiap pengguna
+                        pada masing-masing tantangan.
                     </p>
                 </div>
             </section>
@@ -93,7 +93,7 @@ export default function Leaderboard({ leaders }: LeaderboardProps) {
                             <thead>
                                 <tr>
                                     <th>Peringkat</th>
-                                    <th>Bug Hunter</th>
+                                    <th>Nama</th>
                                     <th>Tantangan Selesai</th>
                                     <th>Total Poin</th>
                                     <th>Bergabung</th>
@@ -127,7 +127,7 @@ export default function Leaderboard({ leaders }: LeaderboardProps) {
 
                                                 {currentUser && (
                                                     <span className="mt-2 inline-flex border-2 border-black bg-[#9ef0b8] px-2 py-1 text-xs font-black">
-                                                        POSISI ANDA
+                                                        POSISIMU
                                                     </span>
                                                 )}
                                             </td>
@@ -162,11 +162,12 @@ export default function Leaderboard({ leaders }: LeaderboardProps) {
                 ) : (
                     <div className="nb-card bg-[#fff1a8] p-10 text-center">
                         <h2 className="text-2xl font-black">
-                            Leaderboard masih kosong.
+                            Belum ada peringkat.
                         </h2>
 
                         <p className="mt-4 font-semibold">
-                            Jadilah pengguna pertama yang memperoleh poin.
+                            Peringkat akan muncul setelah ada pengguna yang
+                            menyelesaikan tantangan.
                         </p>
                     </div>
                 )}
@@ -174,19 +175,19 @@ export default function Leaderboard({ leaders }: LeaderboardProps) {
                 {!auth.user && (
                     <section className="nb-card mt-12 bg-[#9ef0b8] p-8 text-center">
                         <h2 className="text-3xl font-black tracking-[-0.04em]">
-                            Nama Anda belum ada di sini?
+                            Mau ikut masuk peringkat?
                         </h2>
 
                         <p className="mt-4 font-semibold">
-                            Daftar dan selesaikan tantangan untuk masuk ke
-                            leaderboard.
+                            Buat akun, kerjakan tantangan, dan kumpulkan poin
+                            dari jawaban terbaikmu.
                         </p>
 
                         <Link
                             href={route("register")}
                             className="nb-button mt-6 bg-[#ffd93d]"
                         >
-                            Daftar Sekarang
+                            Buat Akun
                         </Link>
                     </section>
                 )}

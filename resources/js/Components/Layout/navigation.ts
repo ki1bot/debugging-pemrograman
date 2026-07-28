@@ -14,7 +14,7 @@ export const publicNavigation: NavigationItem[] = [
         routeName: "challenges.index",
     },
     {
-        label: "Leaderboard",
+        label: "Peringkat",
         routeName: "leaderboard",
     },
     {
@@ -25,7 +25,7 @@ export const publicNavigation: NavigationItem[] = [
 
 export const authenticatedNavigation: NavigationItem[] = [
     {
-        label: "Dashboard",
+        label: "Ringkasan",
         routeName: "dashboard",
     },
     {
@@ -37,7 +37,7 @@ export const authenticatedNavigation: NavigationItem[] = [
         routeName: "history.index",
     },
     {
-        label: "Leaderboard",
+        label: "Peringkat",
         routeName: "leaderboard",
     },
 ];
@@ -74,7 +74,7 @@ export const adminNavigation: NavigationItem[] = [
         pattern: "admin.users.*",
     },
     {
-        label: "Submission",
+        label: "Jawaban",
         routeName: "admin.submissions.index",
         pattern: "admin.submissions.*",
     },

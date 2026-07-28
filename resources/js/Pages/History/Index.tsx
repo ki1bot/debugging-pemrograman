@@ -36,16 +36,16 @@ export default function HistoryIndex({ submissions }: HistoryIndexProps) {
             header={
                 <div>
                     <p className="text-sm font-black uppercase tracking-[0.18em]">
-                        Submission Log
+                        Jawaban yang Pernah Dikirim
                     </p>
 
                     <h1 className="mt-2 text-4xl font-black tracking-[-0.05em]">
-                        Riwayat Pengerjaan
+                        Riwayat Latihan
                     </h1>
                 </div>
             }
         >
-            <Head title="Riwayat Pengerjaan" />
+            <Head title="Riwayat Latihan" />
 
             <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
                 {submissions.data.length > 0 ? (
@@ -59,7 +59,7 @@ export default function HistoryIndex({ submissions }: HistoryIndexProps) {
                                         <th>Status</th>
                                         <th>Skor</th>
                                         <th>Penalti</th>
-                                        <th>Waktu</th>
+                                        <th>Dikirim</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -124,7 +124,7 @@ export default function HistoryIndex({ submissions }: HistoryIndexProps) {
                                                     )}
                                                     className="nb-button bg-[#ffd93d] text-xs"
                                                 >
-                                                    Lihat Hasil
+                                                    Buka Hasil
                                                 </Link>
                                             </td>
                                         </tr>
@@ -137,8 +137,8 @@ export default function HistoryIndex({ submissions }: HistoryIndexProps) {
                     </>
                 ) : (
                     <EmptyState
-                        title="Riwayat masih kosong"
-                        description="Setelah Anda mengirim jawaban, hasil pengerjaan akan muncul di halaman ini."
+                        title="Belum ada riwayat latihan"
+                        description="Jawaban yang kamu kirim akan muncul di halaman ini."
                     />
                 )}
             </div>

@@ -32,17 +32,17 @@ export default function Register() {
 
     return (
         <GuestLayout>
-            <Head title="Daftar" />
+            <Head title="Buat Akun" />
 
-            <span className="nb-badge bg-[#9ef0b8]">Akun Baru</span>
+            <span className="nb-badge bg-[#9ef0b8]">Buat Akun</span>
 
             <h1 className="mt-5 text-4xl font-black tracking-[-0.06em]">
-                Jadi Bug Hunter
+                Mulai latihan di BugHunt
             </h1>
 
             <p className="mt-3 font-semibold leading-7 text-neutral-700">
-                Buat akun untuk menyimpan poin, progres, riwayat pengerjaan, dan
-                posisi leaderboard.
+                Akunmu digunakan untuk menyimpan poin, progres, riwayat jawaban,
+                dan posisi di halaman peringkat.
             </p>
 
             <form onSubmit={submit} className="mt-7 space-y-5">
@@ -100,7 +100,7 @@ export default function Register() {
                 <div>
                     <InputLabel
                         htmlFor="password_confirmation"
-                        value="Konfirmasi Password"
+                        value="Ulangi Password"
                     />
 
                     <TextInput
@@ -121,11 +121,11 @@ export default function Register() {
                 </div>
 
                 <PrimaryButton className="w-full py-4" disabled={processing}>
-                    {processing ? "Membuat Akun..." : "Daftar"}
+                    {processing ? "Sedang Membuat Akun..." : "Buat Akun"}
                 </PrimaryButton>
 
                 <p className="text-center text-sm font-bold">
-                    Sudah memiliki akun?{" "}
+                    Sudah punya akun?{" "}
                     <Link
                         href={route("login")}
                         className="font-black underline decoration-2 underline-offset-4"

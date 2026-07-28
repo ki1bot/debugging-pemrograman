@@ -2,17 +2,17 @@ import PublicLayout from "@/Layouts/PublicLayout";
 import { Head, Link } from "@inertiajs/react";
 
 const objectives = [
-    "Meningkatkan kemampuan membaca dan menganalisis kode.",
-    "Melatih kemampuan menemukan lokasi dan penyebab error.",
-    "Membiasakan pengguna memperbaiki kode secara terstruktur.",
-    "Mendorong pemahaman teknis, bukan sekadar menyalin jawaban.",
+    "Terbiasa membaca alur kode sebelum mengubahnya.",
+    "Lebih cepat menemukan bagian yang menyebabkan error.",
+    "Memperbaiki kode dengan langkah yang jelas, bukan asal mencoba.",
+    "Menjelaskan penyebab bug dengan alasan teknis yang masuk akal.",
 ];
 
 const securityRules = [
-    "Kode pengguna tidak dijalankan melalui eval atau terminal server.",
-    "Jawaban diperiksa berdasarkan solusi dan alternatif yang disiapkan.",
-    "Input kode dan penjelasan dibatasi dan divalidasi.",
-    "Solusi tidak ditampilkan sebelum pengguna mengirim jawaban.",
+    "Kode jawaban tidak dijalankan dengan eval atau lewat terminal server.",
+    "Jawaban dibandingkan dengan solusi dan alternatif yang sudah disiapkan.",
+    "Kode dan penjelasan yang dikirim dibatasi serta divalidasi.",
+    "Pembahasan baru terbuka setelah tantangan berhasil diselesaikan.",
 ];
 
 export default function About() {
@@ -23,12 +23,12 @@ export default function About() {
             <section className="border-b-[3px] border-black bg-[#ffd93d]">
                 <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
                     <p className="text-sm font-black uppercase tracking-[0.18em]">
-                        Tentang Platform
+                        Tentang BugHunt
                     </p>
 
                     <h1 className="page-title mt-4 max-w-5xl">
-                        Debugging adalah kemampuan membaca masalah, bukan
-                        sekadar mencoba-coba kode.
+                        Debugging bukan soal mengganti kode sampai jalan. Yang
+                        penting adalah memahami letak dan penyebab masalahnya.
                     </h1>
                 </div>
             </section>
@@ -40,31 +40,31 @@ export default function About() {
                     </span>
 
                     <h2 className="mt-6 text-3xl font-black tracking-[-0.04em]">
-                        Mengapa BugHunt dibuat?
+                        Kenapa BugHunt dibuat?
                     </h2>
 
                     <div className="mt-5 space-y-4 font-semibold leading-8 text-neutral-700">
                         <p>
-                            Banyak pemula dapat menyalin kode yang benar tetapi
-                            belum memahami mengapa kode sebelumnya gagal.
-                            Akibatnya, mereka kembali mengalami kesulitan ketika
-                            menemui error yang sedikit berbeda.
+                            Menyalin kode yang benar memang dapat menyelesaikan
+                            error untuk sementara. Masalahnya, cara tersebut
+                            tidak membantu ketika bentuk error berikutnya
+                            sedikit berbeda.
                         </p>
 
                         <p>
-                            BugHunt mengubah proses debugging menjadi latihan
-                            bertahap. Pengguna harus menentukan baris
-                            bermasalah, menulis perbaikan, lalu menjelaskan akar
-                            kesalahan.
+                            Di BugHunt, kamu belajar dari kode yang memang
+                            memiliki bug. Kamu harus mencari bagian yang salah,
+                            menulis perbaikannya, lalu menjelaskan kenapa bug
+                            tersebut bisa terjadi.
                         </p>
                     </div>
                 </article>
 
                 <article className="nb-card bg-[#b7a4ff] p-7">
-                    <span className="nb-badge bg-white">Tujuan</span>
+                    <span className="nb-badge bg-white">Yang Dilatih</span>
 
                     <h2 className="mt-6 text-3xl font-black tracking-[-0.04em]">
-                        Kemampuan yang dilatih
+                        Kemampuan yang akan kamu gunakan
                     </h2>
 
                     <div className="mt-6 grid gap-4">
@@ -95,14 +95,14 @@ export default function About() {
                             </p>
 
                             <h2 className="section-title mt-4">
-                                Tidak ada eksekusi kode pengguna.
+                                Kode jawaban tidak dijalankan di server.
                             </h2>
 
                             <p className="mt-6 font-semibold leading-8 text-neutral-300">
-                                BugHunt menggunakan validasi berbasis solusi
-                                yang telah disiapkan administrator. Pendekatan
-                                ini membatasi ruang lingkup dan menghindari
-                                risiko menjalankan kode asing di server.
+                                BugHunt memeriksa jawaban dengan
+                                membandingkannya terhadap solusi yang sudah
+                                disiapkan. Dengan cara ini, server tidak perlu
+                                menjalankan kode asing yang dikirim pengguna.
                             </p>
                         </div>
 
@@ -125,19 +125,19 @@ export default function About() {
             <section className="mx-auto max-w-5xl px-4 py-20 text-center sm:px-6 lg:px-8">
                 <div className="nb-card bg-[#9ef0b8] p-8 sm:p-12">
                     <h2 className="text-4xl font-black tracking-[-0.05em]">
-                        Mulai dari satu bug.
+                        Coba satu tantangan dulu.
                     </h2>
 
                     <p className="mx-auto mt-5 max-w-2xl font-semibold leading-8">
-                        Tantangan tersedia untuk JavaScript, PHP, dan SQL dengan
-                        tingkat mudah, menengah, serta sulit.
+                        Kamu dapat memilih latihan JavaScript, PHP, atau SQL
+                        dengan tingkat mudah, menengah, dan sulit.
                     </p>
 
                     <Link
                         href={route("challenges.index")}
                         className="nb-button mt-7 bg-[#ffd93d]"
                     >
-                        Buka Daftar Tantangan
+                        Lihat Daftar Tantangan
                     </Link>
                 </div>
             </section>

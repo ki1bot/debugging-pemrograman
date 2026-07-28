@@ -18,7 +18,7 @@ export default function PublicFooter() {
                     <div className="grid gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
                         <div>
                             <div className="inline-flex -rotate-1 border-[3px] border-black bg-[#ffd93d] px-4 py-2 text-sm font-black uppercase tracking-[0.18em] text-black shadow-[4px_4px_0_#ffffff]">
-                                Platform Debugging
+                                Tempat Latihan Debugging
                             </div>
 
                             <p className="mt-7 text-5xl font-black leading-none tracking-[-0.07em] sm:text-6xl">
@@ -27,15 +27,15 @@ export default function PublicFooter() {
                             </p>
 
                             <p className="mt-5 max-w-2xl text-base font-semibold leading-7 text-neutral-300 sm:text-lg">
-                                Tempat belajar memahami kesalahan program,
-                                menemukan sumber masalah, dan memperbaiki kode
-                                secara terstruktur.
+                                Latihan untuk membaca kode, mencari penyebab
+                                error, menulis perbaikan, dan memahami kenapa
+                                solusi tersebut bekerja.
                             </p>
                         </div>
 
                         <div className="border-l-0 border-white/30 lg:border-l-2 lg:pl-8">
                             <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ffd93d]">
-                                Proses debugging
+                                Cara berlatih
                             </p>
 
                             <div className="mt-5 space-y-4">
@@ -45,7 +45,7 @@ export default function PublicFooter() {
                                     </span>
 
                                     <p className="font-bold text-neutral-100">
-                                        Baca kode yang bermasalah
+                                        Baca dan pahami alur kodenya
                                     </p>
                                 </div>
 
@@ -55,7 +55,7 @@ export default function PublicFooter() {
                                     </span>
 
                                     <p className="font-bold text-neutral-100">
-                                        Temukan sumber kesalahan
+                                        Temukan bagian yang bermasalah
                                     </p>
                                 </div>
 
@@ -65,7 +65,7 @@ export default function PublicFooter() {
                                     </span>
 
                                     <p className="font-bold text-neutral-100">
-                                        Perbaiki dan pahami solusinya
+                                        Perbaiki dan jelaskan alasannya
                                     </p>
                                 </div>
                             </div>
@@ -74,11 +74,11 @@ export default function PublicFooter() {
                 </div>
 
                 <div className="mt-10 flex flex-col gap-3 border-t-2 border-white/20 pt-6 text-sm font-bold text-neutral-400 sm:flex-row sm:items-center sm:justify-between">
-                    <p>
-                        © {currentYear} BugHunt. Seluruh hak cipta dilindungi.
-                    </p>
+                    <p>© {currentYear} BugHunt. Hak cipta dilindungi.</p>
 
-                    <p className="text-neutral-300">Baca. Temukan. Perbaiki.</p>
+                    <p className="text-neutral-300">
+                        Baca kodenya. Cari masalahnya. Perbaiki.
+                    </p>
                 </div>
             </div>
         </footer>
