@@ -10,14 +10,6 @@ export default function FlashMessage() {
 
     useEffect(() => {
         setVisible(Boolean(message));
-
-        if (!message) {
-            return;
-        }
-
-        const timeout = window.setTimeout(() => setVisible(false), 6500);
-
-        return () => window.clearTimeout(timeout);
     }, [message]);
 
     if (!message || !visible) {
@@ -26,24 +18,22 @@ export default function FlashMessage() {
 
     const background =
         type === "success"
-            ? "bg-[#9ce6b8]"
+            ? "bg-[#9ef0b8]"
             : type === "error"
-              ? "bg-[#ff9eb5]"
-              : "bg-[#8ed8ff]";
+              ? "bg-[#ff9c9c]"
+              : "bg-[#9ed8ff]";
 
     return (
-        <div className="fixed inset-x-3 top-3 z-[100] sm:left-auto sm:right-4 sm:top-4 sm:w-[min(400px,calc(100vw-2rem))]">
+        <div className="fixed right-4 top-4 z-[100] w-[min(390px,calc(100vw-2rem))]">
             <div
-                className={`nb-flash ${background}`}
-                role={type === "error" ? "alert" : "status"}
-                aria-live={type === "error" ? "assertive" : "polite"}
+                className={`flex items-start justify-between gap-4 border-[3px] border-black p-4 font-bold shadow-[6px_6px_0_#111] ${background}`}
             >
-                <p className="min-w-0 break-words">{message}</p>
+                <p>{message}</p>
 
                 <button
                     type="button"
                     onClick={() => setVisible(false)}
-                    className="grid h-9 w-9 shrink-0 place-items-center rounded-md border-2 border-black bg-white font-black shadow-[2px_2px_0_#171717]"
+                    className="grid h-8 w-8 shrink-0 place-items-center border-2 border-black bg-white font-black shadow-[2px_2px_0_#111]"
                     aria-label="Tutup pesan"
                 >
                     ×
