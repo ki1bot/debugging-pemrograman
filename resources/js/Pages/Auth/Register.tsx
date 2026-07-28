@@ -89,6 +89,7 @@ export default function Register() {
                         name="password"
                         value={data.password}
                         autoComplete="new-password"
+                        showPasswordToggle
                         onChange={(event) =>
                             setData("password", event.target.value)
                         }
@@ -109,6 +110,7 @@ export default function Register() {
                         name="password_confirmation"
                         value={data.password_confirmation}
                         autoComplete="new-password"
+                        showPasswordToggle
                         onChange={(event) =>
                             setData("password_confirmation", event.target.value)
                         }

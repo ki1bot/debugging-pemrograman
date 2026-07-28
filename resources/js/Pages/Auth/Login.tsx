@@ -86,6 +86,7 @@ export default function Login({
                         name="password"
                         value={data.password}
                         autoComplete="current-password"
+                        showPasswordToggle
                         onChange={(event) =>
                             setData("password", event.target.value)
                         }

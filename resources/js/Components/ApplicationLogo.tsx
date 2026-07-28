@@ -4,11 +4,13 @@ import { Bug } from "lucide-react";
 type ApplicationLogoProps = {
     className?: string;
     href?: string;
+    textClassName?: string;
 };
 
 export default function ApplicationLogo({
     className = "",
     href = "/",
+    textClassName = "text-[#21162f]",
 }: ApplicationLogoProps) {
     return (
         <Link
@@ -19,7 +21,9 @@ export default function ApplicationLogo({
                 <Bug className="h-5 w-5" strokeWidth={2.8} />
             </span>
 
-            <span className="text-xl font-black tracking-[-0.055em] text-[#21162f]">
+            <span
+                className={`text-xl font-black tracking-[-0.055em] ${textClassName}`}
+            >
                 Bug
                 <span className="neo-gradient-text">Hunt</span>
             </span>

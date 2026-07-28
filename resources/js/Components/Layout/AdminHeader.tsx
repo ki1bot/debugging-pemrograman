@@ -13,7 +13,10 @@ export default function AdminHeader({ user, open, toggle }: AdminHeaderProps) {
         <header className="sticky top-0 z-50 border-b-[3px] border-black bg-[#111111] text-white">
             <div className="flex items-center justify-between gap-4 px-4 py-4 sm:px-6">
                 <div className="flex items-center gap-4">
-                    <ApplicationLogo href={route("admin.dashboard")} />
+                    <ApplicationLogo
+                        href={route("admin.dashboard")}
+                        textClassName="text-white"
+                    />
 
                     <span className="hidden border-2 border-white bg-[#b7a4ff] px-3 py-1 text-sm font-black text-black md:inline-flex">
                         ADMIN PANEL
