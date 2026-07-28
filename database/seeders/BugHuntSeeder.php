@@ -12,42 +12,55 @@ use Database\Seeders\Support\ChallengeCatalogWriter;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use RuntimeException;
 
 class BugHuntSeeder extends Seeder
 {
     public function run(): void
     {
         DB::transaction(function (): void {
-            $admin = User::query()
-                ->updateOrCreate(
-                    [
-                        'email' => 'admin@bughunt.test',
-                    ],
-                    [
-                        'name' => 'Administrator BugHunt',
-                        'password' => Hash::make(
-                            'password',
-                        ),
-                        'role' => 'admin',
-                        'total_points' => 0,
-                        'email_verified_at' => now(),
-                    ],
-                );
+            $adminEmail = trim((string) env('BUGHUNT_ADMIN_EMAIL', ''));
+            $adminPassword = (string) env('BUGHUNT_ADMIN_PASSWORD', '');
 
-            User::query()->updateOrCreate(
+            if ($adminEmail === '' || ! filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
+                throw new RuntimeException(
+                    'BUGHUNT_ADMIN_EMAIL wajib diisi dengan alamat email yang valid.',
+                );
+            }
+
+            if (strlen($adminPassword) < 16) {
+                throw new RuntimeException(
+                    'BUGHUNT_ADMIN_PASSWORD wajib diisi minimal 16 karakter.',
+                );
+            }
+
+            $admin = User::query()->updateOrCreate(
                 [
-                    'email' => 'user@bughunt.test',
+                    'email' => $adminEmail,
                 ],
                 [
-                    'name' => 'Pengguna Demo',
-                    'password' => Hash::make(
-                        'password',
-                    ),
-                    'role' => 'user',
+                    'name' => 'Administrator BugHunt',
+                    'password' => Hash::make($adminPassword),
+                    'role' => 'admin',
                     'total_points' => 0,
                     'email_verified_at' => now(),
                 ],
             );
+
+            if (! app()->environment('production')) {
+                User::query()->updateOrCreate(
+                    [
+                        'email' => 'user@bughunt.test',
+                    ],
+                    [
+                        'name' => 'Pengguna Demo',
+                        'password' => Hash::make('password'),
+                        'role' => 'user',
+                        'total_points' => 0,
+                        'email_verified_at' => now(),
+                    ],
+                );
+            }
 
             $categories = collect([
                 [
@@ -65,29 +78,21 @@ class BugHuntSeeder extends Seeder
                     'slug' => 'sql',
                     'description' => 'Tantangan debugging query SQL, JOIN, GROUP BY, subquery, agregasi, dan window function.',
                 ],
-            ])->mapWithKeys(
-                function (
-                    array $category
-                ): array {
-                    $model =
-                        Category::query()
-                            ->updateOrCreate(
-                                [
-                                    'slug' => $category[
-                                            'slug'
-                                        ],
-                                ],
-                                [
-                                    ...$category,
-                                    'is_active' => true,
-                                ],
-                            );
+            ])->mapWithKeys(function (array $category): array {
+                $model = Category::query()->updateOrCreate(
+                    [
+                        'slug' => $category['slug'],
+                    ],
+                    [
+                        ...$category,
+                        'is_active' => true,
+                    ],
+                );
 
-                    return [
-                        $category['slug'] => $model,
-                    ];
-                },
-            );
+                return [
+                    $category['slug'] => $model,
+                ];
+            });
 
             $difficulties = collect([
                 [
@@ -105,33 +110,23 @@ class BugHuntSeeder extends Seeder
                     'slug' => 'sulit',
                     'base_points' => 150,
                 ],
-            ])->mapWithKeys(
-                function (
-                    array $difficulty
-                ): array {
-                    $model =
-                        Difficulty::query()
-                            ->updateOrCreate(
-                                [
-                                    'slug' => $difficulty[
-                                            'slug'
-                                        ],
-                                ],
-                                [
-                                    ...$difficulty,
-                                    'is_active' => true,
-                                ],
-                            );
+            ])->mapWithKeys(function (array $difficulty): array {
+                $model = Difficulty::query()->updateOrCreate(
+                    [
+                        'slug' => $difficulty['slug'],
+                    ],
+                    [
+                        ...$difficulty,
+                        'is_active' => true,
+                    ],
+                );
 
-                    return [
-                        $difficulty['slug'] => $model,
-                    ];
-                },
-            );
+                return [
+                    $difficulty['slug'] => $model,
+                ];
+            });
 
-            app(
-                ChallengeCatalogWriter::class,
-            )->write(
+            app(ChallengeCatalogWriter::class)->write(
                 $categories,
                 $difficulties,
                 $admin,
