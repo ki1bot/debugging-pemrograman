@@ -12,14 +12,11 @@ export default function ApplicationLogo({
     return (
         <Link
             href={href}
-            className={`inline-flex items-center gap-1 font-black tracking-[-0.06em] ${className}`}
+            className={`nb-brand ${className}`}
+            aria-label="BugHunt"
         >
-            <span className="border-[3px] border-black bg-[#ff6b6b] px-2 py-1 shadow-[3px_3px_0_#111]">
-                BUG
-            </span>
-            <span className="border-[3px] border-black bg-[#ffd93d] px-2 py-1 shadow-[3px_3px_0_#111]">
-                HUNT
-            </span>
+            <span className="nb-brand-word bg-[#ff7468]">BUG</span>
+            <span className="nb-brand-word bg-[#f8dc4d]">HUNT</span>
         </Link>
     );
 }

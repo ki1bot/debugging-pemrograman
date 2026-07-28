@@ -13,24 +13,22 @@ function normalizeLabel(label: string): string {
         .replace(/&raquo;/g, "»");
 }
 
+function isPageNumber(label: string): boolean {
+    return /^\d+$/.test(label.trim());
+}
+
 export default function Pagination({ links }: PaginationProps) {
     if (links.length <= 3) {
         return null;
     }
 
     return (
-        <nav
-            className="mt-8 flex flex-wrap justify-center gap-2"
-            aria-label="Pagination"
-        >
+        <nav className="nb-pagination mt-8" aria-label="Pagination">
             {links.map((link, index) => {
-                const className = `grid min-h-10 min-w-10 place-items-center border-2 border-black px-3 text-sm font-black shadow-[3px_3px_0_#111] ${
-                    link.active ? "bg-[#ffd93d]" : "bg-white"
-                } ${
-                    link.url
-                        ? "hover:bg-[#fff1a8]"
-                        : "cursor-not-allowed opacity-40"
-                }`;
+                const label = normalizeLabel(link.label);
+                const className = `nb-page-link ${
+                    link.active ? "nb-page-link-active" : ""
+                } ${link.url ? "" : "nb-page-link-disabled"}`;
 
                 return link.url ? (
                     <Link
@@ -38,12 +36,19 @@ export default function Pagination({ links }: PaginationProps) {
                         href={link.url}
                         preserveScroll
                         className={className}
+                        aria-current={link.active ? "page" : undefined}
+                        data-page-number={isPageNumber(label)}
                     >
-                        {normalizeLabel(link.label)}
+                        {label}
                     </Link>
                 ) : (
-                    <span key={`${link.label}-${index}`} className={className}>
-                        {normalizeLabel(link.label)}
+                    <span
+                        key={`${link.label}-${index}`}
+                        className={className}
+                        aria-disabled="true"
+                        data-page-number={isPageNumber(label)}
+                    >
+                        {label}
                     </span>
                 );
             })}
