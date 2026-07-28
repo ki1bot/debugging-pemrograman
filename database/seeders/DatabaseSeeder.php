@@ -11,6 +11,9 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        $this->call(BugHuntSeeder::class);
+        $this->call([
+            BugHuntSeeder::class,
+            AdditionalProgrammingLanguageSeeder::class,
+        ]);
     }
 }

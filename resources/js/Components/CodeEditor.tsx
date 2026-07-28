@@ -1,9 +1,20 @@
+import { cpp } from "@codemirror/lang-cpp";
+import { java } from "@codemirror/lang-java";
 import { javascript } from "@codemirror/lang-javascript";
 import { php } from "@codemirror/lang-php";
+import { python } from "@codemirror/lang-python";
 import { sql } from "@codemirror/lang-sql";
 import CodeMirror from "@uiw/react-codemirror";
 
-export type EditorLanguage = "javascript" | "php" | "sql" | string;
+export type EditorLanguage =
+    | "javascript"
+    | "php"
+    | "sql"
+    | "c"
+    | "cpp"
+    | "java"
+    | "python"
+    | (string & {});
 
 type CodeEditorProps = {
     value: string;
@@ -14,18 +25,40 @@ type CodeEditorProps = {
 };
 
 function languageExtension(language: EditorLanguage) {
-    if (language === "php") {
-        return php();
-    }
+    switch (language.toLowerCase()) {
+        case "php":
+            return php();
 
-    if (language === "sql") {
-        return sql();
-    }
+        case "sql":
+            return sql();
 
-    return javascript({
-        jsx: true,
-        typescript: true,
-    });
+        case "c":
+        case "cpp":
+        case "c++":
+            return cpp();
+
+        case "java":
+            return java();
+
+        case "python":
+        case "py":
+            return python();
+
+        case "javascript":
+        case "typescript":
+        case "js":
+        case "ts":
+            return javascript({
+                jsx: true,
+                typescript: true,
+            });
+
+        default:
+            return javascript({
+                jsx: true,
+                typescript: true,
+            });
+    }
 }
 
 export default function CodeEditor({
