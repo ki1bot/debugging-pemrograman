@@ -2,7 +2,27 @@ import ApplicationLogo from "@/Components/ApplicationLogo";
 import { authenticatedNavigation } from "@/Components/Layout/navigation";
 import { PageProps } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
+import {
+    ArrowRight,
+    Clock3,
+    Compass,
+    LayoutDashboard,
+    LogOut,
+    Menu,
+    ShieldCheck,
+    Trophy,
+    UserRound,
+    X,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
+
+const navigationIcons: Record<string, LucideIcon> = {
+    dashboard: LayoutDashboard,
+    "challenges.index": Compass,
+    "history.index": Clock3,
+    leaderboard: Trophy,
+};
 
 export default function AuthenticatedHeader() {
     const { auth } = usePage<PageProps>().props;
@@ -10,50 +30,62 @@ export default function AuthenticatedHeader() {
     const [open, setOpen] = useState(false);
 
     return (
-        <header className="sticky top-0 z-50 border-b-[3px] border-black bg-[#fff7e6]">
+        <header className="sticky top-0 z-50 border-b border-[#21162f]/10 bg-[#fbfaff]/85 backdrop-blur-xl">
             <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
                 <ApplicationLogo />
 
-                <nav className="hidden items-center gap-2 xl:flex">
-                    {authenticatedNavigation.map((item) => (
-                        <Link
-                            key={item.routeName}
-                            href={route(item.routeName)}
-                            className={`border-2 border-black px-3 py-2 text-sm font-black shadow-[2px_2px_0_#111] ${
-                                route().current(item.routeName)
-                                    ? "bg-[#ffd93d]"
-                                    : "bg-white hover:bg-[#fff1a8]"
-                            }`}
-                        >
-                            {item.label}
-                        </Link>
-                    ))}
+                <nav className="hidden items-center rounded-2xl border border-[#21162f]/10 bg-white/75 p-1.5 shadow-sm xl:flex">
+                    {authenticatedNavigation.map((item) => {
+                        const Icon =
+                            navigationIcons[item.routeName] ?? ArrowRight;
+                        const active = route().current(item.routeName);
+
+                        return (
+                            <Link
+                                key={item.routeName}
+                                href={route(item.routeName)}
+                                className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-sm font-extrabold transition ${
+                                    active
+                                        ? "bg-[#21162f] text-white shadow-md"
+                                        : "text-[#665f73] hover:bg-[#f2eff8] hover:text-[#21162f]"
+                                }`}
+                            >
+                                <Icon className="h-4 w-4" strokeWidth={2.5} />
+                                {item.label}
+                            </Link>
+                        );
+                    })}
 
                     {user?.role === "admin" && (
                         <Link
                             href={route("admin.dashboard")}
-                            className="border-2 border-black bg-[#b7a4ff] px-3 py-2 text-sm font-black shadow-[2px_2px_0_#111]"
+                            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#9c88f7] to-[#f56eb3] px-3.5 py-2.5 text-sm font-black text-white shadow-md"
                         >
+                            <ShieldCheck
+                                className="h-4 w-4"
+                                strokeWidth={2.6}
+                            />
                             Admin
                         </Link>
                     )}
                 </nav>
 
                 <div className="hidden items-center gap-3 xl:flex">
-                    <div className="border-2 border-black bg-white px-3 py-2 shadow-[2px_2px_0_#111]">
-                        <p className="text-xs font-black uppercase tracking-wide">
+                    <div className="rounded-xl border border-[#21162f]/10 bg-white px-4 py-2 shadow-sm">
+                        <p className="max-w-36 truncate text-sm font-black text-[#21162f]">
                             {user?.name}
                         </p>
 
-                        <p className="text-xs font-bold text-neutral-600">
+                        <p className="text-xs font-bold text-[#777080]">
                             {user?.total_points ?? 0} poin
                         </p>
                     </div>
 
                     <Link
                         href={route("profile.edit")}
-                        className="nb-button bg-[#9ed8ff] text-sm"
+                        className="nb-button nb-button-secondary text-sm"
                     >
+                        <UserRound className="h-4 w-4" strokeWidth={2.7} />
                         Profil
                     </Link>
 
@@ -61,8 +93,9 @@ export default function AuthenticatedHeader() {
                         href={route("logout")}
                         method="post"
                         as="button"
-                        className="nb-button bg-[#ff9c9c] text-sm"
+                        className="nb-button bg-[#ffd2df] text-sm"
                     >
+                        <LogOut className="h-4 w-4" strokeWidth={2.7} />
                         Keluar
                     </Link>
                 </div>
@@ -70,53 +103,99 @@ export default function AuthenticatedHeader() {
                 <button
                     type="button"
                     onClick={() => setOpen((value) => !value)}
-                    className="grid h-11 w-11 place-items-center border-[3px] border-black bg-[#ffd93d] text-xl font-black shadow-[3px_3px_0_#111] xl:hidden"
-                    aria-label="Buka navigasi"
+                    className="nb-button nb-button-primary h-11 min-h-0 w-11 p-0 xl:hidden"
+                    aria-label={open ? "Tutup navigasi" : "Buka navigasi"}
+                    aria-expanded={open}
+                    aria-controls="authenticated-mobile-navigation"
                 >
-                    {open ? "×" : "☰"}
+                    {open ? (
+                        <X className="h-5 w-5" strokeWidth={2.8} />
+                    ) : (
+                        <Menu className="h-5 w-5" strokeWidth={2.8} />
+                    )}
                 </button>
             </div>
 
             {open && (
-                <div className="border-t-[3px] border-black bg-white px-4 py-4 xl:hidden">
+                <div
+                    id="authenticated-mobile-navigation"
+                    className="border-t border-[#21162f]/10 bg-[#fbfaff]/95 px-4 py-4 backdrop-blur-xl xl:hidden"
+                >
                     <div className="mx-auto grid max-w-7xl gap-2">
-                        <div className="border-2 border-black bg-[#fff1a8] p-3">
-                            <p className="font-black">{user?.name}</p>
+                        <div className="mb-2 rounded-2xl border border-[#21162f]/10 bg-white p-4 shadow-sm">
+                            <div className="flex items-center gap-3">
+                                <span className="neo-icon-box h-11 w-11 bg-gradient-to-br from-[#8dd4fa] to-[#9c88f7]">
+                                    <UserRound
+                                        className="h-5 w-5"
+                                        strokeWidth={2.6}
+                                    />
+                                </span>
 
-                            <p className="text-sm font-bold">
-                                {user?.email} · {user?.total_points ?? 0} poin
-                            </p>
+                                <div className="min-w-0">
+                                    <p className="truncate font-black text-[#21162f]">
+                                        {user?.name}
+                                    </p>
+
+                                    <p className="truncate text-sm font-bold text-[#777080]">
+                                        {user?.email}
+                                    </p>
+
+                                    <p className="text-xs font-black text-[#9c5fe2]">
+                                        {user?.total_points ?? 0} poin
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
-                        {authenticatedNavigation.map((item) => (
-                            <Link
-                                key={item.routeName}
-                                href={route(item.routeName)}
-                                onClick={() => setOpen(false)}
-                                className={`border-2 border-black px-4 py-3 font-black ${
-                                    route().current(item.routeName)
-                                        ? "bg-[#ffd93d]"
-                                        : "bg-white"
-                                }`}
-                            >
-                                {item.label}
-                            </Link>
-                        ))}
+                        {authenticatedNavigation.map((item) => {
+                            const Icon =
+                                navigationIcons[item.routeName] ?? ArrowRight;
+                            const active = route().current(item.routeName);
+
+                            return (
+                                <Link
+                                    key={item.routeName}
+                                    href={route(item.routeName)}
+                                    onClick={() => setOpen(false)}
+                                    className={`flex items-center gap-3 rounded-xl border px-4 py-3 font-black transition ${
+                                        active
+                                            ? "border-[#21162f] bg-[#21162f] text-white"
+                                            : "border-[#21162f]/10 bg-white text-[#21162f]"
+                                    }`}
+                                >
+                                    <Icon
+                                        className="h-5 w-5"
+                                        strokeWidth={2.5}
+                                    />
+                                    {item.label}
+                                </Link>
+                            );
+                        })}
 
                         {user?.role === "admin" && (
                             <Link
                                 href={route("admin.dashboard")}
-                                className="border-2 border-black bg-[#b7a4ff] px-4 py-3 font-black"
+                                onClick={() => setOpen(false)}
+                                className="flex items-center gap-3 rounded-xl border border-[#21162f] bg-gradient-to-r from-[#9c88f7] to-[#f56eb3] px-4 py-3 font-black text-white"
                             >
+                                <ShieldCheck
+                                    className="h-5 w-5"
+                                    strokeWidth={2.6}
+                                />
                                 Dashboard Admin
                             </Link>
                         )}
 
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="mt-2 grid grid-cols-2 gap-3">
                             <Link
                                 href={route("profile.edit")}
-                                className="border-2 border-black bg-[#9ed8ff] px-4 py-3 text-center font-black"
+                                onClick={() => setOpen(false)}
+                                className="nb-button nb-button-secondary"
                             >
+                                <UserRound
+                                    className="h-4 w-4"
+                                    strokeWidth={2.7}
+                                />
                                 Profil
                             </Link>
 
@@ -124,8 +203,9 @@ export default function AuthenticatedHeader() {
                                 href={route("logout")}
                                 method="post"
                                 as="button"
-                                className="border-2 border-black bg-[#ff9c9c] px-4 py-3 text-center font-black"
+                                className="nb-button bg-[#ffd2df]"
                             >
+                                <LogOut className="h-4 w-4" strokeWidth={2.7} />
                                 Keluar
                             </Link>
                         </div>

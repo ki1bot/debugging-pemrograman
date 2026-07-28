@@ -2,54 +2,90 @@ import ApplicationLogo from "@/Components/ApplicationLogo";
 import { publicNavigation } from "@/Components/Layout/navigation";
 import { PageProps } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
+import {
+    ArrowRight,
+    Compass,
+    House,
+    Info,
+    LayoutDashboard,
+    LogIn,
+    Menu,
+    Trophy,
+    UserPlus,
+    X,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
+
+const navigationIcons: Record<string, LucideIcon> = {
+    home: House,
+    "challenges.index": Compass,
+    leaderboard: Trophy,
+    about: Info,
+};
 
 export default function PublicHeader() {
     const { auth } = usePage<PageProps>().props;
     const [open, setOpen] = useState(false);
 
     return (
-        <header className="sticky top-0 z-50 border-b-[3px] border-black bg-[#fff7e6]">
+        <header className="sticky top-0 z-50 border-b border-[#21162f]/10 bg-[#fbfaff]/85 backdrop-blur-xl">
             <div className="mx-auto flex max-w-7xl items-center justify-between gap-5 px-4 py-4 sm:px-6 lg:px-8">
                 <ApplicationLogo />
 
-                <nav className="hidden items-center gap-2 lg:flex">
-                    {publicNavigation.map((item) => (
-                        <Link
-                            key={item.routeName}
-                            href={route(item.routeName)}
-                            className={`border-2 border-black px-3 py-2 text-sm font-black shadow-[2px_2px_0_#111] ${
-                                route().current(item.routeName)
-                                    ? "bg-[#ffd93d]"
-                                    : "bg-white hover:bg-[#fff1a8]"
-                            }`}
-                        >
-                            {item.label}
-                        </Link>
-                    ))}
+                <nav className="hidden items-center rounded-2xl border border-[#21162f]/10 bg-white/75 p-1.5 shadow-sm lg:flex">
+                    {publicNavigation.map((item) => {
+                        const Icon =
+                            navigationIcons[item.routeName] ?? ArrowRight;
+                        const active = route().current(item.routeName);
+
+                        return (
+                            <Link
+                                key={item.routeName}
+                                href={route(item.routeName)}
+                                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-extrabold transition ${
+                                    active
+                                        ? "bg-[#21162f] text-white shadow-md"
+                                        : "text-[#665f73] hover:bg-[#f2eff8] hover:text-[#21162f]"
+                                }`}
+                            >
+                                <Icon className="h-4 w-4" strokeWidth={2.5} />
+                                {item.label}
+                            </Link>
+                        );
+                    })}
                 </nav>
 
                 <div className="hidden items-center gap-3 lg:flex">
                     {auth.user ? (
                         <Link
                             href={route("dashboard")}
-                            className="nb-button bg-[#ff6b6b]"
+                            className="nb-button nb-button-primary px-5"
                         >
+                            <LayoutDashboard
+                                className="h-4 w-4"
+                                strokeWidth={2.7}
+                            />
                             Dashboard
                         </Link>
                     ) : (
                         <>
                             <Link
                                 href={route("login")}
-                                className="nb-button bg-white"
+                                className="nb-button nb-button-light px-5"
                             >
+                                <LogIn className="h-4 w-4" strokeWidth={2.8} />
                                 Masuk
                             </Link>
 
                             <Link
                                 href={route("register")}
-                                className="nb-button bg-[#ff6b6b]"
+                                className="nb-button nb-button-primary px-5"
                             >
+                                <UserPlus
+                                    className="h-4 w-4"
+                                    strokeWidth={2.7}
+                                />
                                 Daftar
                             </Link>
                         </>
@@ -59,51 +95,85 @@ export default function PublicHeader() {
                 <button
                     type="button"
                     onClick={() => setOpen((value) => !value)}
-                    className="grid h-11 w-11 place-items-center border-[3px] border-black bg-[#ffd93d] text-xl font-black shadow-[3px_3px_0_#111] lg:hidden"
-                    aria-label="Buka navigasi"
+                    className="nb-button nb-button-primary h-11 min-h-0 w-11 p-0 lg:hidden"
+                    aria-label={open ? "Tutup navigasi" : "Buka navigasi"}
+                    aria-expanded={open}
+                    aria-controls="public-mobile-navigation"
                 >
-                    {open ? "×" : "☰"}
+                    {open ? (
+                        <X className="h-5 w-5" strokeWidth={2.8} />
+                    ) : (
+                        <Menu className="h-5 w-5" strokeWidth={2.8} />
+                    )}
                 </button>
             </div>
 
             {open && (
-                <div className="border-t-[3px] border-black bg-white px-4 py-4 lg:hidden">
+                <div
+                    id="public-mobile-navigation"
+                    className="border-t border-[#21162f]/10 bg-[#fbfaff]/95 px-4 py-4 backdrop-blur-xl lg:hidden"
+                >
                     <div className="mx-auto grid max-w-7xl gap-2">
-                        {publicNavigation.map((item) => (
-                            <Link
-                                key={item.routeName}
-                                href={route(item.routeName)}
-                                onClick={() => setOpen(false)}
-                                className={`border-2 border-black px-4 py-3 font-black ${
-                                    route().current(item.routeName)
-                                        ? "bg-[#ffd93d]"
-                                        : "bg-white"
-                                }`}
-                            >
-                                {item.label}
-                            </Link>
-                        ))}
+                        {publicNavigation.map((item) => {
+                            const Icon =
+                                navigationIcons[item.routeName] ?? ArrowRight;
+                            const active = route().current(item.routeName);
+
+                            return (
+                                <Link
+                                    key={item.routeName}
+                                    href={route(item.routeName)}
+                                    onClick={() => setOpen(false)}
+                                    className={`flex items-center gap-3 rounded-xl border px-4 py-3 font-black transition ${
+                                        active
+                                            ? "border-[#21162f] bg-[#21162f] text-white"
+                                            : "border-[#21162f]/10 bg-white text-[#21162f]"
+                                    }`}
+                                >
+                                    <Icon
+                                        className="h-5 w-5"
+                                        strokeWidth={2.5}
+                                    />
+                                    {item.label}
+                                </Link>
+                            );
+                        })}
 
                         {auth.user ? (
                             <Link
                                 href={route("dashboard")}
-                                className="border-2 border-black bg-[#ff6b6b] px-4 py-3 font-black"
+                                onClick={() => setOpen(false)}
+                                className="nb-button nb-button-primary mt-2 w-full"
                             >
+                                <LayoutDashboard
+                                    className="h-5 w-5"
+                                    strokeWidth={2.7}
+                                />
                                 Dashboard
                             </Link>
                         ) : (
-                            <div className="grid grid-cols-2 gap-2">
+                            <div className="mt-2 grid grid-cols-2 gap-3">
                                 <Link
                                     href={route("login")}
-                                    className="border-2 border-black bg-white px-4 py-3 text-center font-black"
+                                    onClick={() => setOpen(false)}
+                                    className="nb-button nb-button-light"
                                 >
+                                    <LogIn
+                                        className="h-4 w-4"
+                                        strokeWidth={2.8}
+                                    />
                                     Masuk
                                 </Link>
 
                                 <Link
                                     href={route("register")}
-                                    className="border-2 border-black bg-[#ff6b6b] px-4 py-3 text-center font-black"
+                                    onClick={() => setOpen(false)}
+                                    className="nb-button nb-button-primary"
                                 >
+                                    <UserPlus
+                                        className="h-4 w-4"
+                                        strokeWidth={2.7}
+                                    />
                                     Daftar
                                 </Link>
                             </div>
