@@ -1,0 +1,106 @@
+FROM node:22-alpine AS frontend
+
+WORKDIR /app
+
+ENV VITE_APP_NAME=BugHunt
+
+COPY package.json package-lock.json ./
+
+RUN npm ci --no-audit --no-fund
+
+COPY . .
+
+RUN npm run build
+
+FROM php:8.4-cli AS vendor
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        git \
+        libicu-dev \
+        libonig-dev \
+        libpq-dev \
+        libzip-dev \
+        unzip \
+    && docker-php-ext-install \
+        bcmath \
+        intl \
+        mbstring \
+        pcntl \
+        pdo_pgsql \
+        zip \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+
+WORKDIR /app
+
+COPY composer.json composer.lock ./
+
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --prefer-dist \
+    --no-progress \
+    --no-scripts
+
+COPY . .
+
+RUN composer dump-autoload \
+    --no-dev \
+    --optimize \
+    --classmap-authoritative \
+    --no-interaction
+
+FROM php:8.4-apache
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libicu-dev \
+        libonig-dev \
+        libpq-dev \
+        libzip-dev \
+        unzip \
+    && docker-php-ext-install \
+        bcmath \
+        intl \
+        mbstring \
+        opcache \
+        pcntl \
+        pdo_pgsql \
+        zip \
+    && a2enmod rewrite headers expires \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV APP_ENV=production
+ENV APP_DEBUG=false
+
+WORKDIR /var/www/html
+
+COPY --from=vendor /app /var/www/html
+COPY --from=frontend /app/public/build /var/www/html/public/build
+
+COPY docker/apache-laravel.conf /etc/apache2/conf-available/laravel.conf
+
+RUN a2enconf laravel \
+    && sed -ri \
+        's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' \
+        /etc/apache2/sites-available/000-default.conf \
+    && mkdir -p \
+        storage/app/public \
+        storage/framework/cache/data \
+        storage/framework/sessions \
+        storage/framework/views \
+        storage/logs \
+        bootstrap/cache \
+    && ln -sfn \
+        /var/www/html/storage/app/public \
+        /var/www/html/public/storage \
+    && chown -R \
+        www-data:www-data \
+        storage \
+        bootstrap/cache
+
+EXPOSE 80
+
+CMD ["apache2-foreground"]
