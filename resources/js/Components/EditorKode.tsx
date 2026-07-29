@@ -1,4 +1,5 @@
 import { cpp } from "@codemirror/lang-cpp";
+import { go } from "@codemirror/lang-go";
 import { java } from "@codemirror/lang-java";
 import { javascript } from "@codemirror/lang-javascript";
 import { php } from "@codemirror/lang-php";
@@ -12,6 +13,8 @@ export type EditorLanguage =
     | "sql"
     | "c"
     | "cpp"
+    | "go"
+    | "golang"
     | "java"
     | "python"
     | (string & {});
@@ -36,6 +39,10 @@ function languageExtension(language: EditorLanguage) {
         case "cpp":
         case "c++":
             return cpp();
+
+        case "go":
+        case "golang":
+            return go();
 
         case "java":
             return java();

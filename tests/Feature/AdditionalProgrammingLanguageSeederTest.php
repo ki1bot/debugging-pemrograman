@@ -25,6 +25,7 @@ class AdditionalProgrammingLanguageSeederTest extends TestCase
         $expectedCategories = [
             'c' => 'C',
             'cpp' => 'C++',
+            'go' => 'Go',
             'java' => 'Java',
             'python' => 'Python',
         ];
@@ -38,8 +39,8 @@ class AdditionalProgrammingLanguageSeederTest extends TestCase
         }
 
         $this->assertSame(
-            7,
-            Category::query()->count(),
+            8,
+            Category::query()->count('*'),
         );
     }
 
@@ -51,7 +52,7 @@ class AdditionalProgrammingLanguageSeederTest extends TestCase
             'sulit' => 2,
         ];
 
-        foreach (['c', 'cpp', 'java', 'python'] as $categorySlug) {
+        foreach (['c', 'cpp', 'go', 'java', 'python'] as $categorySlug) {
             $category = Category::query()
                 ->where('slug', $categorySlug)
                 ->firstOrFail();
@@ -65,7 +66,7 @@ class AdditionalProgrammingLanguageSeederTest extends TestCase
                     ->where('category_id', $category->id)
                     ->where('difficulty_id', $difficulty->id)
                     ->where('status', 'published')
-                    ->count();
+                    ->count('*');
 
                 $this->assertSame(
                     $expectedCount,
@@ -78,7 +79,7 @@ class AdditionalProgrammingLanguageSeederTest extends TestCase
 
     public function test_each_additional_language_has_eight_published_challenges(): void
     {
-        foreach (['c', 'cpp', 'java', 'python'] as $categorySlug) {
+        foreach (['c', 'cpp', 'go', 'java', 'python'] as $categorySlug) {
             $category = Category::query()
                 ->where('slug', $categorySlug)
                 ->firstOrFail();
@@ -88,7 +89,7 @@ class AdditionalProgrammingLanguageSeederTest extends TestCase
                 Challenge::query()
                     ->where('category_id', $category->id)
                     ->where('status', 'published')
-                    ->count(),
+                    ->count('*'),
                 $categorySlug,
             );
         }
@@ -97,7 +98,12 @@ class AdditionalProgrammingLanguageSeederTest extends TestCase
     public function test_every_additional_language_challenge_has_solution_and_hint(): void
     {
         $categoryIds = Category::query()
-            ->whereIn('slug', ['c', 'cpp', 'java', 'python'])
+            ->whereIn(
+                'slug',
+                ['c', 'cpp', 'go', 'java', 'python'],
+                'and',
+                false,
+            )
             ->pluck('id');
 
         Challenge::query()
@@ -105,7 +111,12 @@ class AdditionalProgrammingLanguageSeederTest extends TestCase
                 'hints',
                 'solutions',
             ])
-            ->whereIn('category_id', $categoryIds)
+            ->whereIn(
+                'category_id',
+                $categoryIds,
+                'and',
+                false,
+            )
             ->each(function (Challenge $challenge): void {
                 $this->assertTrue(
                     $challenge->hints->isNotEmpty(),
@@ -127,11 +138,11 @@ class AdditionalProgrammingLanguageSeederTest extends TestCase
             });
     }
 
-    public function test_database_seeder_creates_fifty_six_challenges(): void
+    public function test_database_seeder_creates_sixty_four_challenges(): void
     {
         $this->assertSame(
-            56,
-            Challenge::query()->count(),
+            64,
+            Challenge::query()->count('*'),
         );
     }
 }
