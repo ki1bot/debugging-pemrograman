@@ -74,7 +74,7 @@ class AdminSubmissionController extends Controller
             ->withQueryString();
 
         return Inertia::render(
-            'Admin/Submissions/Index',
+            'Admin/Submissions/Daftar',
             [
                 'submissions' => $submissions,
                 'challenges' => Challenge::query()
@@ -101,7 +101,7 @@ class AdminSubmissionController extends Controller
         ]);
 
         return Inertia::render(
-            'Admin/Submissions/Show',
+            'Admin/Submissions/Detail',
             [
                 'submission' => $submission,
             ],

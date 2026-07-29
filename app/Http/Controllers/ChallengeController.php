@@ -118,7 +118,7 @@ class ChallengeController extends Controller
             ),
         );
 
-        return Inertia::render('Challenges/Index', [
+        return Inertia::render('Challenges/Daftar', [
             'challenges' => $paginator,
             'categories' => Category::query()
                 ->where('is_active', true)
@@ -160,7 +160,7 @@ class ChallengeController extends Controller
             $progress->unlocked_hint_ids ?? [],
         )->map(fn ($id) => (int) $id);
 
-        return Inertia::render('Challenges/Show', [
+        return Inertia::render('Challenges/Detail', [
             'challenge' => [
                 ...$this->presenter->challenge(
                     $challenge,

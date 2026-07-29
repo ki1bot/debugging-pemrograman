@@ -37,7 +37,7 @@ class BugHuntController extends Controller
                 ->keyBy('challenge_id')
             : collect();
 
-        return Inertia::render('Home', [
+        return Inertia::render('Beranda', [
             'stats' => [
                 'challenges' => Challenge::query()
                     ->where('status', 'published')
@@ -60,7 +60,7 @@ class BugHuntController extends Controller
 
     public function about(): Response
     {
-        return Inertia::render('About');
+        return Inertia::render('Tentang');
     }
 
     public function leaderboard(): Response
@@ -93,7 +93,7 @@ class BugHuntController extends Controller
                 ],
             );
 
-        return Inertia::render('Leaderboard', [
+        return Inertia::render('PapanPeringkat', [
             'leaders' => $leaders,
         ]);
     }

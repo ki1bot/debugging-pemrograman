@@ -13,7 +13,7 @@ class AdminCategoryController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('Admin/Categories/Index', [
+        return Inertia::render('Admin/Categories/Daftar', [
             'categories' => Category::query()
                 ->withCount('challenges')
                 ->orderBy('name')

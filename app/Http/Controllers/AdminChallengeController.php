@@ -94,7 +94,7 @@ class AdminChallengeController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return Inertia::render('Admin/Challenges/Index', [
+        return Inertia::render('Admin/Challenges/Daftar', [
             'challenges' => $challenges,
             'categories' => Category::query()
                 ->orderBy('name')
@@ -114,7 +114,7 @@ class AdminChallengeController extends Controller
     public function create(): Response
     {
         return Inertia::render(
-            'Admin/Challenges/Create',
+            'Admin/Challenges/Tambah',
             [
                 'categories' => Category::query()
                     ->where('is_active', true)
@@ -154,7 +154,7 @@ class AdminChallengeController extends Controller
             'solutions',
         ]);
 
-        return Inertia::render('Admin/Challenges/Edit', [
+        return Inertia::render('Admin/Challenges/Ubah', [
             'challenge' => $challenge,
             'categories' => Category::query()
                 ->orderBy('name')

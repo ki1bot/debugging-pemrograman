@@ -272,7 +272,7 @@ class ChallengeSubmissionTest extends TestCase
             ->assertInertia(
                 fn (Assert $page) => $page
                     ->component(
-                        'Submissions/Show',
+                        'Submissions/Detail',
                     )
                     ->where(
                         'submission.challenge.can_view_solution',
@@ -337,7 +337,7 @@ class ChallengeSubmissionTest extends TestCase
             ->assertInertia(
                 fn (Assert $page) => $page
                     ->component(
-                        'Submissions/Show',
+                        'Submissions/Detail',
                     )
                     ->where(
                         'submission.challenge.can_view_solution',

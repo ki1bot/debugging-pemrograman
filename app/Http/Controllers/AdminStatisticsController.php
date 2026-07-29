@@ -307,7 +307,7 @@ class AdminStatisticsController extends Controller
                 ]);
 
         return Inertia::render(
-            'Admin/Statistics/Index',
+            'Admin/Statistics/Daftar',
             [
                 'summary' => [
                     'users' => User::query()
