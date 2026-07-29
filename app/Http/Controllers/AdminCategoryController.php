@@ -16,7 +16,7 @@ class AdminCategoryController extends Controller
         return Inertia::render('Admin/Categories/Daftar', [
             'categories' => Category::query()
                 ->withCount('challenges')
-                ->orderBy('name')
+                ->orderBy('name', 'asc')
                 ->get(),
         ]);
     }
@@ -70,7 +70,7 @@ class AdminCategoryController extends Controller
             );
         }
 
-        $category->delete();
+        Category::destroy((int) $category->getKey());
 
         return back()->with(
             'success',

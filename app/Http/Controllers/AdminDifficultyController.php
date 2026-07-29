@@ -16,7 +16,7 @@ class AdminDifficultyController extends Controller
         return Inertia::render('Admin/Difficulties/Daftar', [
             'difficulties' => Difficulty::query()
                 ->withCount('challenges')
-                ->orderBy('base_points')
+                ->orderBy('base_points', 'asc')
                 ->get(),
         ]);
     }
@@ -70,7 +70,7 @@ class AdminDifficultyController extends Controller
             );
         }
 
-        $difficulty->delete();
+        Difficulty::destroy((int) $difficulty->getKey());
 
         return back()->with(
             'success',

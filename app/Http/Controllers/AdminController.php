@@ -15,12 +15,12 @@ class AdminController extends Controller
     public function dashboard(): Response
     {
         $statusChart = Submission::query()
-            ->select(
+            ->select([
                 'status',
                 DB::raw('COUNT(*) as total'),
-            )
+            ])
             ->groupBy('status')
-            ->orderBy('status')
+            ->orderBy('status', 'asc')
             ->get()
             ->map(
                 fn ($row) => [
@@ -35,7 +35,7 @@ class AdminController extends Controller
 
         $categoryChart = Category::query()
             ->withCount('challenges')
-            ->orderBy('name')
+            ->orderBy('name', 'asc')
             ->get()
             ->map(
                 fn (Category $category) => [
@@ -57,18 +57,18 @@ class AdminController extends Controller
             'summary' => [
                 'users' => User::query()
                     ->where('role', 'user')
-                    ->count(),
+                    ->count('*'),
                 'admins' => User::query()
                     ->where('role', 'admin')
-                    ->count(),
-                'challenges' => Challenge::query()->count(),
+                    ->count('*'),
+                'challenges' => Challenge::query()->count('*'),
                 'publishedChallenges' => Challenge::query()
                     ->where('status', 'published')
-                    ->count(),
-                'submissions' => Submission::query()->count(),
+                    ->count('*'),
+                'submissions' => Submission::query()->count('*'),
                 'completedSubmissions' => Submission::query()
                     ->where('status', 'completed')
-                    ->count(),
+                    ->count('*'),
             ],
             'statusChart' => $statusChart,
             'categoryChart' => $categoryChart,

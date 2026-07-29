@@ -97,10 +97,10 @@ class AdminChallengeController extends Controller
         return Inertia::render('Admin/Challenges/Daftar', [
             'challenges' => $challenges,
             'categories' => Category::query()
-                ->orderBy('name')
+                ->orderBy('name', 'asc')
                 ->get(),
             'difficulties' => Difficulty::query()
-                ->orderBy('base_points')
+                ->orderBy('base_points', 'asc')
                 ->get(),
             'filters' => [
                 'search' => $filters['search'] ?? '',
@@ -118,11 +118,11 @@ class AdminChallengeController extends Controller
             [
                 'categories' => Category::query()
                     ->where('is_active', true)
-                    ->orderBy('name')
+                    ->orderBy('name', 'asc')
                     ->get(),
                 'difficulties' => Difficulty::query()
                     ->where('is_active', true)
-                    ->orderBy('base_points')
+                    ->orderBy('base_points', 'asc')
                     ->get(),
             ],
         );
@@ -157,10 +157,10 @@ class AdminChallengeController extends Controller
         return Inertia::render('Admin/Challenges/Ubah', [
             'challenge' => $challenge,
             'categories' => Category::query()
-                ->orderBy('name')
+                ->orderBy('name', 'asc')
                 ->get(),
             'difficulties' => Difficulty::query()
-                ->orderBy('base_points')
+                ->orderBy('base_points', 'asc')
                 ->get(),
         ]);
     }
@@ -183,7 +183,7 @@ class AdminChallengeController extends Controller
     public function destroy(
         Challenge $challenge
     ): RedirectResponse {
-        $challenge->delete();
+        Challenge::destroy((int) $challenge->getKey());
 
         return redirect()
             ->route('admin.challenges.index')

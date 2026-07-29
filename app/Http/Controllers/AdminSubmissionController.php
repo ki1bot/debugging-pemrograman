@@ -78,7 +78,7 @@ class AdminSubmissionController extends Controller
             [
                 'submissions' => $submissions,
                 'challenges' => Challenge::query()
-                    ->orderBy('title')
+                    ->orderBy('title', 'asc')
                     ->get(['id', 'title']),
                 'filters' => [
                     'search' => $filters['search'] ?? '',
