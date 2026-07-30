@@ -1,19 +1,6 @@
 <?php
 
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Third Party Services
-    |--------------------------------------------------------------------------
-    |
-    | This file is for storing the credentials for third party services such
-    | as Mailgun, Postmark, AWS and more. This file provides the de facto
-    | location for this type of information, allowing packages to have
-    | a conventional file to locate the various service credentials.
-    |
-    */
-
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],
@@ -35,4 +22,26 @@ return [
         ],
     ],
 
+    'judge0' => [
+        'base_url' => env(
+            'JUDGE0_BASE_URL',
+            'https://ce.judge0.com',
+        ),
+        'api_key' => env('JUDGE0_API_KEY'),
+        'rapidapi_host' => env('JUDGE0_RAPIDAPI_HOST'),
+        'auth_token' => env('JUDGE0_AUTH_TOKEN'),
+        'languages' => [
+            'c' => (int) env('JUDGE0_LANGUAGE_C', 103),
+            'cpp' => (int) env('JUDGE0_LANGUAGE_CPP', 105),
+            'go' => (int) env('JUDGE0_LANGUAGE_GO', 107),
+            'java' => (int) env('JUDGE0_LANGUAGE_JAVA', 91),
+            'javascript' => (int) env(
+                'JUDGE0_LANGUAGE_JAVASCRIPT',
+                102,
+            ),
+            'php' => (int) env('JUDGE0_LANGUAGE_PHP', 98),
+            'python' => (int) env('JUDGE0_LANGUAGE_PYTHON', 100),
+            'sql' => (int) env('JUDGE0_LANGUAGE_SQL', 82),
+        ],
+    ],
 ];

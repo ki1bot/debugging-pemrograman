@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminSubmissionController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\BugHuntController;
 use App\Http\Controllers\ChallengeController;
+use App\Http\Controllers\CodeExecutionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\UserDashboardController;
@@ -40,6 +41,21 @@ Route::middleware('auth')->group(
             '/dashboard',
             UserDashboardController::class,
         )->name('dashboard');
+
+        Route::post(
+            '/code-executions',
+            [CodeExecutionController::class, 'store'],
+        )
+            ->middleware('throttle:10,1')
+            ->name('code-executions.store');
+
+        Route::get(
+            '/code-executions/{token}',
+            [CodeExecutionController::class, 'show'],
+        )
+            ->whereUuid('token')
+            ->middleware('throttle:90,1')
+            ->name('code-executions.show');
 
         Route::get(
             '/challenges/{challenge:slug}',
@@ -149,7 +165,7 @@ Route::prefix('admin')
         Route::get(
             '/challenges/create',
             [AdminChallengeController::class, 'create'],
-        )->name('challenges.create');
+        )->name('admin.challenges.create');
 
         Route::post(
             '/challenges',

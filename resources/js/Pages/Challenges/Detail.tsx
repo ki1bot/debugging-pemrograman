@@ -22,6 +22,109 @@ type SubmissionForm = {
     submitted_explanation: string;
 };
 
+type ExecutionSubmission = {
+    token: string;
+    status: {
+        id: number;
+        description: string;
+    };
+};
+
+type ExecutionResult = {
+    token: string;
+    finished: boolean;
+    status: {
+        id: number;
+        description: string;
+    };
+    stdout: string | null;
+    stderr: string | null;
+    compile_output: string | null;
+    message: string | null;
+    time: string | null;
+    memory: number | null;
+};
+
+type ErrorPayload = {
+    message?: string;
+    errors?: Record<string, string[]>;
+};
+
+const delay = (milliseconds: number) =>
+    new Promise<void>((resolve) => window.setTimeout(resolve, milliseconds));
+
+function csrfToken(): string {
+    return (
+        document
+            .querySelector<HTMLMetaElement>('meta[name="csrf-token"]')
+            ?.getAttribute("content") ?? ""
+    );
+}
+
+function errorMessage(payload: ErrorPayload): string {
+    if (payload.message) {
+        return payload.message;
+    }
+
+    if (payload.errors) {
+        const firstError = Object.values(payload.errors).flat()[0];
+
+        if (firstError) {
+            return firstError;
+        }
+    }
+
+    return "Permintaan tidak dapat diproses.";
+}
+
+async function requestJson<T>(
+    url: string,
+    options: RequestInit = {},
+): Promise<T> {
+    const headers = new Headers(options.headers);
+    headers.set("Accept", "application/json");
+    headers.set("Content-Type", "application/json");
+    headers.set("X-CSRF-TOKEN", csrfToken());
+
+    const response = await fetch(url, {
+        ...options,
+        cache: "no-store",
+        credentials: "same-origin",
+        headers,
+    });
+
+    const payload = (await response.json().catch(() => ({}))) as ErrorPayload;
+
+    if (!response.ok) {
+        throw new Error(errorMessage(payload));
+    }
+
+    return payload as T;
+}
+
+function ExecutionOutput({
+    title,
+    value,
+}: {
+    title: string;
+    value: string | null;
+}) {
+    if (!value) {
+        return null;
+    }
+
+    return (
+        <div className="border-[3px] border-black bg-[#111111] p-4 text-white shadow-[4px_4px_0_#111]">
+            <p className="text-xs font-black uppercase tracking-[0.14em] text-[#ffd93d]">
+                {title}
+            </p>
+            <pre className="mt-3 max-h-72 overflow-auto whitespace-pre-wrap break-words font-mono text-sm leading-6">
+                {value}
+            </pre>
+        </div>
+    );
+}
+
 export default function ChallengeShow({
     challenge,
     progress,
@@ -40,6 +143,11 @@ export default function ChallengeShow({
     );
 
     const [unlockingHint, setUnlockingHint] = useState<number | null>(null);
+    const [stdin, setStdin] = useState("");
+    const [runningCode, setRunningCode] = useState(false);
+    const [executionResult, setExecutionResult] =
+        useState<ExecutionResult | null>(null);
+    const [executionError, setExecutionError] = useState<string | null>(null);
 
     const submit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -63,6 +171,56 @@ export default function ChallengeShow({
                 onFinish: () => setUnlockingHint(null),
             },
         );
+    };
+
+    const executeCode = async () => {
+        setRunningCode(true);
+        setExecutionResult(null);
+        setExecutionError(null);
+
+        try {
+            const submission = await requestJson<ExecutionSubmission>(
+                route("code-executions.store"),
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        language: challenge.category.slug,
+                        source_code: data.submitted_code,
+                        stdin,
+                    }),
+                },
+            );
+
+            for (let attempt = 0; attempt < 20; attempt += 1) {
+                if (attempt > 0) {
+                    await delay(1000);
+                }
+
+                const result = await requestJson<ExecutionResult>(
+                    route("code-executions.show", {
+                        token: submission.token,
+                    }),
+                );
+
+                setExecutionResult(result);
+
+                if (result.finished) {
+                    return;
+                }
+            }
+
+            throw new Error(
+                "Eksekusi belum selesai setelah 20 detik. Jalankan kembali beberapa saat lagi.",
+            );
+        } catch (error) {
+            setExecutionError(
+                error instanceof Error
+                    ? error.message
+                    : "Eksekusi kode gagal diproses.",
+            );
+        } finally {
+            setRunningCode(false);
+        }
     };
 
     return (
@@ -299,12 +457,14 @@ export default function ChallengeShow({
                                 </span>
 
                                 <h2 className="mt-4 text-2xl font-black">
-                                    Perbaiki kode
+                                    Perbaiki dan jalankan kode
                                 </h2>
 
                                 <p className="mt-2 font-semibold text-neutral-700">
-                                    Ubah kode menjadi versi yang benar. Sistem
-                                    tidak mengeksekusi kode ini.
+                                    Ubah kode menjadi versi yang benar, lalu
+                                    jalankan di sandbox. Hasil eksekusi membantu
+                                    pengujian, tetapi penilaian akhir tetap
+                                    memakai solusi tantangan.
                                 </p>
                             </div>
 
@@ -316,6 +476,114 @@ export default function ChallengeShow({
                                 language={challenge.category.slug}
                                 minHeight="420px"
                             />
+
+                            <div className="mt-5 grid gap-4">
+                                <div>
+                                    <label
+                                        htmlFor="execution-stdin"
+                                        className="text-sm font-black uppercase tracking-[0.12em]"
+                                    >
+                                        Standard Input
+                                    </label>
+
+                                    <textarea
+                                        id="execution-stdin"
+                                        value={stdin}
+                                        onChange={(event) =>
+                                            setStdin(event.target.value)
+                                        }
+                                        className="nb-input mt-2 min-h-28 resize-y bg-white font-mono"
+                                        placeholder="Masukkan input program apabila diperlukan."
+                                        maxLength={5000}
+                                    />
+
+                                    <div className="mt-2 text-right text-sm font-black">
+                                        {stdin.length}/5000
+                                    </div>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={executeCode}
+                                    disabled={
+                                        runningCode ||
+                                        data.submitted_code.trim() === ""
+                                    }
+                                    className="nb-button w-full bg-[#9ef0b8] px-6 py-4 text-base"
+                                >
+                                    {runningCode
+                                        ? "Menjalankan Kode..."
+                                        : "Jalankan Kode"}
+                                </button>
+
+                                {executionError && (
+                                    <p className="border-[3px] border-black bg-[#ff9c9c] p-4 font-bold shadow-[4px_4px_0_#111]">
+                                        {executionError}
+                                    </p>
+                                )}
+
+                                {executionResult && (
+                                    <div className="grid gap-4 border-[3px] border-black bg-white p-4 shadow-[5px_5px_0_#111]">
+                                        <div className="flex flex-wrap items-center justify-between gap-3">
+                                            <span className="nb-badge bg-[#ffd93d]">
+                                                {
+                                                    executionResult.status
+                                                        .description
+                                                }
+                                            </span>
+
+                                            <div className="flex flex-wrap gap-3 text-sm font-black">
+                                                <span>
+                                                    Waktu:{" "}
+                                                    {executionResult.time ??
+                                                        "-"}{" "}
+                                                    detik
+                                                </span>
+
+                                                <span>
+                                                    Memori:{" "}
+                                                    {executionResult.memory ??
+                                                        "-"}{" "}
+                                                    KB
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <ExecutionOutput
+                                            title="Output Program"
+                                            value={executionResult.stdout}
+                                        />
+
+                                        <ExecutionOutput
+                                            title="Kesalahan Kompilasi"
+                                            value={
+                                                executionResult.compile_output
+                                            }
+                                        />
+
+                                        <ExecutionOutput
+                                            title="Kesalahan Runtime"
+                                            value={executionResult.stderr}
+                                        />
+
+                                        <ExecutionOutput
+                                            title="Pesan Sistem"
+                                            value={executionResult.message}
+                                        />
+
+                                        {executionResult.finished &&
+                                            !executionResult.stdout &&
+                                            !executionResult.compile_output &&
+                                            !executionResult.stderr &&
+                                            !executionResult.message && (
+                                                <p className="border-[3px] border-black bg-[#9ef0b8] p-4 font-black">
+                                                    Program selesai tanpa
+                                                    output.
+                                                </p>
+                                            )}
+                                    </div>
+                                )}
+                            </div>
 
                             {errors.submitted_code && (
                                 <p className="mt-4 border-2 border-black bg-[#ff9c9c] p-3 font-bold">
