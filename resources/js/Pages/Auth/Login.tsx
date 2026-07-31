@@ -68,6 +68,7 @@ export default function Login({
                         name="email"
                         value={data.email}
                         isFocused
+                        required
                         autoComplete="username"
                         onChange={(event) =>
                             setData("email", event.target.value)
@@ -85,6 +86,7 @@ export default function Login({
                         type="password"
                         name="password"
                         value={data.password}
+                        required
                         autoComplete="current-password"
                         showPasswordToggle
                         onChange={(event) =>
@@ -95,16 +97,32 @@ export default function Login({
                     <InputError message={errors.password} className="mt-3" />
                 </div>
 
-                <label className="flex cursor-pointer items-center gap-3 font-bold">
+                <div className="flex items-start gap-3">
                     <Checkbox
+                        id="remember"
                         name="remember"
                         checked={data.remember}
                         onChange={(event) =>
                             setData("remember", event.target.checked)
                         }
+                        className="mt-1 shrink-0"
                     />
-                    Tetap masuk di perangkat ini
-                </label>
+
+                    <label
+                        htmlFor="remember"
+                        className="cursor-pointer select-none"
+                    >
+                        <span className="block font-black">
+                            Tetap masuk di perangkat ini
+                        </span>
+
+                        <span className="mt-1 block text-sm font-semibold leading-6 text-neutral-600">
+                            Aktifkan agar akun tetap masuk setelah browser
+                            ditutup. Jangan gunakan pada perangkat umum atau
+                            perangkat milik orang lain.
+                        </span>
+                    </label>
+                </div>
 
                 <PrimaryButton className="w-full py-4" disabled={processing}>
                     {processing ? "Sedang Masuk..." : "Masuk"}
