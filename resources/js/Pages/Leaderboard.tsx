@@ -94,15 +94,7 @@ export default function Leaderboard({ leaders }: LeaderboardProps) {
 
                 {leaders.length > 0 ? (
                     <section className="mt-12">
-                        {/*
-                         * Padding bawah dan kanan menyediakan ruang untuk
-                         * bayangan agar tidak terpotong oleh overflow.
-                         */}
                         <div className="overflow-x-auto pb-3 pr-3">
-                            {/*
-                             * Border, radius, dan shadow hanya diberikan pada
-                             * satu pembungkus agar seluruh sisi tetap sejajar.
-                             */}
                             <div className="min-w-[700px] overflow-hidden rounded-2xl border-[3px] border-black bg-white shadow-[7px_7px_0_#111]">
                                 <table
                                     className="w-full border-separate border-spacing-0"

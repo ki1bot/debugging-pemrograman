@@ -77,21 +77,8 @@ class BugHuntSeeder extends Seeder
             );
 
             if ($isTesting || $isLocal) {
-                $demoTotalPoints = $isTesting ? 0 : 500;
-
-                User::query()->updateOrCreate(
-                    [
-                        'email' => 'rifqiuser@bughunt.test',
-                    ],
-                    [
-                        'name' => 'Rifqi',
-                        'password' => Hash::make(
-                            'password',
-                        ),
-                        'role' => 'user',
-                        'total_points' => $demoTotalPoints,
-                        'email_verified_at' => now(),
-                    ],
+                $this->seedDemoUser(
+                    $isTesting,
                 );
             }
 
@@ -176,5 +163,53 @@ class BugHuntSeeder extends Seeder
                 ],
             );
         });
+    }
+
+    private function seedDemoUser(
+        bool $isTesting
+    ): void {
+        $legacyEmail = 'user@bughunt.test';
+        $demoEmail = 'rifqiuser@bughunt.test';
+
+        $demoUser = User::query()
+            ->where(
+                'email',
+                $demoEmail,
+            )
+            ->first();
+
+        $legacyUser = User::query()
+            ->where(
+                'email',
+                $legacyEmail,
+            )
+            ->first();
+
+        if (
+            $demoUser !== null
+            && $legacyUser !== null
+            && $demoUser->id !== $legacyUser->id
+        ) {
+            throw new RuntimeException(
+                'Ditemukan dua akun demo: user@bughunt.test dan rifqiuser@bughunt.test. Gabungkan atau hapus salah satunya sebelum menjalankan seeder kembali.',
+            );
+        }
+
+        $user = $demoUser
+            ?? $legacyUser
+            ?? new User();
+
+        $user->forceFill([
+            'name' => 'Rifqi',
+            'email' => $demoEmail,
+            'password' => Hash::make(
+                'password',
+            ),
+            'role' => 'user',
+            'total_points' => $isTesting ? 0 : 500,
+            'email_verified_at' => now(),
+        ]);
+
+        $user->save();
     }
 }
