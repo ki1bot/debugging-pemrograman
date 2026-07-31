@@ -115,12 +115,6 @@ export default function Login({
                         <span className="block font-black">
                             Tetap masuk di perangkat ini
                         </span>
-
-                        <span className="mt-1 block text-sm font-semibold leading-6 text-neutral-600">
-                            Aktifkan agar akun tetap masuk setelah browser
-                            ditutup. Jangan gunakan pada perangkat umum atau
-                            perangkat milik orang lain.
-                        </span>
                     </label>
                 </div>
 

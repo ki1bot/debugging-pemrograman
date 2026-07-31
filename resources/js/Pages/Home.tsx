@@ -185,7 +185,7 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                                         className="h-5 w-5"
                                         strokeWidth={2.8}
                                     />
-                                    Buka Dasbor
+                                    Buka Dashboard
                                 </Link>
                             ) : (
                                 <Link
@@ -602,7 +602,7 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
 
                         <p className="mx-auto mt-6 max-w-2xl text-base font-semibold leading-8 text-[#665f73] sm:text-lg">
                             {auth.user
-                                ? "Buka dasbor untuk melihat poin, riwayat jawaban, dan latihan yang dapat kamu lanjutkan."
+                                ? "Buka dashboard untuk melihat poin, riwayat jawaban, dan latihan yang dapat kamu lanjutkan."
                                 : "Buat akun agar poin, riwayat jawaban, dan perkembangan latihanmu tersimpan."}
                         </p>
 
@@ -610,7 +610,7 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                             href={route(auth.user ? "dashboard" : "register")}
                             className="nb-button nb-button-primary mt-9 px-7 py-4 text-base"
                         >
-                            {auth.user ? "Buka Dasbor" : "Buat Akun"}
+                            {auth.user ? "Buka Dashboard" : "Buat Akun"}
                             <ArrowRight className="h-5 w-5" strokeWidth={2.8} />
                         </Link>
                     </div>
