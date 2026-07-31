@@ -25,8 +25,8 @@ class BugHuntAuthorizationTest extends TestCase
 
     public function test_guest_is_redirected_when_opening_challenge_detail(): void
     {
-        $challenge =
-            Challenge::query()->firstOrFail();
+        $challenge = Challenge::query()
+            ->firstOrFail();
 
         $this->get(
             route(
@@ -43,7 +43,7 @@ class BugHuntAuthorizationTest extends TestCase
         $user = User::query()
             ->where(
                 'email',
-                'user@bughunt.test',
+                'rifqiuser@bughunt.test',
             )
             ->firstOrFail();
 
@@ -103,12 +103,14 @@ class BugHuntAuthorizationTest extends TestCase
         $user = User::query()
             ->where(
                 'email',
-                'user@bughunt.test',
+                'rifqiuser@bughunt.test',
             )
             ->firstOrFail();
 
         $this->actingAs($user)
-            ->get(route('dashboard'))
+            ->get(
+                route('dashboard'),
+            )
             ->assertOk();
     }
 }

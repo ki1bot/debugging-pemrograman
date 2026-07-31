@@ -1,0 +1,31 @@
+import { Link } from "@inertiajs/react";
+import { Bug } from "lucide-react";
+
+type ApplicationLogoProps = {
+    className?: string;
+    href?: string;
+    textClassName?: string;
+};
+
+export default function ApplicationLogo({
+    className = "",
+    href = "/",
+    textClassName = "text-[#21162f]",
+}: ApplicationLogoProps) {
+    return (
+        <Link
+            href={href}
+            className={`group inline-flex items-center gap-3 ${className}`}
+        >
+            <span className="neo-icon-box relative h-10 w-10 overflow-hidden bg-gradient-to-br from-[#ffc84a] via-[#ff9b67] to-[#f56eb3] transition-transform duration-200 group-hover:-rotate-3 group-hover:scale-105">
+                <Bug className="h-5 w-5" strokeWidth={2.8} />
+            </span>
+
+            <span
+                className={`whitespace-nowrap text-xl font-black tracking-[-0.055em] ${textClassName}`}
+            >
+                Debugging <span className="neo-gradient-text">Pemrograman</span>
+            </span>
+        </Link>
+    );
+}

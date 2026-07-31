@@ -2,7 +2,7 @@ FROM node:22-alpine AS frontend
 
 WORKDIR /app
 
-ENV VITE_APP_NAME=BugHunt
+ENV VITE_APP_NAME="Rifqi | Debugging Pemrograman"
 
 COPY package.json package-lock.json ./
 

@@ -36,7 +36,7 @@ class BugHuntSeederTest extends TestCase
         $user = User::query()
             ->where(
                 'email',
-                'user@bughunt.test',
+                'rifqiuser@bughunt.test',
             )
             ->firstOrFail();
 
@@ -48,6 +48,11 @@ class BugHuntSeederTest extends TestCase
         $this->assertSame(
             'user',
             $user->role,
+        );
+
+        $this->assertSame(
+            0,
+            $user->total_points,
         );
 
         $this->assertTrue(
@@ -131,25 +136,23 @@ class BugHuntSeederTest extends TestCase
             foreach (
                 $expected as $difficultySlug => $count
             ) {
-                $difficulty =
-                    Difficulty::query()
-                        ->where(
-                            'slug',
-                            $difficultySlug,
-                        )
-                        ->firstOrFail();
+                $difficulty = Difficulty::query()
+                    ->where(
+                        'slug',
+                        $difficultySlug,
+                    )
+                    ->firstOrFail();
 
-                $actual =
-                    Challenge::query()
-                        ->where(
-                            'category_id',
-                            $category->id,
-                        )
-                        ->where(
-                            'difficulty_id',
-                            $difficulty->id,
-                        )
-                        ->count();
+                $actual = Challenge::query()
+                    ->where(
+                        'category_id',
+                        $category->id,
+                    )
+                    ->where(
+                        'difficulty_id',
+                        $difficulty->id,
+                    )
+                    ->count();
 
                 $this->assertSame(
                     $count,

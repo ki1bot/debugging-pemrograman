@@ -11,12 +11,10 @@
         >
         <meta
             name="description"
-            content="BugHunt adalah platform pembelajaran debugging pemrograman berbasis web."
+            content="Debugging Pemrograman adalah platform latihan untuk membaca kode, menemukan bug, menguji perbaikan melalui sandbox, dan memahami penyebab masalah."
         >
 
-        <title inertia>
-            {{ config('app.name', 'BugHunt') }}
-        </title>
+        <title inertia>Rifqi | Debugging Pemrograman</title>
 
         @routes
         @viteReactRefresh

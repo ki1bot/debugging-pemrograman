@@ -43,9 +43,8 @@ class ChallengeSubmissionTest extends TestCase
             )
             ->assertRedirect();
 
-        $submission =
-            Submission::query()
-                ->firstOrFail();
+        $submission = Submission::query()
+            ->firstOrFail();
 
         $this->assertSame(
             'completed',
@@ -69,8 +68,7 @@ class ChallengeSubmissionTest extends TestCase
             [
                 'user_id' => $user->id,
                 'challenge_id' => $challenge->id,
-                'best_score' => $challenge
-                    ->base_points,
+                'best_score' => $challenge->base_points,
                 'is_completed' => true,
             ],
         );
@@ -81,10 +79,9 @@ class ChallengeSubmissionTest extends TestCase
         $user = $this->user();
         $challenge = $this->challenge();
 
-        $payload =
-            $this->correctPayload(
-                $challenge,
-            );
+        $payload = $this->correctPayload(
+            $challenge,
+        );
 
         $this->actingAs($user)
             ->post(
@@ -118,17 +115,16 @@ class ChallengeSubmissionTest extends TestCase
             Submission::query()->count(),
         );
 
-        $progress =
-            UserChallengeProgress::query()
-                ->where(
-                    'user_id',
-                    $user->id,
-                )
-                ->where(
-                    'challenge_id',
-                    $challenge->id,
-                )
-                ->firstOrFail();
+        $progress = UserChallengeProgress::query()
+            ->where(
+                'user_id',
+                $user->id,
+            )
+            ->where(
+                'challenge_id',
+                $challenge->id,
+            )
+            ->firstOrFail();
 
         $this->assertSame(
             2,
@@ -171,13 +167,11 @@ class ChallengeSubmissionTest extends TestCase
             ->assertRedirect();
 
         $expectedScore = (int) round(
-            $challenge->base_points
-            * 0.90,
+            $challenge->base_points * 0.90,
         );
 
-        $submission =
-            Submission::query()
-                ->firstOrFail();
+        $submission = Submission::query()
+            ->firstOrFail();
 
         $this->assertSame(
             10,
@@ -214,26 +208,24 @@ class ChallengeSubmissionTest extends TestCase
             )
             ->assertRedirect();
 
-        $submission =
-            Submission::query()
-                ->firstOrFail();
+        $submission = Submission::query()
+            ->firstOrFail();
 
         $this->assertNotSame(
             'completed',
             $submission->status,
         );
 
-        $progress =
-            UserChallengeProgress::query()
-                ->where(
-                    'user_id',
-                    $user->id,
-                )
-                ->where(
-                    'challenge_id',
-                    $challenge->id,
-                )
-                ->firstOrFail();
+        $progress = UserChallengeProgress::query()
+            ->where(
+                'user_id',
+                $user->id,
+            )
+            ->where(
+                'challenge_id',
+                $challenge->id,
+            )
+            ->firstOrFail();
 
         $this->assertFalse(
             $progress->is_completed,
@@ -257,9 +249,8 @@ class ChallengeSubmissionTest extends TestCase
             )
             ->assertRedirect();
 
-        $submission =
-            Submission::query()
-                ->firstOrFail();
+        $submission = Submission::query()
+            ->firstOrFail();
 
         $this->actingAs($user)
             ->get(
@@ -314,17 +305,15 @@ class ChallengeSubmissionTest extends TestCase
             )
             ->assertRedirect();
 
-        $submission =
-            Submission::query()
-                ->firstOrFail();
+        $submission = Submission::query()
+            ->firstOrFail();
 
-        $primary =
-            $challenge
-                ->solutions
-                ->firstWhere(
-                    'solution_type',
-                    'primary',
-                );
+        $primary = $challenge
+            ->solutions
+            ->firstWhere(
+                'solution_type',
+                'primary',
+            );
 
         $this->actingAs($user)
             ->get(
@@ -363,7 +352,7 @@ class ChallengeSubmissionTest extends TestCase
         return User::query()
             ->where(
                 'email',
-                'user@bughunt.test',
+                'rifqiuser@bughunt.test',
             )
             ->firstOrFail();
     }
@@ -385,18 +374,15 @@ class ChallengeSubmissionTest extends TestCase
     private function correctPayload(
         Challenge $challenge
     ): array {
-        $primary =
-            $challenge
-                ->solutions
-                ->firstWhere(
-                    'solution_type',
-                    'primary',
-                );
+        $primary = $challenge
+            ->solutions
+            ->firstWhere(
+                'solution_type',
+                'primary',
+            );
 
         $keywords = collect(
-            $primary
-                ?->required_keywords
-            ?? [],
+            $primary?->required_keywords ?? [],
         )->implode(' ');
 
         return [

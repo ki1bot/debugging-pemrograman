@@ -1,15 +1,15 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "ki1bot/bughunt",
+    "name": "ki1bot/debugging-pemrograman",
     "type": "project",
-    "description": "BugHunt - Platform Pembelajaran Debugging Pemrograman Berbasis Web",
+    "description": "Debugging Pemrograman - Platform Latihan Debugging Berbasis Web",
     "keywords": [
         "laravel",
         "react",
         "typescript",
         "debugging",
         "programming",
-        "bughunt"
+        "debugging-pemrograman"
     ],
     "license": "MIT",
     "require": {

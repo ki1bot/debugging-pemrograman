@@ -19,7 +19,7 @@ class AdminStatisticsController extends Controller
         $completedSubmissions = $this->getCompletedSubmissions();
 
         return Inertia::render(
-            'Admin/Statistics/Daftar',
+            'Admin/Statistics/Index',
             [
                 'summary' => [
                     'users' => User::query()

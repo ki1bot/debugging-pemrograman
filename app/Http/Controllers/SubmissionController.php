@@ -88,7 +88,7 @@ class SubmissionController extends Controller
         }
 
         return Inertia::render(
-            'Submissions/Detail',
+            'Submissions/Show',
             [
                 'submission' => [
                     'id' => $submission->id,
@@ -152,7 +152,7 @@ class SubmissionController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return Inertia::render('History/Daftar', [
+        return Inertia::render('History/Index', [
             'submissions' => $submissions,
         ]);
     }

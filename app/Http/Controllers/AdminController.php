@@ -53,7 +53,7 @@ class AdminController extends Controller
             ->limit(8)
             ->get();
 
-        return Inertia::render('Admin/Dasbor', [
+        return Inertia::render('Admin/Dashboard', [
             'summary' => [
                 'users' => User::query()
                     ->where('role', 'user')

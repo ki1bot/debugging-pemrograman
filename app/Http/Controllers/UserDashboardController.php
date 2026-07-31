@@ -63,7 +63,7 @@ class UserDashboardController extends Controller
                 ->get()
                 ->keyBy('challenge_id');
 
-        return Inertia::render('Dasbor', [
+        return Inertia::render('Dashboard', [
             'summary' => [
                 'totalPoints' => $user->total_points,
                 'completedChallenges' => $completedCount,

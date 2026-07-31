@@ -60,7 +60,7 @@ class AdminUserController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return Inertia::render('Admin/Users/Daftar', [
+        return Inertia::render('Admin/Users/Index', [
             'users' => $users,
             'filters' => [
                 'search' => $filters['search'] ?? '',

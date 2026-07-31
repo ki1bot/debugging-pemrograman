@@ -13,7 +13,7 @@ class AdminDifficultyController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('Admin/Difficulties/Daftar', [
+        return Inertia::render('Admin/Difficulties/Index', [
             'difficulties' => Difficulty::query()
                 ->withCount('challenges')
                 ->orderBy('base_points', 'asc')

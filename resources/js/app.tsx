@@ -4,10 +4,18 @@ import { createInertiaApp } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { createRoot } from "react-dom/client";
 
-const appName = import.meta.env.VITE_APP_NAME || "BugHunt";
+const appName = "Rifqi | Debugging Pemrograman";
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => {
+        const pageTitle = title?.trim();
+
+        if (!pageTitle || pageTitle === appName) {
+            return appName;
+        }
+
+        return `${pageTitle} | ${appName}`;
+    },
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.tsx`,

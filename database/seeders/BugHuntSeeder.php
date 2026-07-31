@@ -66,7 +66,7 @@ class BugHuntSeeder extends Seeder
                     'email' => $adminEmail,
                 ],
                 [
-                    'name' => 'Administrator BugHunt',
+                    'name' => 'Administrator Debugging Pemrograman',
                     'password' => Hash::make(
                         $adminPassword,
                     ),
@@ -77,17 +77,19 @@ class BugHuntSeeder extends Seeder
             );
 
             if ($isTesting || $isLocal) {
+                $demoTotalPoints = $isTesting ? 0 : 500;
+
                 User::query()->updateOrCreate(
                     [
-                        'email' => 'user@bughunt.test',
+                        'email' => 'rifqiuser@bughunt.test',
                     ],
                     [
-                        'name' => 'Pengguna Demo',
+                        'name' => 'Rifqi',
                         'password' => Hash::make(
                             'password',
                         ),
                         'role' => 'user',
-                        'total_points' => 0,
+                        'total_points' => $demoTotalPoints,
                         'email_verified_at' => now(),
                     ],
                 );
