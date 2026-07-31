@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
+use App\Models\Challenge;
 use App\Models\Difficulty;
 use App\Models\User;
+use App\Models\UserChallengeProgress;
 use Database\Seeders\Data\JavascriptChallenges;
 use Database\Seeders\Data\PhpChallenges;
 use Database\Seeders\Data\SqlChallenges;
@@ -75,12 +77,6 @@ class BugHuntSeeder extends Seeder
                     'email_verified_at' => now(),
                 ],
             );
-
-            if ($isTesting || $isLocal) {
-                $this->seedDemoUser(
-                    $isTesting,
-                );
-            }
 
             $categories = collect([
                 [
@@ -162,12 +158,24 @@ class BugHuntSeeder extends Seeder
                     ...SqlChallenges::all(),
                 ],
             );
+
+            if ($isTesting || $isLocal) {
+                $demoUser = $this->seedDemoUser(
+                    $isTesting,
+                );
+
+                if ($isLocal) {
+                    $this->seedDemoProgress(
+                        $demoUser,
+                    );
+                }
+            }
         });
     }
 
     private function seedDemoUser(
         bool $isTesting
-    ): void {
+    ): User {
         $legacyEmail = 'user@bughunt.test';
         $demoEmail = 'rifqiuser@bughunt.test';
 
@@ -208,6 +216,122 @@ class BugHuntSeeder extends Seeder
             'role' => 'user',
             'total_points' => $isTesting ? 0 : 500,
             'email_verified_at' => now(),
+        ]);
+
+        $user->save();
+
+        return $user;
+    }
+
+    private function seedDemoProgress(
+        User $user
+    ): void {
+        $easyDifficulty = Difficulty::query()
+            ->where(
+                'slug',
+                'mudah',
+            )
+            ->firstOrFail();
+
+        $mediumDifficulty = Difficulty::query()
+            ->where(
+                'slug',
+                'menengah',
+            )
+            ->firstOrFail();
+
+        $easyChallenges = Challenge::query()
+            ->where(
+                'difficulty_id',
+                $easyDifficulty->id,
+            )
+            ->where(
+                'status',
+                'published',
+            )
+            ->orderBy('id')
+            ->limit(9)
+            ->get();
+
+        $mediumChallenge = Challenge::query()
+            ->where(
+                'difficulty_id',
+                $mediumDifficulty->id,
+            )
+            ->where(
+                'status',
+                'published',
+            )
+            ->orderBy('id')
+            ->first();
+
+        if (
+            $easyChallenges->count() !== 9
+            || $mediumChallenge === null
+        ) {
+            throw new RuntimeException(
+                'Seeder progres demo membutuhkan sembilan tantangan mudah dan satu tantangan menengah yang berstatus published.',
+            );
+        }
+
+        $completedChallenges = $easyChallenges
+            ->concat([
+                $mediumChallenge,
+            ])
+            ->values();
+
+        $scores = [
+            46,
+            46,
+            46,
+            46,
+            46,
+            46,
+            46,
+            46,
+            40,
+            92,
+        ];
+
+        UserChallengeProgress::query()
+            ->where(
+                'user_id',
+                $user->id,
+            )
+            ->whereNotIn(
+                'challenge_id',
+                $completedChallenges->pluck('id'),
+            )
+            ->update([
+                'is_completed' => false,
+                'completed_at' => null,
+            ]);
+
+        foreach (
+            $completedChallenges as $index => $challenge
+        ) {
+            UserChallengeProgress::query()->updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'challenge_id' => $challenge->id,
+                ],
+                [
+                    'best_submission_id' => null,
+                    'best_score' => $scores[$index],
+                    'attempts_count' => 1,
+                    'hints_used' => 0,
+                    'hint_penalty' => 0,
+                    'unlocked_hint_ids' => [],
+                    'is_completed' => true,
+                    'completed_at' => now(),
+                ],
+            );
+        }
+
+        $user->forceFill([
+            'total_points' => array_sum(
+                $scores,
+            ),
         ]);
 
         $user->save();
