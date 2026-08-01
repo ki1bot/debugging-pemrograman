@@ -31,13 +31,13 @@ export default function ChallengeCard({ challenge }: ChallengeCardProps) {
         : 0;
 
     return (
-        <article className="nb-card group relative flex h-full flex-col overflow-hidden bg-white p-6">
+        <article className="nb-card group relative flex h-full min-w-0 flex-col overflow-hidden bg-white p-5 sm:p-6">
             <div
                 aria-hidden="true"
                 className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-gradient-to-br from-[#8dd4fa]/30 to-[#9c88f7]/30"
             />
 
-            <div className="relative mb-5 flex flex-wrap items-center justify-between gap-3">
+            <div className="relative mb-5 flex flex-wrap items-start justify-between gap-3">
                 <span
                     className={`nb-badge ${
                         categoryBackground[challenge.category.slug] ??
@@ -59,7 +59,7 @@ export default function ChallengeCard({ challenge }: ChallengeCardProps) {
                 </span>
             </div>
 
-            <h3 className="relative text-2xl font-black leading-tight tracking-[-0.035em] text-[#21162f]">
+            <h3 className="relative break-words text-xl font-black leading-tight tracking-[-0.035em] text-[#21162f] sm:text-2xl">
                 {challenge.title}
             </h3>
 
@@ -69,8 +69,8 @@ export default function ChallengeCard({ challenge }: ChallengeCardProps) {
 
             {challenge.progress && (
                 <div className="relative mt-5 rounded-2xl border border-[#21162f]/10 bg-[#f8f6fc] p-4">
-                    <div className="flex items-center justify-between gap-3 text-xs font-black uppercase tracking-wide">
-                        <span className="inline-flex items-center gap-1.5">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-black uppercase tracking-wide">
+                        <span className="inline-flex min-w-0 items-center gap-1.5">
                             <CheckCircle2
                                 className="h-4 w-4"
                                 strokeWidth={2.8}
@@ -80,7 +80,9 @@ export default function ChallengeCard({ challenge }: ChallengeCardProps) {
                                 : "Belum selesai"}
                         </span>
 
-                        <span>{challenge.progress.best_score} poin</span>
+                        <span className="whitespace-nowrap">
+                            {challenge.progress.best_score} poin
+                        </span>
                     </div>
 
                     <div className="mt-3 h-3 overflow-hidden rounded-full border-2 border-[#21162f] bg-white">
@@ -94,15 +96,15 @@ export default function ChallengeCard({ challenge }: ChallengeCardProps) {
                 </div>
             )}
 
-            <div className="relative mt-6 flex items-center justify-between gap-4 border-t border-[#21162f]/10 pt-5">
-                <strong className="inline-flex items-center gap-2 text-sm font-black text-[#21162f]">
+            <div className="relative mt-6 flex flex-col items-stretch gap-4 border-t border-[#21162f]/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                <strong className="inline-flex items-center justify-center gap-2 text-center text-sm font-black text-[#21162f] sm:justify-start sm:text-left">
                     <Trophy className="h-4 w-4" strokeWidth={2.7} />
                     Hingga {challenge.base_points} poin
                 </strong>
 
                 <Link
                     href={route("challenges.show", challenge.slug)}
-                    className="nb-button nb-button-primary text-sm"
+                    className="nb-button nb-button-primary w-full text-sm sm:w-auto"
                 >
                     Buka Tantangan
                     <ArrowRight className="h-4 w-4" strokeWidth={2.8} />

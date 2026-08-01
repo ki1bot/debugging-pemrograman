@@ -30,8 +30,8 @@ export default function PublicHeader() {
 
     return (
         <header className="sticky top-0 z-50 border-b border-[#21162f]/10 bg-[#fbfaff]/85 backdrop-blur-xl">
-            <div className="mx-auto flex max-w-7xl items-center justify-between gap-5 px-4 py-4 sm:px-6 lg:px-8">
-                <ApplicationLogo />
+            <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3.5 sm:gap-5 sm:px-6 sm:py-4 lg:px-8">
+                <ApplicationLogo className="min-w-0" />
 
                 <nav className="hidden items-center rounded-2xl border border-[#21162f]/10 bg-white/75 p-1.5 shadow-sm lg:flex">
                     {publicNavigation.map((item) => {
@@ -95,7 +95,7 @@ export default function PublicHeader() {
                 <button
                     type="button"
                     onClick={() => setOpen((value) => !value)}
-                    className="nb-button nb-button-primary h-11 min-h-0 w-11 p-0 lg:hidden"
+                    className="nb-button nb-button-primary h-11 min-h-0 w-11 shrink-0 p-0 lg:hidden"
                     aria-label={open ? "Tutup navigasi" : "Buka navigasi"}
                     aria-expanded={open}
                     aria-controls="public-mobile-navigation"
@@ -111,7 +111,7 @@ export default function PublicHeader() {
             {open && (
                 <div
                     id="public-mobile-navigation"
-                    className="border-t border-[#21162f]/10 bg-[#fbfaff]/95 px-4 py-4 backdrop-blur-xl lg:hidden"
+                    className="max-h-[calc(100dvh-68px)] overflow-y-auto border-t border-[#21162f]/10 bg-[#fbfaff]/95 px-4 py-4 backdrop-blur-xl lg:hidden"
                 >
                     <div className="mx-auto grid max-w-7xl gap-2">
                         {publicNavigation.map((item) => {
@@ -152,11 +152,11 @@ export default function PublicHeader() {
                                 Dashboard
                             </Link>
                         ) : (
-                            <div className="mt-2 grid grid-cols-2 gap-3">
+                            <div className="mt-2 grid grid-cols-1 gap-3 min-[380px]:grid-cols-2">
                                 <Link
                                     href={route("login")}
                                     onClick={() => setOpen(false)}
-                                    className="nb-button nb-button-light"
+                                    className="nb-button nb-button-light w-full"
                                 >
                                     <LogIn
                                         className="h-4 w-4"
@@ -168,7 +168,7 @@ export default function PublicHeader() {
                                 <Link
                                     href={route("register")}
                                     onClick={() => setOpen(false)}
-                                    className="nb-button nb-button-primary"
+                                    className="nb-button nb-button-primary w-full"
                                 >
                                     <UserPlus
                                         className="h-4 w-4"

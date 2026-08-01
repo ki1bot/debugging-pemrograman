@@ -1,0 +1,203 @@
+html,
+body,
+#app {
+    width: 100%;
+    max-width: 100%;
+}
+
+#app {
+    overflow-x: clip;
+}
+
+main,
+header,
+footer,
+section,
+article,
+aside,
+nav,
+form {
+    min-width: 0;
+}
+
+img,
+video,
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+svg {
+    flex-shrink: 0;
+}
+
+pre,
+code {
+    max-width: 100%;
+}
+
+.code-editor-shell,
+.code-editor-shell .cm-editor,
+.code-editor-shell .cm-scroller {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.code-editor-shell .cm-scroller {
+    overflow: auto;
+}
+
+@media (max-width: 640px) {
+    .neo-container {
+        width: min(100% - 1.25rem, 76rem);
+    }
+
+    .nb-card {
+        border-radius: 1rem;
+        box-shadow: 4px 4px 0 var(--neo-ink);
+    }
+
+    .nb-card:hover {
+        transform: none;
+        box-shadow: 4px 4px 0 var(--neo-ink);
+    }
+
+    .nb-card-soft {
+        border-radius: 0.9rem;
+        box-shadow: 3px 3px 0 var(--neo-ink);
+    }
+
+    .nb-button {
+        min-width: 0;
+        max-width: 100%;
+        min-height: 42px;
+        gap: 0.45rem;
+        padding: 0.7rem 0.85rem;
+        line-height: 1.2;
+        text-align: center;
+        white-space: normal;
+        box-shadow: 3px 4px 0 var(--neo-ink);
+    }
+
+    .nb-button:disabled {
+        box-shadow: 3px 4px 0 var(--neo-ink);
+    }
+
+    .nb-input {
+        padding: 0.75rem 0.8rem;
+        font-size: 16px;
+        box-shadow: 2px 3px 0 var(--neo-ink);
+    }
+
+    select.nb-input {
+        padding-right: 2.25rem;
+    }
+
+    .nb-badge {
+        min-width: 0;
+        max-width: 100%;
+        padding: 0.3rem 0.6rem;
+        line-height: 1.25;
+        text-align: left;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        box-shadow: 2px 2px 0 var(--neo-ink);
+    }
+
+    .neo-icon-box {
+        box-shadow: 3px 3px 0 var(--neo-ink);
+    }
+
+    .page-title {
+        font-size: clamp(2.15rem, 12vw, 3.35rem);
+        line-height: 1.02;
+        letter-spacing: -0.05em;
+        overflow-wrap: anywhere;
+    }
+
+    .section-title {
+        font-size: clamp(1.8rem, 9vw, 2.65rem);
+        line-height: 1.05;
+        letter-spacing: -0.045em;
+        overflow-wrap: anywhere;
+    }
+
+    .code-editor-shell {
+        border-radius: 0.85rem;
+        box-shadow: 4px 4px 0 var(--neo-ink);
+    }
+
+    .code-editor-shell .cm-editor {
+        font-size: 12px;
+    }
+
+    .code-editor-shell .cm-content {
+        padding-inline: 0.25rem;
+    }
+
+    .code-editor-shell .cm-gutters {
+        min-width: 2.2rem;
+    }
+
+    .code-line {
+        grid-template-columns: 2.5rem minmax(0, 1fr);
+    }
+
+    .code-line-number {
+        padding: 0.45rem 0.35rem;
+        font-size: 0.75rem;
+    }
+
+    .code-line-content {
+        padding: 0.45rem 0.55rem;
+        font-size: 0.78rem;
+    }
+
+    .nb-table {
+        box-shadow: 4px 4px 0 var(--neo-ink);
+    }
+
+    .nb-table th,
+    .nb-table td {
+        padding: 0.55rem;
+        font-size: 0.82rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .page-title {
+        font-size: clamp(2rem, 11.5vw, 2.75rem);
+    }
+
+    .section-title {
+        font-size: clamp(1.7rem, 9vw, 2.25rem);
+    }
+
+    .nb-button {
+        padding-inline: 0.7rem;
+        font-size: 0.875rem;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .nb-card:hover {
+        transform: none;
+        box-shadow: 8px 8px 0 var(--neo-ink);
+    }
+
+    .nb-button:hover {
+        transform: none;
+        box-shadow: 4px 5px 0 var(--neo-ink);
+        filter: none;
+    }
+
+    @media (max-width: 640px) {
+        .nb-card:hover {
+            box-shadow: 4px 4px 0 var(--neo-ink);
+        }
+
+        .nb-button:hover {
+            box-shadow: 3px 4px 0 var(--neo-ink);
+        }
+    }
+}

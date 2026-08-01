@@ -31,8 +31,8 @@ export default function AuthenticatedHeader() {
 
     return (
         <header className="sticky top-0 z-50 border-b border-[#21162f]/10 bg-[#fbfaff]/85 backdrop-blur-xl">
-            <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-                <ApplicationLogo />
+            <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3.5 sm:gap-4 sm:px-6 sm:py-4 lg:px-8">
+                <ApplicationLogo className="min-w-0" />
 
                 <nav className="hidden items-center rounded-2xl border border-[#21162f]/10 bg-white/75 p-1.5 shadow-sm xl:flex">
                     {authenticatedNavigation.map((item) => {
@@ -103,7 +103,7 @@ export default function AuthenticatedHeader() {
                 <button
                     type="button"
                     onClick={() => setOpen((value) => !value)}
-                    className="nb-button nb-button-primary h-11 min-h-0 w-11 p-0 xl:hidden"
+                    className="nb-button nb-button-primary h-11 min-h-0 w-11 shrink-0 p-0 xl:hidden"
                     aria-label={open ? "Tutup navigasi" : "Buka navigasi"}
                     aria-expanded={open}
                     aria-controls="authenticated-mobile-navigation"
@@ -119,12 +119,12 @@ export default function AuthenticatedHeader() {
             {open && (
                 <div
                     id="authenticated-mobile-navigation"
-                    className="border-t border-[#21162f]/10 bg-[#fbfaff]/95 px-4 py-4 backdrop-blur-xl xl:hidden"
+                    className="max-h-[calc(100dvh-68px)] overflow-y-auto border-t border-[#21162f]/10 bg-[#fbfaff]/95 px-4 py-4 backdrop-blur-xl xl:hidden"
                 >
                     <div className="mx-auto grid max-w-7xl gap-2">
                         <div className="mb-2 rounded-2xl border border-[#21162f]/10 bg-white p-4 shadow-sm">
-                            <div className="flex items-center gap-3">
-                                <span className="neo-icon-box h-11 w-11 bg-gradient-to-br from-[#8dd4fa] to-[#9c88f7]">
+                            <div className="flex min-w-0 items-center gap-3">
+                                <span className="neo-icon-box h-11 w-11 shrink-0 bg-gradient-to-br from-[#8dd4fa] to-[#9c88f7]">
                                     <UserRound
                                         className="h-5 w-5"
                                         strokeWidth={2.6}
@@ -186,11 +186,11 @@ export default function AuthenticatedHeader() {
                             </Link>
                         )}
 
-                        <div className="mt-2 grid grid-cols-2 gap-3">
+                        <div className="mt-2 grid grid-cols-1 gap-3 min-[380px]:grid-cols-2">
                             <Link
                                 href={route("profile.edit")}
                                 onClick={() => setOpen(false)}
-                                className="nb-button nb-button-secondary"
+                                className="nb-button nb-button-secondary w-full"
                             >
                                 <UserRound
                                     className="h-4 w-4"
@@ -203,7 +203,7 @@ export default function AuthenticatedHeader() {
                                 href={route("logout")}
                                 method="post"
                                 as="button"
-                                className="nb-button bg-[#ffd2df]"
+                                className="nb-button w-full bg-[#ffd2df]"
                             >
                                 <LogOut className="h-4 w-4" strokeWidth={2.7} />
                                 Keluar
