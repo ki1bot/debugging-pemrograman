@@ -1,267 +1,310 @@
-# BugHunt
+# Debugging Pemrograman
 
-**BugHunt** adalah platform pembelajaran debugging pemrograman berbasis web. Aplikasi ini menyediakan berbagai tantangan berupa potongan kode yang sengaja memiliki kesalahan.
+**Debugging Pemrograman** adalah aplikasi web untuk melatih kemampuan menemukan, memahami, dan memperbaiki kesalahan pada kode program.
 
-Pengguna tidak hanya diminta memperbaiki kode, tetapi juga harus menemukan lokasi kesalahan dan menjelaskan penyebabnya. Dengan cara ini, pengguna dapat belajar memahami sebuah error, bukan sekadar menyalin jawaban yang benar.
+Pengguna tidak hanya diminta memberikan kode yang benar. Dalam setiap tantangan, pengguna harus menentukan baris yang bermasalah, memperbaiki kode, menjalankan kode untuk menguji hasilnya, dan menjelaskan penyebab kesalahan tersebut.
 
-## Tentang Proyek
+Aplikasi ini dibuat agar proses belajar debugging tidak berhenti pada menyalin jawaban, tetapi membantu pengguna memahami mengapa sebuah kesalahan terjadi dan bagaimana cara memperbaikinya.
 
-Kemampuan debugging merupakan salah satu kemampuan penting dalam pemrograman. Seorang programmer perlu mampu membaca kode, menemukan sumber masalah, memahami penyebab kesalahan, dan menentukan solusi yang tepat.
+## Fitur Utama
 
-BugHunt dibuat sebagai media latihan debugging yang interaktif. Setiap tantangan memiliki kode bermasalah, lokasi bug, solusi utama, alternatif solusi, hint, dan pembahasan.
+BugHunt memiliki fitur untuk pengunjung, pengguna terdaftar, dan administrator.
 
-Untuk menjaga keamanan server, BugHunt tidak menjalankan kode pengguna menggunakan `eval()`, perintah shell, compiler, atau terminal server. Jawaban pengguna diperiksa dengan membandingkannya terhadap solusi yang telah disiapkan oleh administrator.
+### Fitur Publik
 
-## Tujuan
+Pengunjung dapat:
 
-BugHunt dikembangkan dengan tujuan:
-
-- Membantu pengguna meningkatkan kemampuan membaca kode.
-- Melatih kemampuan menemukan lokasi bug.
-- Melatih kemampuan memperbaiki kode.
-- Membantu pengguna memahami penyebab sebuah error.
-- Menyediakan latihan debugging yang lebih interaktif.
-- Menyimpan perkembangan belajar melalui riwayat dan sistem poin.
-- Menyediakan pengelolaan tantangan melalui halaman administrator.
-
-## Kategori Tantangan
-
-Versi awal BugHunt memiliki tiga kategori:
-
-- JavaScript
-- PHP
-- SQL
-
-Setiap kategori memiliki delapan tantangan dengan pembagian berikut:
-
-| Tingkat kesulitan | Jumlah per kategori |
-| ----------------- | ------------------: |
-| Mudah             |                   3 |
-| Menengah          |                   3 |
-| Sulit             |                   2 |
-| Total             |                   8 |
-
-Total tantangan awal yang tersedia adalah **24 tantangan**.
-
-## Cara Kerja Tantangan
-
-Setiap tantangan memiliki tiga tahap utama.
-
-### 1. Menemukan lokasi bug
-
-Pengguna memilih nomor baris yang dianggap mengandung kesalahan.
-
-### 2. Memperbaiki kode
-
-Pengguna mengubah kode bermasalah melalui editor CodeMirror.
-
-### 3. Menjelaskan penyebabnya
-
-Pengguna menulis penjelasan mengenai penyebab bug dan alasan perbaikannya.
-
-Setelah jawaban dikirim, sistem akan memeriksa lokasi baris, kode perbaikan, dan kata kunci pada penjelasan.
-
-## Fitur Pengguna
-
-Pengguna dapat:
-
-- Melakukan registrasi.
-- Login dan logout.
-- Melihat dashboard pengguna.
-- Melihat daftar tantangan.
-- Mencari tantangan.
-- Memfilter tantangan berdasarkan kategori.
+- Membuka halaman utama.
+- Membaca informasi tentang aplikasi.
+- Melihat daftar tantangan yang tersedia.
+- Mencari tantangan berdasarkan judul atau deskripsi.
+- Memfilter tantangan berdasarkan bahasa pemrograman.
 - Memfilter tantangan berdasarkan tingkat kesulitan.
-- Melihat detail tantangan.
-- Memilih baris kode yang salah.
-- Memperbaiki kode melalui CodeMirror.
-- Menulis penjelasan penyebab bug.
+- Melihat leaderboard pengguna.
+
+### Fitur Pengguna
+
+Pengguna yang telah login dapat:
+
+- Melihat dashboard pribadi.
+- Membuka detail tantangan.
+- Memilih baris kode yang dianggap memiliki bug.
+- Mengedit kode melalui editor CodeMirror.
+- Menjalankan kode melalui layanan Judge0.
+- Menggunakan input standar atau `stdin` ketika menjalankan kode.
 - Membuka hint secara berurutan.
-- Mengirim jawaban.
-- Melihat hasil penilaian.
-- Melihat skor setiap bagian jawaban.
-- Melihat penalti hint.
-- Melihat pembahasan setelah tantangan selesai.
-- Melihat solusi utama dan alternatif solusi.
+- Mengirimkan kode hasil perbaikan.
+- Menjelaskan penyebab bug.
+- Melihat nilai setiap bagian jawaban.
+- Melihat penalti penggunaan hint.
+- Melihat solusi dan pembahasan setelah tantangan diselesaikan.
 - Melihat riwayat pengerjaan.
-- Melihat total poin.
-- Melihat leaderboard.
+- Melihat skor terbaik untuk setiap tantangan.
+- Mengumpulkan poin.
+- Mengikuti leaderboard.
 - Mengubah profil.
 - Mengubah password.
+- Menghapus akun.
+- Melakukan reset password.
 
-## Fitur Administrator
+### Fitur Administrator
 
 Administrator dapat:
 
-- Login melalui akun administrator.
-- Melihat dashboard administrator.
+- Membuka dashboard administrator.
 - Melihat statistik aplikasi.
-- Mengelola kategori.
+- Mengelola kategori bahasa pemrograman.
 - Mengelola tingkat kesulitan.
 - Menambahkan tantangan.
 - Mengubah tantangan.
-- Menonaktifkan atau mengarsipkan tantangan.
-- Mengatur kode yang bermasalah.
-- Mengatur lokasi baris bug.
-- Mengatur pembahasan.
-- Mengatur hint.
-- Mengatur penalti hint.
-- Mengatur solusi utama.
-- Mengatur alternatif solusi.
-- Mengatur kata kunci penjelasan.
-- Mengatur poin tantangan.
-- Mengatur status publikasi.
-- Melihat data pengguna.
+- Menghapus tantangan menggunakan mekanisme soft delete.
+- Mengatur status tantangan menjadi `draft`, `published`, atau `inactive`.
+- Mengatur kode yang memiliki bug.
+- Menentukan nomor baris yang bermasalah.
+- Mengatur pembahasan tantangan.
+- Mengatur poin dasar tantangan.
+- Menambahkan hingga lima hint.
+- Mengatur penalti setiap hint.
+- Menentukan satu solusi utama.
+- Menambahkan beberapa solusi alternatif.
+- Mengatur kata kunci jawaban penjelasan.
+- Melihat daftar pengguna.
 - Mengubah role pengguna.
 - Melihat seluruh submission.
-- Melihat detail hasil pengerjaan pengguna.
+- Melihat hasil pengerjaan setiap pengguna.
 
-## Role Pengguna
+## Bahasa Pemrograman
 
-BugHunt mempunyai dua role utama.
+Seeder utama menyediakan delapan kategori bahasa pemrograman:
 
-### User
+| Bahasa     |
+| ---------- |
+| C          |
+| C++        |
+| Go         |
+| Java       |
+| JavaScript |
+| PHP        |
+| Python     |
+| SQL        |
 
-User dapat mengerjakan tantangan, membuka hint, memperoleh poin, melihat riwayat, dan mengikuti leaderboard.
+Setiap bahasa memiliki delapan tantangan dengan pembagian:
 
-### Admin
+| Tingkat kesulitan | Jumlah per bahasa | Poin dasar |
+| ----------------- | ----------------: | ---------: |
+| Mudah             |                 3 |         50 |
+| Menengah          |                 3 |        100 |
+| Sulit             |                 2 |        150 |
+| **Total**         |             **8** |          — |
 
-Admin dapat mengelola seluruh data utama aplikasi, termasuk kategori, tingkat kesulitan, tantangan, hint, solusi, pengguna, submission, dan statistik.
+Total tantangan yang dibuat oleh seeder adalah:
+
+```text
+8 bahasa × 8 tantangan = 64 tantangan
+```
+
+Setiap tantangan memiliki kode bermasalah, nomor baris bug, pembahasan, hint, solusi utama, dan dapat memiliki solusi alternatif.
+
+## Cara Kerja Tantangan
+
+Setiap tantangan memiliki beberapa tahapan.
+
+### 1. Menentukan lokasi bug
+
+Pengguna memilih nomor baris yang dianggap menjadi sumber kesalahan.
+
+### 2. Memperbaiki kode
+
+Pengguna memperbaiki kode melalui editor CodeMirror yang telah menyesuaikan syntax highlighting berdasarkan bahasa tantangan.
+
+### 3. Menjalankan kode
+
+Kode dapat dijalankan melalui Judge0 sebelum dikirim sebagai jawaban.
+
+Hasil eksekusi dapat menampilkan:
+
+- Standard output.
+- Standard error.
+- Compile output.
+- Status eksekusi.
+- Waktu eksekusi.
+- Penggunaan memori.
+
+### 4. Menjelaskan penyebab bug
+
+Pengguna harus menulis penjelasan mengenai kesalahan yang ditemukan dan alasan dari perbaikan yang dilakukan.
+
+Penjelasan harus memiliki panjang minimal 20 karakter dan maksimal 3.000 karakter.
+
+### 5. Mengirim jawaban
+
+Sistem akan memeriksa:
+
+- Nomor baris yang dipilih.
+- Kode hasil perbaikan.
+- Kata kunci pada penjelasan.
+- Penalti dari hint yang telah dibuka.
 
 ## Sistem Penilaian
 
-Setiap jawaban dinilai menggunakan tiga komponen:
+Nilai setiap jawaban dibagi menjadi tiga komponen:
 
-| Komponen                   | Bobot |
-| -------------------------- | ----: |
-| Menemukan baris yang salah |   30% |
-| Memperbaiki kode           |   50% |
-| Menjelaskan penyebab bug   |   20% |
-| Total                      |  100% |
+| Komponen                 |    Bobot |
+| ------------------------ | -------: |
+| Menentukan baris bug     |      30% |
+| Memperbaiki kode         |      50% |
+| Menjelaskan penyebab bug |      20% |
+| **Total**                | **100%** |
 
-Poin maksimum ditentukan berdasarkan tingkat kesulitan:
+Kode pengguna dibandingkan dengan solusi utama dan solusi alternatif yang tersedia.
 
-| Tingkat kesulitan | Poin maksimum |
-| ----------------- | ------------: |
-| Mudah             |            50 |
-| Menengah          |           100 |
-| Sulit             |           150 |
+Sebelum dibandingkan, sistem melakukan normalisasi kode dengan cara:
 
-Penggunaan hint mengurangi skor akhir:
+- Menyamakan line ending.
+- Menghapus baris kosong.
+- Menghapus whitespace format yang tidak penting.
+- Mempertahankan isi whitespace di dalam string.
+- Membandingkan hasil normalisasi menggunakan hash.
+
+Penilaian penjelasan menggunakan pencocokan kata kunci. Tantangan dianggap selesai apabila:
+
+- Nomor baris bug benar.
+- Kode hasil perbaikan benar.
+- Penjelasan memuat minimal 60% kata kunci yang diperlukan.
+
+Status submission terdiri dari:
+
+| Status              | Keterangan                         |
+| ------------------- | ---------------------------------- |
+| `incorrect`         | Seluruh bagian jawaban belum benar |
+| `partially_correct` | Sebagian jawaban sudah benar       |
+| `completed`         | Tantangan berhasil diselesaikan    |
+
+## Hint dan Penalti
+
+Seeder menyediakan dua hint untuk setiap tantangan:
 
 | Hint         | Penalti |
 | ------------ | ------: |
 | Hint pertama |     10% |
 | Hint kedua   |     20% |
 
-Total poin pengguna dihitung dari skor terbaik pada setiap tantangan. Mengirim jawaban berulang kali pada tantangan yang sama tidak menggandakan poin.
+Hint harus dibuka secara berurutan.
 
-Apabila pengguna memperoleh skor yang lebih tinggi, sistem hanya menambahkan selisih antara skor baru dan skor terbaik sebelumnya.
+Administrator dapat mengatur hingga lima hint untuk setiap tantangan dan menentukan sendiri nilai penalti masing-masing hint.
 
-## Status Jawaban
+Penalti diterapkan terhadap nilai jawaban setelah seluruh komponen nilai dihitung.
 
-Submission dapat memiliki salah satu status berikut:
+## Poin dan Progres Pengguna
 
-- `incorrect`
-- `partially_correct`
-- `completed`
+Sistem hanya menggunakan skor terbaik pengguna pada setiap tantangan.
 
-Solusi utama, alternatif solusi, lokasi baris bug, dan pembahasan lengkap baru ditampilkan setelah challenge berhasil diselesaikan.
+Apabila pengguna mengerjakan tantangan yang sama beberapa kali:
 
-## Validasi Jawaban
+- Poin tidak digandakan.
+- Sistem membandingkan skor baru dengan skor terbaik sebelumnya.
+- Apabila skor baru lebih tinggi, hanya selisih nilainya yang ditambahkan ke total poin.
+- Apabila skor baru lebih rendah, total poin tidak berkurang.
 
-BugHunt tidak menjalankan kode yang dikirim pengguna.
+Mekanisme ini mencegah pengguna mendapatkan poin berulang kali dari tantangan yang sama.
 
-Validasi dilakukan dengan cara:
+## Eksekusi Kode dengan Judge0
 
-- Membandingkan nomor baris yang dipilih dengan lokasi bug.
-- Menyamakan line ending.
-- Menghapus baris kosong.
-- Mengabaikan whitespace format yang tidak penting.
-- Mempertahankan whitespace yang berada di dalam string.
-- Membandingkan jawaban dengan solusi utama.
-- Membandingkan jawaban dengan alternatif solusi.
-- Memeriksa kata kunci pada penjelasan.
-- Menghitung penalti berdasarkan hint yang telah dibuka.
+BugHunt menggunakan layanan **Judge0** untuk menjalankan kode.
 
-Penilaian penjelasan menggunakan pencocokan kata kunci sederhana. Sistem tidak mengklaim dapat memahami seluruh jawaban pengguna secara semantik.
+Bahasa yang dapat dijalankan:
+
+- C
+- C++
+- Go
+- Java
+- JavaScript
+- PHP
+- Python
+- SQL
+
+Eksekusi kode memiliki batasan:
+
+| Batasan                |           Nilai |
+| ---------------------- | --------------: |
+| Panjang source code    | 20.000 karakter |
+| Panjang `stdin`        |  5.000 karakter |
+| CPU time               |         2 detik |
+| Wall time              |         5 detik |
+| Memori                 |          128 MB |
+| Ukuran file maksimum   |            1 MB |
+| Akses jaringan program |   Dinonaktifkan |
+
+Token hasil eksekusi hanya disimpan pada session pengguna selama lima menit.
+
+Endpoint eksekusi juga dilindungi menggunakan rate limiting.
+
+Perlu diperhatikan bahwa fitur menjalankan kode dan fitur penilaian jawaban adalah dua proses yang berbeda.
+
+Judge0 digunakan agar pengguna dapat menguji kode. Penilaian akhir tetap dilakukan oleh aplikasi dengan membandingkan jawaban terhadap solusi yang telah disimpan.
 
 ## Teknologi
 
 ### Backend
 
-- PHP 8.3 atau lebih baru
-- Laravel 13
-- Laravel Breeze
-- Inertia.js
-- PostgreSQL
+- PHP 8.3 atau lebih baru.
+- Laravel 13.
+- Laravel Breeze.
+- Laravel Sanctum.
+- Inertia.js 2.
+- PostgreSQL.
+- PHPUnit 12.
 
 ### Frontend
 
-- React 18
-- TypeScript
-- Tailwind CSS 4
-- CodeMirror
-- Recharts
-- Vite
+- React 18.
+- TypeScript 5.
+- Tailwind CSS 4.
+- Vite 8.
+- CodeMirror 6.
+- Recharts.
+- Headless UI.
+- Base UI.
+- shadcn.
+- Lucide React.
+- Hugeicons.
 
-### Peralatan Pengembangan
+### Layanan Eksternal
 
-- Composer
-- Node.js
-- npm
-- Git
-- Visual Studio Code
-- Browser modern
-
-## Struktur Database
-
-BugHunt menggunakan sembilan tabel utama:
-
-| Tabel                     | Kegunaan                                   |
-| ------------------------- | ------------------------------------------ |
-| `users`                   | Menyimpan akun, role, dan total poin       |
-| `categories`              | Menyimpan kategori bahasa                  |
-| `difficulties`            | Menyimpan tingkat kesulitan dan poin dasar |
-| `challenges`              | Menyimpan data utama tantangan             |
-| `challenge_hints`         | Menyimpan hint dan penalti                 |
-| `challenge_solutions`     | Menyimpan solusi dan kata kunci            |
-| `submissions`             | Menyimpan jawaban pengguna                 |
-| `submission_attempts`     | Menyimpan snapshot hasil penilaian         |
-| `user_challenge_progress` | Menyimpan progres dan skor terbaik         |
-
-Diagram database dan diagram sistem tersedia pada folder:
-
-```text
-database/diagram/
-```
+- Judge0 untuk menjalankan kode.
 
 ## Persyaratan Sistem
 
 Pastikan perangkat telah memiliki:
 
-- PHP 8.3 atau lebih baru
-- Composer
-- Node.js
-- npm
-- PostgreSQL
-- Git
-- Browser modern
+- PHP 8.3 atau lebih baru.
+- Composer 2.
+- Node.js 22 atau lebih baru.
+- npm.
+- PostgreSQL.
+- Git.
+- Browser modern.
+- Akses ke server Judge0.
 
 Ekstensi PHP yang diperlukan:
 
 ```text
 ctype
+curl
+dom
 fileinfo
-json
+filter
 mbstring
 openssl
+pdo
 pdo_pgsql
 tokenizer
 xml
 ```
 
 ## Instalasi
+
+Seluruh perintah berikut dapat dijalankan melalui Git Bash.
 
 ### 1. Clone repository
 
@@ -270,7 +313,7 @@ git clone https://github.com/ki1bot/debugging-pemrograman.git
 cd debugging-pemrograman
 ```
 
-### 2. Instal dependency Laravel
+### 2. Instal dependency backend
 
 ```bash
 composer install
@@ -282,56 +325,73 @@ composer install
 npm install
 ```
 
-### 4. Buat file environment
-
-Untuk Git Bash atau Linux:
+Untuk instalasi yang mengikuti versi dependency pada `package-lock.json`, gunakan:
 
 ```bash
-cp .env.example .env
+npm ci
 ```
 
-Untuk PowerShell:
+### 4. Buat database PostgreSQL
 
-```powershell
-Copy-Item .env.example .env
+Buat database PostgreSQL baru, misalnya:
+
+```text
+debuggingpemrograman
 ```
 
-Lewati langkah ini apabila file `.env` sudah tersedia.
+Nama database, username, dan password dapat disesuaikan dengan konfigurasi PostgreSQL pada perangkat masing-masing.
 
-### 5. Generate application key
+### 5. Konfigurasi environment
 
-```bash
-php artisan key:generate
-```
-
-## Konfigurasi Environment
-
-Buka file `.env`, kemudian sesuaikan konfigurasi aplikasi dan PostgreSQL.
-
-Contoh:
+Buka file `.env`, kemudian sesuaikan konfigurasi berikut:
 
 ```env
-APP_NAME=BugHunt
+APP_NAME="Debugging Pemrograman"
 APP_ENV=local
 APP_KEY=
 APP_DEBUG=true
-APP_URL=http://localhost:8000
+APP_URL=http://127.0.0.1:8000
 
 DB_CONNECTION=pgsql
 DB_HOST=localhost
 DB_PORT=5432
 DB_DATABASE=debuggingpemrograman
-DB_USERNAME=root
+DB_USERNAME=postgres
 DB_PASSWORD=
 ```
 
-Sesuaikan nama database, username, dan password dengan PostgreSQL yang digunakan pada perangkat masing-masing.
+Jangan mengunggah file `.env` ke repository karena file tersebut dapat berisi password, token, dan informasi sensitif lainnya.
 
-File `.env` berisi konfigurasi lokal dan informasi sensitif. Jangan mengunggah file tersebut ke repository publik.
+### 6. Konfigurasi Judge0
 
-## Migration dan Seeder
+Secara default, aplikasi menggunakan:
 
-Jalankan migration sekaligus seeder:
+```env
+JUDGE0_BASE_URL=https://ce.judge0.com
+```
+
+Apabila layanan Judge0 membutuhkan API key atau token, tambahkan:
+
+```env
+JUDGE0_API_KEY=
+JUDGE0_RAPIDAPI_HOST=
+JUDGE0_AUTH_TOKEN=
+```
+
+ID runtime setiap bahasa juga dapat disesuaikan:
+
+```env
+JUDGE0_LANGUAGE_C=103
+JUDGE0_LANGUAGE_CPP=105
+JUDGE0_LANGUAGE_GO=107
+JUDGE0_LANGUAGE_JAVA=91
+JUDGE0_LANGUAGE_JAVASCRIPT=102
+JUDGE0_LANGUAGE_PHP=98
+JUDGE0_LANGUAGE_PYTHON=100
+JUDGE0_LANGUAGE_SQL=82
+```
+
+### 7. Jalankan migration dan seeder
 
 ```bash
 php artisan migrate --seed
@@ -339,19 +399,19 @@ php artisan migrate --seed
 
 Seeder akan membuat:
 
-- 3 kategori bahasa.
+- 8 kategori bahasa.
 - 3 tingkat kesulitan.
-- 24 tantangan.
+- 64 tantangan.
 - 1 akun administrator.
-- 1 akun user demo.
+- 1 akun pengguna demo ketika aplikasi berjalan pada environment `local` atau `testing`.
 
-Untuk menghapus seluruh data dan membuat database dari awal:
+Untuk menghapus seluruh tabel dan membuat ulang data dari awal:
 
 ```bash
 php artisan migrate:fresh --seed
 ```
 
-Perintah `migrate:fresh` akan menghapus seluruh tabel dan data yang sudah ada.
+Perintah tersebut akan menghapus seluruh data yang sudah tersimpan.
 
 ## Menjalankan Aplikasi
 
@@ -373,169 +433,159 @@ Untuk menghentikan server, tekan:
 Ctrl + C
 ```
 
-## Akun Demo
+Laravel dan Vite juga dapat dijalankan secara terpisah.
 
-Seeder menyediakan dua akun demo.
+Terminal pertama:
 
-### Administrator
-
-```text
-Email    : admin@bughunt.test
-Password : password
+```bash
+php artisan serve
 ```
 
-### User
+Terminal kedua:
 
-```text
-Email    : user@bughunt.test
-Password : password
+```bash
+npm run dev
 ```
 
-Akun tersebut hanya digunakan untuk development dan demonstrasi. Jangan menggunakan password demo pada aplikasi produksi.
+## Administrator Production
+
+Pada environment selain `local` dan `testing`, data administrator harus dikonfigurasi melalui `.env`:
+
+```env
+BUGHUNT_ADMIN_EMAIL=admin@example.com
+BUGHUNT_ADMIN_PASSWORD=password-yang-kuat
+```
+
+Password administrator production harus memiliki panjang minimal 16 karakter.
+
+Seeder akan menolak dijalankan apabila email administrator tidak valid atau password production terlalu pendek.
 
 ## Automated Test
 
-Jalankan seluruh test Laravel:
+Jalankan seluruh pengujian:
 
 ```bash
 php artisan test
 ```
 
-Atau gunakan script Composer:
+Pengujian juga dapat dijalankan melalui Composer:
 
 ```bash
 composer test
 ```
 
-Menjalankan test submission:
+Pengujian yang tersedia mencakup:
 
-```bash
-php artisan test --filter=ChallengeSubmissionTest
-```
-
-Menjalankan test seeder:
-
-```bash
-php artisan test --filter=BugHuntSeederTest
-```
-
-Menjalankan test authorization:
-
-```bash
-php artisan test --filter=BugHuntAuthorizationTest
-```
-
-Test yang tersedia mencakup:
-
+- Registrasi dan login.
+- Reset password.
+- Verifikasi email.
+- Perubahan password.
+- Pengelolaan profil.
+- Authorization pengguna dan administrator.
 - Validasi seeder.
-- Jumlah dan distribusi tantangan.
-- Authorization user dan admin.
+- Jumlah kategori dan tantangan.
+- Distribusi tingkat kesulitan.
 - Evaluasi jawaban.
 - Penyimpanan submission.
 - Penalti hint.
 - Perhitungan skor terbaik.
 - Pencegahan penggandaan poin.
-- Penguncian solusi sebelum challenge selesai.
-- Pembukaan solusi setelah challenge selesai.
+- Penguncian solusi sebelum tantangan selesai.
 
 ## Production Build
 
-Buat frontend production build dengan perintah:
+Periksa TypeScript dan buat frontend production build:
 
 ```bash
 npm run build
 ```
 
-Hasil build akan disimpan pada:
-
-```text
-public/build/
-```
-
 ## Continuous Integration
 
-Repository menggunakan GitHub Actions melalui file:
+Repository menggunakan GitHub Actions melalui:
 
 ```text
 .github/workflows/ci.yml
 ```
 
-Workflow akan menjalankan:
+Workflow dijalankan ketika:
 
-- Instalasi dependency Composer.
-- Instalasi dependency npm.
-- Automated test Laravel.
-- Production build Vite.
+- Terdapat push ke branch `main`.
+- Terdapat pull request.
+- Workflow dijalankan secara manual.
 
-Workflow dijalankan ketika terdapat push ke branch `main` atau pull request.
+CI menggunakan:
 
-## Diagram dan Dokumentasi
+- Ubuntu versi terbaru.
+- PHP 8.4.
+- Node.js 22.
+- SQLite in-memory untuk pengujian.
+- Composer.
+- npm.
 
-Dokumentasi lengkap tersedia pada:
+Tahapan CI meliputi:
 
-- [Dokumentasi Pendukung](docs/DOKUMENTASI.md)
+1. Menginstal dependency Composer.
+2. Menyiapkan aplikasi Laravel.
+3. Menginstal dependency frontend.
+4. Memeriksa TypeScript.
+5. Membuat frontend production build.
+6. Menjalankan seluruh pengujian Laravel.
+
+## Struktur Database
+
+Tabel utama aplikasi terdiri dari:
+
+| Tabel                     | Kegunaan                                   |
+| ------------------------- | ------------------------------------------ |
+| `users`                   | Menyimpan akun, role, dan total poin       |
+| `categories`              | Menyimpan kategori bahasa pemrograman      |
+| `difficulties`            | Menyimpan tingkat kesulitan dan poin dasar |
+| `challenges`              | Menyimpan data utama tantangan             |
+| `challenge_hints`         | Menyimpan hint dan penalti                 |
+| `challenge_solutions`     | Menyimpan solusi dan kata kunci            |
+| `submissions`             | Menyimpan jawaban pengguna                 |
+| `submission_attempts`     | Menyimpan snapshot hasil setiap percobaan  |
+| `user_challenge_progress` | Menyimpan progres dan skor terbaik         |
+
+Laravel juga menggunakan beberapa tabel pendukung untuk session, cache, queue, password reset, dan kebutuhan internal lainnya.
+
+## Diagram Sistem
+
+Diagram yang tersedia:
+
 - [Use Case Diagram](database/diagram/USE%20CASE%20DIAGRAM.png)
 - [Activity Diagram](database/diagram/ACTIVITY%20DIAGRAM.png)
-- [ERD](database/diagram/ERD.png)
-- [File ERD draw.io](database/diagram/ERD.drawio)
+- [Entity Relationship Diagram](database/diagram/ERD.png)
+- [File ERD Draw.io](database/diagram/ERD.drawio)
 - [DFD Level 0](database/diagram/DFD%20LEVEL%200.png)
 - [DFD Level 1](database/diagram/DFD%20LEVEL%201.png)
 
 ## Keamanan
 
-BugHunt menerapkan beberapa aturan keamanan:
+Beberapa mekanisme keamanan yang digunakan:
 
-- Tidak menggunakan `eval()`.
-- Tidak menjalankan kode pengguna melalui shell.
-- Tidak menjalankan compiler terhadap jawaban pengguna.
 - Password disimpan menggunakan hashing Laravel.
-- Request divalidasi di backend.
-- Halaman administrator dilindungi middleware role.
-- Menggunakan CSRF protection.
-- Membatasi panjang kode.
-- Membatasi panjang penjelasan.
-- Menampilkan kode sebagai teks.
-- Tidak merender kode pengguna sebagai HTML.
-- Memberikan rate limit pada submission.
-- Memberikan rate limit pada pembukaan hint.
-- Menyembunyikan solusi sebelum challenge selesai.
-- Menggunakan Eloquent dan Query Builder untuk akses database.
+- Form dilindungi CSRF protection.
+- Route administrator dilindungi middleware `auth` dan `admin`.
+- Input pengguna divalidasi pada backend.
+- Panjang source code dan penjelasan dibatasi.
+- Endpoint submission menggunakan rate limiting.
+- Endpoint pembukaan hint menggunakan rate limiting.
+- Endpoint eksekusi kode menggunakan rate limiting.
+- Token eksekusi Judge0 dibatasi berdasarkan session pengguna.
+- Program yang dijalankan melalui Judge0 tidak memperoleh akses jaringan.
+- Solusi dan pembahasan disembunyikan sebelum tantangan selesai.
+- Akses database menggunakan Eloquent dan Query Builder.
+- Penghapusan tantangan menggunakan soft delete.
+- File `.env` tidak disimpan di repository.
 
-## Struktur Dokumentasi
-
-```text
-database/
-└── diagram/
-    ├── ACTIVITY DIAGRAM.png
-    ├── DFD LEVEL 0.png
-    ├── DFD LEVEL 1.png
-    ├── ERD.drawio
-    ├── ERD.png
-    └── USE CASE DIAGRAM.png
-```
+Eksekusi kode tetap memiliki risiko keamanan. Untuk production, gunakan instance Judge0 yang dikonfigurasi dengan isolasi, resource limit, dan pembatasan jaringan yang sesuai.
 
 ## Lisensi
 
-Proyek ini menggunakan **MIT License**.
-
-Informasi lengkap tersedia pada file:
-
-```text
-LICENSE
-```
+Project ini menggunakan [MIT License](LICENSE).
 
 ## Pengembang
 
 **Rifqi**
-
-GitHub:
-
-```text
-https://github.com/ki1bot
-```
-
-Repository BugHunt:
-
-```text
-https://github.com/ki1bot/debugging-pemrograman
-```
