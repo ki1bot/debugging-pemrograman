@@ -49,7 +49,7 @@ class JudgeZeroService
             'token' => $token,
             'status' => [
                 'id' => 1,
-                'description' => 'In Queue',
+                'description' => $this->statusDescription(1),
             ],
         ];
     }
@@ -82,10 +82,7 @@ class JudgeZeroService
             'finished' => ! in_array($statusId, [1, 2], true),
             'status' => [
                 'id' => $statusId,
-                'description' => (string) $response->json(
-                    'status.description',
-                    'Unknown',
-                ),
+                'description' => $this->statusDescription($statusId),
             ],
             'stdout' => $this->nullableString(
                 $response->json('stdout'),
@@ -147,6 +144,27 @@ class JudgeZeroService
             ->withHeaders($headers)
             ->connectTimeout(5)
             ->timeout(15);
+    }
+
+    private function statusDescription(int $statusId): string
+    {
+        return match ($statusId) {
+            1 => 'Dalam antrean',
+            2 => 'Sedang diproses',
+            3 => 'Berhasil',
+            4 => 'Jawaban salah',
+            5 => 'Batas waktu terlampaui',
+            6 => 'Kesalahan kompilasi',
+            7 => 'Kesalahan saat dijalankan (SIGSEGV)',
+            8 => 'Kesalahan saat dijalankan (SIGXFSZ)',
+            9 => 'Kesalahan saat dijalankan (SIGFPE)',
+            10 => 'Kesalahan saat dijalankan (SIGABRT)',
+            11 => 'Kesalahan saat dijalankan (NZEC)',
+            12 => 'Kesalahan saat dijalankan lainnya',
+            13 => 'Kesalahan internal',
+            14 => 'Kesalahan format eksekusi',
+            default => 'Status tidak diketahui',
+        };
     }
 
     private function nullableString(mixed $value): ?string

@@ -19,7 +19,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             type = "text",
             className = "",
             isFocused = false,
-            showPasswordToggle = false,
+            showPasswordToggle = true,
             ...props
         },
         ref,
@@ -33,8 +33,8 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             canTogglePassword && passwordVisible ? "text" : type;
 
         const toggleLabel = passwordVisible
-            ? "Sembunyikan password"
-            : "Tampilkan password";
+            ? "Sembunyikan kata sandi"
+            : "Tampilkan kata sandi";
 
         useImperativeHandle(ref, () => localRef.current as HTMLInputElement);
 
