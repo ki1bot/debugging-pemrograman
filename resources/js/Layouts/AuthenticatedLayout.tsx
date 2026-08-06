@@ -1,5 +1,8 @@
 import FlashMessage from "@/Components/FlashMessage";
 import AuthenticatedHeader from "@/Components/Layout/AuthenticatedHeader";
+import PublicFooter from "@/Components/Layout/PublicFooter";
+import SiteBackdrop from "@/Components/Layout/SiteBackdrop";
+import "../../css/site.css";
 import { PropsWithChildren, ReactNode } from "react";
 
 type AuthenticatedLayoutProps = PropsWithChildren<{
@@ -11,20 +14,24 @@ export default function AuthenticatedLayout({
     children,
 }: AuthenticatedLayoutProps) {
     return (
-        <div className="min-h-screen">
+        <div className="user-site min-h-screen">
+            <SiteBackdrop />
+
             <FlashMessage />
 
             <AuthenticatedHeader />
 
             {header && (
-                <section className="border-b-[3px] border-black bg-[#ffd93d]">
-                    <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-8">
+                <section className="site-page-header">
+                    <div className="mx-auto max-w-7xl px-4 py-9 sm:px-6 sm:py-12 lg:px-8">
                         {header}
                     </div>
                 </section>
             )}
 
-            <main>{children}</main>
+            <main className="relative z-10">{children}</main>
+
+            <PublicFooter />
         </div>
     );
 }

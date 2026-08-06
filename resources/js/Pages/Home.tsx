@@ -104,7 +104,60 @@ export default function Home({ stats, featuredChallenges }: HomeProps) {
                     className="neo-float-delayed absolute right-[5%] top-28 hidden h-10 w-10 -rotate-12 rounded-full border-2 border-[#21162f] bg-[#ffc84a] shadow-[4px_4px_0_#21162f] xl:block"
                 />
 
-                <div className="mx-auto grid max-w-7xl items-center gap-14 px-4 py-16 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:px-8 lg:py-24">
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+                >
+                    <span className="neo-float absolute left-[8%] top-[8%] hidden h-11 w-11 place-items-center rounded-xl border-2 border-[#21162f]/70 bg-[#ffe8f2]/80 text-[#21162f]/70 shadow-[3px_3px_0_rgba(33,22,47,0.35)] sm:grid">
+                        <Bug className="h-5 w-5" strokeWidth={2.5} />
+                    </span>
+
+                    <span className="neo-float-delayed absolute left-[27%] top-[13%] hidden h-10 w-10 place-items-center rounded-full border-2 border-[#21162f]/60 bg-[#fff2b8]/80 text-[#21162f]/65 shadow-[3px_3px_0_rgba(33,22,47,0.3)] lg:grid">
+                        <Braces className="h-5 w-5" strokeWidth={2.5} />
+                    </span>
+
+                    <span className="neo-float absolute right-[29%] top-[7%] hidden h-12 w-12 place-items-center rounded-2xl border-2 border-[#21162f]/65 bg-[#dff3ff]/80 text-[#21162f]/65 shadow-[3px_3px_0_rgba(33,22,47,0.3)] lg:grid">
+                        <Code2 className="h-6 w-6" strokeWidth={2.4} />
+                    </span>
+
+                    <span className="neo-float-delayed absolute right-[11%] top-[24%] hidden h-10 w-10 place-items-center rounded-xl border-2 border-[#21162f]/60 bg-[#e8e2ff]/80 text-[#21162f]/65 shadow-[3px_3px_0_rgba(33,22,47,0.3)] xl:grid">
+                        <SearchCode className="h-5 w-5" strokeWidth={2.4} />
+                    </span>
+
+                    <span className="neo-float absolute left-[2%] top-[47%] hidden h-12 w-12 place-items-center rounded-2xl border-2 border-[#21162f]/60 bg-[#d4f8e5]/80 text-[#21162f]/65 shadow-[3px_3px_0_rgba(33,22,47,0.3)] lg:grid">
+                        <Wrench className="h-6 w-6" strokeWidth={2.4} />
+                    </span>
+
+                    <span className="neo-float-delayed absolute right-[2%] top-[51%] hidden h-11 w-11 place-items-center rounded-full border-2 border-[#21162f]/60 bg-[#fff2b8]/80 text-[#21162f]/65 shadow-[3px_3px_0_rgba(33,22,47,0.3)] lg:grid">
+                        <Lightbulb className="h-5 w-5" strokeWidth={2.5} />
+                    </span>
+
+                    <span className="neo-float absolute bottom-[17%] left-[13%] hidden h-10 w-10 place-items-center rounded-xl border-2 border-[#21162f]/60 bg-[#ffdceb]/80 text-[#21162f]/65 shadow-[3px_3px_0_rgba(33,22,47,0.3)] xl:grid">
+                        <Sparkles className="h-5 w-5" strokeWidth={2.5} />
+                    </span>
+
+                    <span className="neo-float-delayed absolute bottom-[7%] left-[34%] hidden h-12 w-12 place-items-center rounded-full border-2 border-[#21162f]/60 bg-[#dff3ff]/80 text-[#21162f]/65 shadow-[3px_3px_0_rgba(33,22,47,0.3)] lg:grid">
+                        <Target className="h-6 w-6" strokeWidth={2.5} />
+                    </span>
+
+                    <span className="neo-float absolute bottom-[12%] right-[29%] hidden h-10 w-10 place-items-center rounded-xl border-2 border-[#21162f]/60 bg-[#fff2b8]/80 text-[#21162f]/65 shadow-[3px_3px_0_rgba(33,22,47,0.3)] xl:grid">
+                        <Bug className="h-5 w-5" strokeWidth={2.5} />
+                    </span>
+
+                    <span className="neo-float-delayed absolute bottom-[5%] right-[8%] hidden h-12 w-12 place-items-center rounded-2xl border-2 border-[#21162f]/60 bg-[#e8e2ff]/80 text-[#21162f]/65 shadow-[3px_3px_0_rgba(33,22,47,0.3)] lg:grid">
+                        <Braces className="h-6 w-6" strokeWidth={2.5} />
+                    </span>
+
+                    <span className="absolute left-[46%] top-[30%] hidden text-[#9c88f7]/15 lg:block">
+                        <Code2 className="h-16 w-16" strokeWidth={2} />
+                    </span>
+
+                    <span className="absolute bottom-[30%] right-[43%] hidden text-[#f56eb3]/15 xl:block">
+                        <SearchCode className="h-14 w-14" strokeWidth={2} />
+                    </span>
+                </div>
+
+                <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-14 px-4 py-16 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:px-8 lg:py-24">
                     <div className="relative z-10">
                         <div className="mb-7 inline-flex items-center gap-2 rounded-full border-2 border-[#21162f] bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.1em] shadow-[3px_4px_0_#21162f] sm:text-sm">
                             <ShieldCheck
