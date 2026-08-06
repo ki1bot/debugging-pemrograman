@@ -1,4 +1,15 @@
 {
     "$schema": "https://openapi.vercel.sh/vercel.json",
-    "regions": ["sin1"]
+    "regions": ["sin1"],
+    "headers": [
+        {
+            "source": "/assets/(.*)",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=86400, stale-while-revalidate=604800"
+                }
+            ]
+        }
+    ]
 }

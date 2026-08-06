@@ -3,20 +3,25 @@ import PublicFooter from "@/Components/Layout/PublicFooter";
 import PublicHeader from "@/Components/Layout/PublicHeader";
 import SiteBackdrop from "@/Components/Layout/SiteBackdrop";
 import "../../css/site.css";
-import { PropsWithChildren } from "react";
+import { memo, type PropsWithChildren } from "react";
+
+const MemoizedFlashMessage = memo(FlashMessage);
+const MemoizedPublicFooter = memo(PublicFooter);
+const MemoizedPublicHeader = memo(PublicHeader);
+const MemoizedSiteBackdrop = memo(SiteBackdrop);
 
 export default function PublicLayout({ children }: PropsWithChildren) {
     return (
         <div className="user-site min-h-screen">
-            <SiteBackdrop />
+            <MemoizedSiteBackdrop />
 
-            <FlashMessage />
+            <MemoizedFlashMessage />
 
-            <PublicHeader />
+            <MemoizedPublicHeader />
 
             <main className="relative z-10">{children}</main>
 
-            <PublicFooter />
+            <MemoizedPublicFooter />
         </div>
     );
 }

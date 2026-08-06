@@ -3,11 +3,16 @@ import AuthenticatedHeader from "@/Components/Layout/AuthenticatedHeader";
 import PublicFooter from "@/Components/Layout/PublicFooter";
 import SiteBackdrop from "@/Components/Layout/SiteBackdrop";
 import "../../css/site.css";
-import { PropsWithChildren, ReactNode } from "react";
+import { memo, type PropsWithChildren, type ReactNode } from "react";
 
 type AuthenticatedLayoutProps = PropsWithChildren<{
     header?: ReactNode;
 }>;
+
+const MemoizedFlashMessage = memo(FlashMessage);
+const MemoizedAuthenticatedHeader = memo(AuthenticatedHeader);
+const MemoizedPublicFooter = memo(PublicFooter);
+const MemoizedSiteBackdrop = memo(SiteBackdrop);
 
 export default function AuthenticatedLayout({
     header,
@@ -15,11 +20,11 @@ export default function AuthenticatedLayout({
 }: AuthenticatedLayoutProps) {
     return (
         <div className="user-site min-h-screen">
-            <SiteBackdrop />
+            <MemoizedSiteBackdrop />
 
-            <FlashMessage />
+            <MemoizedFlashMessage />
 
-            <AuthenticatedHeader />
+            <MemoizedAuthenticatedHeader />
 
             {header && (
                 <section className="site-page-header">
@@ -31,7 +36,7 @@ export default function AuthenticatedLayout({
 
             <main className="relative z-10">{children}</main>
 
-            <PublicFooter />
+            <MemoizedPublicFooter />
         </div>
     );
 }

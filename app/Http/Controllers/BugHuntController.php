@@ -6,25 +6,45 @@ use App\Models\Challenge;
 use App\Models\Submission;
 use App\Models\User;
 use App\Models\UserChallengeProgress;
-use App\Services\ChallengePresenter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class BugHuntController extends Controller
 {
-    public function __construct(
-        private readonly ChallengePresenter $presenter
-    ) {}
-
     public function home(Request $request): Response
     {
         $featured = Challenge::query()
-            ->with(['category', 'difficulty'])
-            ->where('status', 'published')
-            ->latest()
+            ->join(
+                'categories',
+                'categories.id',
+                '=',
+                'challenges.category_id',
+            )
+            ->join(
+                'difficulties',
+                'difficulties.id',
+                '=',
+                'challenges.difficulty_id',
+            )
+            ->where('challenges.status', 'published')
+            ->latest('challenges.created_at')
             ->limit(6)
-            ->get();
+            ->get([
+                'challenges.id',
+                'challenges.title',
+                'challenges.slug',
+                'challenges.description',
+                'challenges.base_points',
+                'categories.id as category_record_id',
+                'categories.name as category_name',
+                'categories.slug as category_slug',
+                'difficulties.id as difficulty_record_id',
+                'difficulties.name as difficulty_name',
+                'difficulties.slug as difficulty_slug',
+                'difficulties.base_points as difficulty_base_points',
+            ]);
 
         $progress = $request->user()
             ? UserChallengeProgress::query()
@@ -33,27 +53,81 @@ class BugHuntController extends Controller
                     'challenge_id',
                     $featured->pluck('id'),
                 )
-                ->get()
+                ->get([
+                    'challenge_id',
+                    'best_score',
+                    'attempts_count',
+                    'is_completed',
+                ])
                 ->keyBy('challenge_id')
             : collect();
 
+        $stats = DB::query()
+            ->selectSub(
+                Challenge::query()
+                    ->selectRaw('count(*)')
+                    ->where('status', 'published'),
+                'challenges',
+            )
+            ->selectSub(
+                User::query()
+                    ->selectRaw('count(*)')
+                    ->where('role', 'user'),
+                'hunters',
+            )
+            ->selectSub(
+                Submission::query()
+                    ->selectRaw('count(*)')
+                    ->where('status', 'completed'),
+                'completed_submissions',
+            )
+            ->first();
+
         return Inertia::render('Home', [
             'stats' => [
-                'challenges' => Challenge::query()
-                    ->where('status', 'published')
-                    ->count(),
-                'hunters' => User::query()
-                    ->where('role', 'user')
-                    ->count(),
-                'completedSubmissions' => Submission::query()
-                    ->where('status', 'completed')
-                    ->count(),
+                'challenges' => (int) $stats->challenges,
+                'hunters' => (int) $stats->hunters,
+                'completedSubmissions' => (int) $stats->completed_submissions,
             ],
             'featuredChallenges' => $featured->map(
-                fn (Challenge $challenge) => $this->presenter->challenge(
-                    $challenge,
-                    $progress->get($challenge->id),
-                ),
+                function (Challenge $challenge) use ($progress): array {
+                    $challengeProgress = $progress->get($challenge->id);
+
+                    return [
+                        'id' => $challenge->id,
+                        'title' => $challenge->title,
+                        'slug' => $challenge->slug,
+                        'description' => $challenge->description,
+                        'base_points' => $challenge->base_points,
+                        'category' => [
+                            'id' => (int) $challenge->category_record_id,
+                            'name' => $challenge->category_name,
+                            'slug' => $challenge->category_slug,
+                        ],
+                        'difficulty' => [
+                            'id' => (int) $challenge->difficulty_record_id,
+                            'name' => $challenge->difficulty_name,
+                            'slug' => $challenge->difficulty_slug,
+                            'base_points' => (int) $challenge->difficulty_base_points,
+                        ],
+                        'progress' => $challengeProgress
+                            ? [
+                                'best_score' => (int) (
+                                    $challengeProgress->best_score
+                                    ?? 0
+                                ),
+                                'attempts_count' => (int) (
+                                    $challengeProgress->attempts_count
+                                    ?? 0
+                                ),
+                                'is_completed' => (bool) (
+                                    $challengeProgress->is_completed
+                                    ?? false
+                                ),
+                            ]
+                            : null,
+                    ];
+                },
             ),
         ]);
     }
