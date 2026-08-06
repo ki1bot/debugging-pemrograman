@@ -31,10 +31,10 @@ export default function AuthenticatedHeader() {
 
     return (
         <header className="sticky top-0 z-50 border-b border-[#21162f]/10 bg-[#fbfaff]/85 backdrop-blur-xl">
-            <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3.5 sm:gap-4 sm:px-6 sm:py-4 lg:px-8">
-                <ApplicationLogo className="min-w-0" />
+            <div className="mx-auto flex w-full max-w-[1536px] items-center justify-between gap-3 px-4 py-3.5 sm:gap-4 sm:px-6 sm:py-4 lg:px-8">
+                <ApplicationLogo className="shrink-0" />
 
-                <nav className="hidden items-center rounded-2xl border border-[#21162f]/10 bg-white/75 p-1.5 shadow-sm xl:flex">
+                <nav className="hidden shrink-0 items-center whitespace-nowrap rounded-2xl border border-[#21162f]/10 bg-white/75 p-1.5 shadow-sm xl:flex">
                     {authenticatedNavigation.map((item) => {
                         const Icon =
                             navigationIcons[item.routeName] ?? ArrowRight;
@@ -44,7 +44,7 @@ export default function AuthenticatedHeader() {
                             <Link
                                 key={item.routeName}
                                 href={route(item.routeName)}
-                                className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-sm font-extrabold transition ${
+                                className={`inline-flex items-center gap-2 whitespace-nowrap rounded-xl px-3.5 py-2.5 text-sm font-extrabold transition ${
                                     active
                                         ? "bg-[#21162f] text-white shadow-md"
                                         : "text-[#665f73] hover:bg-[#f2eff8] hover:text-[#21162f]"
@@ -59,7 +59,7 @@ export default function AuthenticatedHeader() {
                     {user?.role === "admin" && (
                         <Link
                             href={route("admin.dashboard")}
-                            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#9c88f7] to-[#f56eb3] px-3.5 py-2.5 text-sm font-black text-white shadow-md"
+                            className="inline-flex items-center gap-2 whitespace-nowrap rounded-xl bg-gradient-to-r from-[#9c88f7] to-[#f56eb3] px-3.5 py-2.5 text-sm font-black text-white shadow-md"
                         >
                             <ShieldCheck
                                 className="h-4 w-4"
@@ -70,9 +70,12 @@ export default function AuthenticatedHeader() {
                     )}
                 </nav>
 
-                <div className="hidden items-center gap-3 xl:flex">
-                    <div className="rounded-xl border border-[#21162f]/10 bg-white px-4 py-2 shadow-sm">
-                        <p className="max-w-36 truncate text-sm font-black text-[#21162f]">
+                <div className="hidden shrink-0 items-center gap-2 xl:flex 2xl:gap-3">
+                    <div className="hidden w-44 shrink-0 rounded-xl border border-[#21162f]/10 bg-white px-4 py-2 shadow-sm min-[1440px]:block">
+                        <p
+                            className="max-w-full truncate text-sm font-black text-[#21162f]"
+                            title={user?.name}
+                        >
                             {user?.name}
                         </p>
 
@@ -83,7 +86,7 @@ export default function AuthenticatedHeader() {
 
                     <Link
                         href={route("profile.edit")}
-                        className="nb-button nb-button-secondary text-sm"
+                        className="nb-button nb-button-secondary shrink-0 whitespace-nowrap text-sm"
                     >
                         <UserRound className="h-4 w-4" strokeWidth={2.7} />
                         Profil
@@ -93,7 +96,7 @@ export default function AuthenticatedHeader() {
                         href={route("logout")}
                         method="post"
                         as="button"
-                        className="nb-button bg-[#ffd2df] text-sm"
+                        className="nb-button shrink-0 whitespace-nowrap bg-[#ffd2df] text-sm"
                     >
                         <LogOut className="h-4 w-4" strokeWidth={2.7} />
                         Keluar
