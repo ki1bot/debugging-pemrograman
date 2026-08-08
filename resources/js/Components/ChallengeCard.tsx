@@ -1,6 +1,16 @@
-import { ChallengeCard as ChallengeCardType } from "@/types";
-import { Link } from "@inertiajs/react";
-import { ArrowRight, CheckCircle2, Code2, Gauge, Trophy } from "lucide-react";
+import {
+    ChallengeCard as ChallengeCardType,
+    PageProps,
+} from "@/types";
+import { Link, usePage } from "@inertiajs/react";
+import {
+    ArrowRight,
+    CheckCircle2,
+    Code2,
+    Gauge,
+    Trophy,
+} from "lucide-react";
+import { memo } from "react";
 
 type ChallengeCardProps = {
     challenge: ChallengeCardType;
@@ -18,7 +28,9 @@ const difficultyBackground: Record<string, string> = {
     sulit: "bg-[#ffd2df]",
 };
 
-export default function ChallengeCard({ challenge }: ChallengeCardProps) {
+function ChallengeCard({ challenge }: ChallengeCardProps) {
+    const { auth } = usePage<PageProps>().props;
+
     const progressPercentage = challenge.progress
         ? Math.min(
               100,
@@ -44,7 +56,10 @@ export default function ChallengeCard({ challenge }: ChallengeCardProps) {
                         "bg-white"
                     }`}
                 >
-                    <Code2 className="h-3.5 w-3.5" strokeWidth={2.8} />
+                    <Code2
+                        className="h-3.5 w-3.5"
+                        strokeWidth={2.8}
+                    />
                     {challenge.category.name}
                 </span>
 
@@ -54,7 +69,10 @@ export default function ChallengeCard({ challenge }: ChallengeCardProps) {
                         "bg-white"
                     }`}
                 >
-                    <Gauge className="h-3.5 w-3.5" strokeWidth={2.8} />
+                    <Gauge
+                        className="h-3.5 w-3.5"
+                        strokeWidth={2.8}
+                    />
                     {challenge.difficulty.name}
                 </span>
             </div>
@@ -98,18 +116,30 @@ export default function ChallengeCard({ challenge }: ChallengeCardProps) {
 
             <div className="relative mt-6 flex flex-col items-stretch gap-4 border-t border-[#21162f]/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
                 <strong className="inline-flex items-center justify-center gap-2 text-center text-sm font-black text-[#21162f] sm:justify-start sm:text-left">
-                    <Trophy className="h-4 w-4" strokeWidth={2.7} />
+                    <Trophy
+                        className="h-4 w-4"
+                        strokeWidth={2.7}
+                    />
                     Hingga {challenge.base_points} poin
                 </strong>
 
                 <Link
-                    href={route("challenges.show", challenge.slug)}
+                    href={route(
+                        "challenges.show",
+                        challenge.slug,
+                    )}
+                    prefetch={Boolean(auth.user)}
                     className="nb-button nb-button-primary w-full text-sm sm:w-auto"
                 >
                     Buka Tantangan
-                    <ArrowRight className="h-4 w-4" strokeWidth={2.8} />
+                    <ArrowRight
+                        className="h-4 w-4"
+                        strokeWidth={2.8}
+                    />
                 </Link>
             </div>
         </article>
     );
 }
+
+export default memo(ChallengeCard);

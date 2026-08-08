@@ -6,6 +6,7 @@ import { php } from "@codemirror/lang-php";
 import { python } from "@codemirror/lang-python";
 import { sql } from "@codemirror/lang-sql";
 import CodeMirror from "@uiw/react-codemirror";
+import { useMemo } from "react";
 
 export type EditorLanguage =
     | "javascript"
@@ -25,6 +26,17 @@ type CodeEditorProps = {
     language: EditorLanguage;
     readOnly?: boolean;
     minHeight?: string;
+};
+
+const editorBasicSetup = {
+    lineNumbers: true,
+    highlightActiveLineGutter: true,
+    highlightActiveLine: true,
+    foldGutter: true,
+    autocompletion: true,
+    bracketMatching: true,
+    closeBrackets: true,
+    indentOnInput: true,
 };
 
 function languageExtension(language: EditorLanguage) {
@@ -75,24 +87,20 @@ export default function CodeEditor({
     readOnly = false,
     minHeight = "360px",
 }: CodeEditorProps) {
+    const extensions = useMemo(
+        () => [languageExtension(language)],
+        [language],
+    );
+
     return (
         <div className="code-editor-shell">
             <CodeMirror
                 value={value}
                 height={minHeight}
                 theme="dark"
-                extensions={[languageExtension(language)]}
+                extensions={extensions}
                 editable={!readOnly}
-                basicSetup={{
-                    lineNumbers: true,
-                    highlightActiveLineGutter: true,
-                    highlightActiveLine: true,
-                    foldGutter: true,
-                    autocompletion: true,
-                    bracketMatching: true,
-                    closeBrackets: true,
-                    indentOnInput: true,
-                }}
+                basicSetup={editorBasicSetup}
                 onChange={(nextValue: string) => onChange?.(nextValue)}
             />
         </div>
