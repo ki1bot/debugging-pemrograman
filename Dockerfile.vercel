@@ -14,6 +14,9 @@ RUN npm run build
 
 FROM php:8.4-cli AS vendor
 
+ENV APP_ENV=production
+ENV APP_DEBUG=false
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         git \
@@ -47,10 +50,15 @@ RUN composer install \
 COPY . .
 
 RUN composer dump-autoload \
-    --no-dev \
-    --optimize \
-    --classmap-authoritative \
-    --no-interaction
+        --no-dev \
+        --optimize \
+        --classmap-authoritative \
+        --no-interaction \
+    && mkdir -p \
+        storage/framework/views \
+        bootstrap/cache \
+    && php artisan route:cache \
+    && php artisan view:cache
 
 FROM php:8.4-apache
 
@@ -69,8 +77,20 @@ RUN apt-get update \
         pcntl \
         pdo_pgsql \
         zip \
-    && a2enmod rewrite headers expires \
+    && a2enmod rewrite headers expires deflate \
     && rm -rf /var/lib/apt/lists/*
+
+RUN printf '%s\n' \
+        'opcache.enable=1' \
+        'opcache.memory_consumption=128' \
+        'opcache.interned_strings_buffer=16' \
+        'opcache.max_accelerated_files=20000' \
+        'opcache.validate_timestamps=0' \
+        'opcache.revalidate_freq=0' \
+        'realpath_cache_size=4096K' \
+        'realpath_cache_ttl=600' \
+        'expose_php=0' \
+    > /usr/local/etc/php/conf.d/zz-production.ini
 
 ENV APP_ENV=production
 ENV APP_DEBUG=false
