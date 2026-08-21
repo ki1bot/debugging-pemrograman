@@ -52,8 +52,11 @@ RUN apt-get update \
         /etc/apache2/mods-enabled/mpm_event.load \
         /etc/apache2/mods-enabled/mpm_worker.conf \
         /etc/apache2/mods-enabled/mpm_worker.load \
+        /etc/apache2/mods-enabled/mpm_prefork.conf \
+        /etc/apache2/mods-enabled/mpm_prefork.load \
     && a2enmod mpm_prefork \
     && a2enmod rewrite headers expires \
+    && apache2ctl configtest \
     && rm -rf /var/lib/apt/lists/*
 
 ENV APP_ENV=production
