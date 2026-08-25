@@ -6,6 +6,7 @@ use App\Models\Challenge;
 use App\Models\User;
 use Database\Seeders\BugHuntSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 class BugHuntAuthorizationTest extends TestCase
@@ -96,6 +97,34 @@ class BugHuntAuthorizationTest extends TestCase
                 ),
             )
             ->assertOk();
+
+        $this->actingAs($admin)
+            ->get(
+                route(
+                    'admin.challenges.create',
+                ),
+            )
+            ->assertOk();
+    }
+
+    public function test_admin_challenge_create_route_uses_correct_name(): void
+    {
+        $this->assertTrue(
+            Route::has(
+                'admin.challenges.create',
+            ),
+        );
+
+        $this->assertFalse(
+            Route::has(
+                'admin.admin.challenges.create',
+            ),
+        );
+
+        $this->assertSame(
+            url('/admin/challenges/create'),
+            route('admin.challenges.create'),
+        );
     }
 
     public function test_user_can_access_user_dashboard(): void

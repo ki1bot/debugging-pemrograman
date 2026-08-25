@@ -165,7 +165,7 @@ Route::prefix('admin')
         Route::get(
             '/challenges/create',
             [AdminChallengeController::class, 'create'],
-        )->name('admin.challenges.create');
+        )->name('challenges.create');
 
         Route::post(
             '/challenges',
