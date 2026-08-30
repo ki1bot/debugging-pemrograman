@@ -295,36 +295,35 @@ echo calculateTotal(25000);',
                 'difficulty' => 'sulit',
                 'title' => 'Password Disimpan Tanpa Hash',
                 'slug' => 'php-password-disimpan-tanpa-hash',
-                'description' => 'Password pengguna dimasukkan ke database dalam bentuk teks biasa.',
+                'description' => 'Password pengguna masih disimpan dalam bentuk teks biasa sehingga password asli dapat diketahui jika data penyimpanan bocor.',
                 'broken_code' => '<?php
-$password = $_POST[\'password\'];
-$sql = "INSERT INTO users (password) VALUES (\'$password\')";
-mysqli_query($connection, $sql);',
+$password = trim(fgets(STDIN));
+$storedPassword = $password;
+echo $storedPassword;',
                 'buggy_line' => 3,
-                'explanation' => 'Password tidak boleh disimpan sebagai plaintext. Hash password menggunakan password_hash() lalu simpan hash tersebut. Query juga sebaiknya menggunakan prepared statement agar input tidak disisipkan langsung ke SQL.',
+                'explanation' => 'Password tidak boleh disimpan sebagai plaintext. Password harus diubah menjadi hash satu arah menggunakan password_hash() dengan PASSWORD_DEFAULT sebelum disimpan. Ketika melakukan autentikasi, password yang diberikan pengguna dapat diperiksa terhadap hash menggunakan password_verify().',
                 'hints' => [
                     0 => [
-                        'content' => 'Periksa bentuk password yang masuk ke query database.',
+                        'content' => 'Periksa apakah nilai yang disimpan masih sama persis dengan password asli.',
                         'point_penalty' => 10,
                     ],
                     1 => [
-                        'content' => 'Gunakan password_hash dan prepared statement.',
+                        'content' => 'Gunakan password_hash() dengan PASSWORD_DEFAULT sebelum password disimpan.',
                         'point_penalty' => 20,
                     ],
                 ],
                 'solutions' => [
                     0 => [
                         'solution_code' => '<?php
-$password = password_hash($_POST[\'password\'], PASSWORD_DEFAULT);
-$stmt = mysqli_prepare($connection, \'INSERT INTO users (password) VALUES (?)\');
-mysqli_stmt_bind_param($stmt, \'s\', $password);
-mysqli_stmt_execute($stmt);',
+$password = trim(fgets(STDIN));
+$storedPassword = password_hash($password, PASSWORD_DEFAULT);
+echo $storedPassword;',
                         'solution_type' => 'primary',
                         'required_keywords' => [
                             0 => 'password_hash',
                             1 => 'plaintext',
-                            2 => 'prepared statement',
-                            3 => 'PASSWORD_DEFAULT',
+                            2 => 'PASSWORD_DEFAULT',
+                            3 => 'password_verify',
                         ],
                     ],
                 ],
