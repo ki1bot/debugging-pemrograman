@@ -26,7 +26,10 @@ class JudgeZeroService
                 '/submissions?base64_encoded=false&wait=false',
                 [
                     'language_id' => (int) $languageId,
-                    'source_code' => $sourceCode,
+                    'source_code' => $this->prepareSourceCode(
+                        $language,
+                        $sourceCode,
+                    ),
                     'stdin' => $stdin,
                     'cpu_time_limit' => 2,
                     'wall_time_limit' => 5,
@@ -103,6 +106,102 @@ class JudgeZeroService
                 ? (int) $response->json('memory')
                 : null,
         ];
+    }
+
+    private function prepareSourceCode(
+        string $language,
+        string $sourceCode
+    ): string {
+        if (strtolower($language) !== 'sql') {
+            return $sourceCode;
+        }
+
+        return $this->sqlHarness()."\n\n".ltrim($sourceCode);
+    }
+
+    private function sqlHarness(): string
+    {
+        return <<<'SQL'
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS employees;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS roles;
+
+CREATE TABLE roles (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    role_id INTEGER
+);
+
+CREATE TABLE orders (
+    id INTEGER PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    total REAL NOT NULL
+);
+
+CREATE TABLE employees (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    department TEXT NOT NULL,
+    salary REAL NOT NULL
+);
+
+CREATE TABLE categories (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    active BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE products (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    category_id INTEGER NOT NULL
+);
+
+INSERT INTO roles (id, name) VALUES
+    (1, 'Administrator'),
+    (2, 'Member');
+
+INSERT INTO users (id, name, email, active, role_id) VALUES
+    (1, 'Ana', 'ana@example.com', TRUE, 1),
+    (2, 'Budi', 'budi@example.com', TRUE, 2),
+    (3, 'Citra', 'citra@example.com', FALSE, 2);
+
+INSERT INTO orders (id, user_id, name, total) VALUES
+    (1, 1, 'Pesanan A', 125000),
+    (2, 1, 'Pesanan B', 75000),
+    (3, 2, 'Pesanan C', 50000);
+
+INSERT INTO employees (id, name, department, salary) VALUES
+    (1, 'Andi', 'Engineering', 9000000),
+    (2, 'Bella', 'Engineering', 8500000),
+    (3, 'Candra', 'Engineering', 8000000),
+    (4, 'Dina', 'Engineering', 7800000),
+    (5, 'Eka', 'Engineering', 7600000),
+    (6, 'Fajar', 'Engineering', 7400000),
+    (7, 'Gita', 'Finance', 8200000),
+    (8, 'Hadi', 'Finance', 7000000);
+
+INSERT INTO categories (id, name, active) VALUES
+    (1, 'Backend', TRUE),
+    (2, 'Frontend', TRUE),
+    (3, 'Legacy', FALSE);
+
+INSERT INTO products (id, name, category_id) VALUES
+    (1, 'API Course', 1),
+    (2, 'React Course', 2),
+    (3, 'Legacy Course', 3);
+SQL;
     }
 
     private function client(): PendingRequest

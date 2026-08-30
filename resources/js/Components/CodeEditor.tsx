@@ -1,12 +1,6 @@
-import { cpp } from "@codemirror/lang-cpp";
-import { go } from "@codemirror/lang-go";
-import { java } from "@codemirror/lang-java";
-import { javascript } from "@codemirror/lang-javascript";
-import { php } from "@codemirror/lang-php";
-import { python } from "@codemirror/lang-python";
-import { sql } from "@codemirror/lang-sql";
 import CodeMirror from "@uiw/react-codemirror";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
+import type { ComponentProps } from "react";
 
 export type EditorLanguage =
     | "javascript"
@@ -28,6 +22,10 @@ type CodeEditorProps = {
     minHeight?: string;
 };
 
+type CodeMirrorExtensions = NonNullable<
+    ComponentProps<typeof CodeMirror>["extensions"]
+>;
+
 const editorBasicSetup = {
     lineNumbers: true,
     highlightActiveLineGutter: true,
@@ -39,44 +37,53 @@ const editorBasicSetup = {
     indentOnInput: true,
 };
 
-function languageExtension(language: EditorLanguage) {
+async function languageExtension(language: EditorLanguage) {
     switch (language.toLowerCase()) {
-        case "php":
+        case "php": {
+            const { php } = await import("@codemirror/lang-php");
             return php();
+        }
 
-        case "sql":
+        case "sql": {
+            const { sql } = await import("@codemirror/lang-sql");
             return sql();
+        }
 
         case "c":
         case "cpp":
-        case "c++":
+        case "c++": {
+            const { cpp } = await import("@codemirror/lang-cpp");
             return cpp();
+        }
 
         case "go":
-        case "golang":
+        case "golang": {
+            const { go } = await import("@codemirror/lang-go");
             return go();
+        }
 
-        case "java":
+        case "java": {
+            const { java } = await import("@codemirror/lang-java");
             return java();
+        }
 
         case "python":
-        case "py":
+        case "py": {
+            const { python } = await import("@codemirror/lang-python");
             return python();
+        }
 
         case "javascript":
         case "typescript":
         case "js":
         case "ts":
+        default: {
+            const { javascript } = await import("@codemirror/lang-javascript");
             return javascript({
                 jsx: true,
                 typescript: true,
             });
-
-        default:
-            return javascript({
-                jsx: true,
-                typescript: true,
-            });
+        }
     }
 }
 
@@ -87,10 +94,23 @@ export default function CodeEditor({
     readOnly = false,
     minHeight = "360px",
 }: CodeEditorProps) {
-    const extensions = useMemo(
-        () => [languageExtension(language)],
-        [language],
-    );
+    const [extensions, setExtensions] = useState<CodeMirrorExtensions>([]);
+
+    useEffect(() => {
+        let active = true;
+
+        setExtensions([]);
+
+        void languageExtension(language).then((extension) => {
+            if (active) {
+                setExtensions([extension]);
+            }
+        });
+
+        return () => {
+            active = false;
+        };
+    }, [language]);
 
     return (
         <div className="code-editor-shell">

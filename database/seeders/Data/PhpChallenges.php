@@ -62,38 +62,41 @@ if ($status == \'active\') {
                 'difficulty' => 'mudah',
                 'title' => 'Variabel Form Tidak Ditemukan',
                 'slug' => 'php-variabel-form-tidak-ditemukan',
-                'description' => 'Nilai email tidak terbaca karena key input yang diakses tidak sesuai dengan nama field form.',
+                'description' => 'Data form memiliki key email, tetapi program membaca key yang berbeda sehingga nilai email tidak ditemukan.',
                 'broken_code' => '<?php
-$email = $_POST[\'username\'];
+$form = json_decode(trim(fgets(STDIN)), true) ?? [];
+$email = $form[\'username\'] ?? \'\';
 echo $email;',
-                'buggy_line' => 2,
-                'explanation' => 'Form mengirim field email, tetapi kode membaca key username. Gunakan key email dan null coalescing agar tidak muncul peringatan undefined array key ketika field tidak tersedia.',
+                'buggy_line' => 3,
+                'explanation' => 'Data form menggunakan key email, tetapi kode membaca key username. Key array harus sama dengan nama field yang dikirim agar nilai email dapat ditemukan.',
                 'hints' => [
                     0 => [
-                        'content' => 'Periksa kesesuaian nama field HTML dengan key pada $_POST.',
+                        'content' => 'Periksa key yang tersedia pada data form dan key yang dibaca program.',
                         'point_penalty' => 10,
                     ],
                     1 => [
-                        'content' => 'Tambahkan nilai default ketika key tidak tersedia.',
+                        'content' => 'Ganti key username menjadi email.',
                         'point_penalty' => 20,
                     ],
                 ],
                 'solutions' => [
                     0 => [
                         'solution_code' => '<?php
-$email = $_POST[\'email\'] ?? \'\';
+$form = json_decode(trim(fgets(STDIN)), true) ?? [];
+$email = $form[\'email\'] ?? \'\';
 echo $email;',
                         'solution_type' => 'primary',
                         'required_keywords' => [
-                            0 => '$_POST',
+                            0 => 'form',
                             1 => 'email',
                             2 => 'key',
-                            3 => 'null coalescing',
+                            3 => 'username',
                         ],
                     ],
                     1 => [
                         'solution_code' => '<?php
-$email = isset($_POST[\'email\']) ? $_POST[\'email\'] : \'\';
+$form = json_decode(trim(fgets(STDIN)), true) ?? [];
+$email = array_key_exists(\'email\', $form) ? $form[\'email\'] : \'\';
 echo $email;',
                         'solution_type' => 'alternative',
                         'required_keywords' => [
@@ -156,19 +159,23 @@ foreach ($items as $item) {
                 'difficulty' => 'menengah',
                 'title' => 'Kesalahan Penggunaan Session',
                 'slug' => 'php-kesalahan-penggunaan-session',
-                'description' => 'Data session digunakan sebelum session PHP diinisialisasi.',
+                'description' => 'Program membatalkan session ketika seharusnya memulai session sebelum data session digunakan.',
                 'broken_code' => '<?php
+session_abort();
 $_SESSION[\'user_id\'] = 10;
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    throw new RuntimeException(\'Session belum dimulai.\');
+}
 echo $_SESSION[\'user_id\'];',
                 'buggy_line' => 2,
-                'explanation' => 'Session harus dimulai menggunakan session_start() sebelum membaca atau menulis $_SESSION. Pemanggilan dilakukan sebelum output apa pun dikirim ke browser.',
+                'explanation' => 'session_abort() tidak menginisialisasi session. Gunakan session_start() sebelum membaca atau menulis $_SESSION agar status session menjadi PHP_SESSION_ACTIVE.',
                 'hints' => [
                     0 => [
-                        'content' => 'Superglobal $_SESSION membutuhkan proses inisialisasi.',
+                        'content' => 'Baris kedua menggunakan operasi session yang tidak mengaktifkan session.',
                         'point_penalty' => 10,
                     ],
                     1 => [
-                        'content' => 'Tambahkan session_start() sebelum assignment.',
+                        'content' => 'Ganti session_abort() dengan session_start().',
                         'point_penalty' => 20,
                     ],
                 ],
@@ -177,13 +184,16 @@ echo $_SESSION[\'user_id\'];',
                         'solution_code' => '<?php
 session_start();
 $_SESSION[\'user_id\'] = 10;
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    throw new RuntimeException(\'Session belum dimulai.\');
+}
 echo $_SESSION[\'user_id\'];',
                         'solution_type' => 'primary',
                         'required_keywords' => [
                             0 => 'session_start',
                             1 => '$_SESSION',
-                            2 => 'inisialisasi',
-                            3 => 'sebelum output',
+                            2 => 'PHP_SESSION_ACTIVE',
+                            3 => 'session_abort',
                         ],
                     ],
                 ],
@@ -193,45 +203,67 @@ echo $_SESSION[\'user_id\'];',
                 'difficulty' => 'menengah',
                 'title' => 'Query Tidak Mengecek Hasil',
                 'slug' => 'php-query-tidak-mengecek-hasil',
-                'description' => 'mysqli_fetch_assoc menerima boolean false ketika query database gagal.',
+                'description' => 'Hasil eksekusi query dapat bernilai false, tetapi program langsung memperlakukannya sebagai kumpulan baris.',
                 'broken_code' => '<?php
-$result = mysqli_query($connection, $sql);
-$row = mysqli_fetch_assoc($result);
+function executeQuery(string $sql): array|false {
+    return str_contains($sql, \'missing_table\') ? false : [[\'name\' => \'Rifqi\']];
+}
+function firstRow(array $result): array {
+    return $result[0];
+}
+$sql = \'SELECT name FROM missing_table\';
+$result = executeQuery($sql);
+$row = firstRow($result);
 echo $row[\'name\'];',
-                'buggy_line' => 3,
-                'explanation' => 'mysqli_query dapat mengembalikan false. Nilai tersebut tidak boleh langsung diberikan kepada mysqli_fetch_assoc. Periksa hasil query terlebih dahulu dan tangani kegagalannya.',
+                'buggy_line' => 10,
+                'explanation' => 'Fungsi executeQuery dapat mengembalikan false ketika query gagal. Nilai false tidak boleh langsung diberikan ke fungsi yang mengharapkan array. Periksa hasil query terlebih dahulu dan tangani kondisi gagal sebelum membaca baris.',
                 'hints' => [
                     0 => [
-                        'content' => 'Periksa kemungkinan nilai kembalian mysqli_query ketika query gagal.',
+                        'content' => 'Periksa tipe nilai yang mungkin dikembalikan executeQuery.',
                         'point_penalty' => 10,
                     ],
                     1 => [
-                        'content' => 'Tambahkan kondisi sebelum memanggil mysqli_fetch_assoc.',
+                        'content' => 'Tangani nilai false sebelum memanggil firstRow().',
                         'point_penalty' => 20,
                     ],
                 ],
                 'solutions' => [
                     0 => [
                         'solution_code' => '<?php
-$result = mysqli_query($connection, $sql);
-if ($result === false) {
-    throw new RuntimeException(mysqli_error($connection));
+function executeQuery(string $sql): array|false {
+    return str_contains($sql, \'missing_table\') ? false : [[\'name\' => \'Rifqi\']];
 }
-$row = mysqli_fetch_assoc($result);
+function firstRow(array $result): array {
+    return $result[0];
+}
+$sql = \'SELECT name FROM missing_table\';
+$result = executeQuery($sql);
+if ($result === false) {
+    echo \'Query gagal\';
+    exit;
+}
+$row = firstRow($result);
 echo $row[\'name\'];',
                         'solution_type' => 'primary',
                         'required_keywords' => [
-                            0 => 'mysqli_query',
-                            1 => 'false',
-                            2 => 'mysqli_fetch_assoc',
-                            3 => 'pengecekan',
+                            0 => 'false',
+                            1 => 'hasil query',
+                            2 => 'pengecekan',
+                            3 => 'array',
                         ],
                     ],
                     1 => [
                         'solution_code' => '<?php
-$result = mysqli_query($connection, $sql);
-if ($result) {
-    $row = mysqli_fetch_assoc($result);
+function executeQuery(string $sql): array|false {
+    return str_contains($sql, \'missing_table\') ? false : [[\'name\' => \'Rifqi\']];
+}
+function firstRow(array $result): array {
+    return $result[0];
+}
+$sql = \'SELECT name FROM missing_table\';
+$result = executeQuery($sql);
+if (is_array($result) && isset($result[0])) {
+    $row = firstRow($result);
     echo $row[\'name\'];
 }',
                         'solution_type' => 'alternative',
@@ -333,44 +365,46 @@ echo $storedPassword;',
                 'difficulty' => 'sulit',
                 'title' => 'Input Rentan SQL Injection',
                 'slug' => 'php-input-rentan-sql-injection',
-                'description' => 'Input email pengguna digabungkan langsung ke query SQL.',
+                'description' => 'Input email pengguna digabungkan langsung ke string query sehingga struktur SQL dapat dimanipulasi.',
                 'broken_code' => '<?php
-$email = $_POST[\'email\'];
+$email = trim(fgets(STDIN));
 $query = "SELECT * FROM users WHERE email = \'$email\'";
-$result = $pdo->query($query);',
+echo $query;',
                 'buggy_line' => 3,
-                'explanation' => 'Menggabungkan input pengguna ke string SQL membuka celah SQL injection. Gunakan prepared statement dengan placeholder dan binding parameter.',
+                'explanation' => 'Menggabungkan input pengguna langsung ke string SQL membuka celah SQL injection. Gunakan prepared statement dengan placeholder dan kirim nilai input sebagai parameter terpisah saat query dieksekusi.',
                 'hints' => [
                     0 => [
-                        'content' => 'Jangan gabungkan input pengguna secara langsung ke query.',
+                        'content' => 'Jangan masukkan nilai email langsung ke dalam teks query.',
                         'point_penalty' => 10,
                     ],
                     1 => [
-                        'content' => 'Gunakan prepare(), placeholder, dan execute().',
+                        'content' => 'Gunakan placeholder dan simpan nilai email sebagai parameter terpisah.',
                         'point_penalty' => 20,
                     ],
                 ],
                 'solutions' => [
                     0 => [
                         'solution_code' => '<?php
-$email = $_POST[\'email\'];
-$stmt = $pdo->prepare(\'SELECT * FROM users WHERE email = :email\');
-$stmt->execute([\'email\' => $email]);
-$result = $stmt->fetchAll();',
+$email = trim(fgets(STDIN));
+$query = \'SELECT * FROM users WHERE email = ?\';
+$params = [$email];
+echo $query.PHP_EOL;
+echo json_encode($params, JSON_UNESCAPED_SLASHES);',
                         'solution_type' => 'primary',
                         'required_keywords' => [
                             0 => 'SQL injection',
                             1 => 'prepared statement',
                             2 => 'placeholder',
-                            3 => 'binding',
+                            3 => 'parameter',
                         ],
                     ],
                     1 => [
                         'solution_code' => '<?php
-$email = $_POST[\'email\'];
-$stmt = $pdo->prepare(\'SELECT * FROM users WHERE email = ?\');
-$stmt->execute([$email]);
-$result = $stmt->fetchAll();',
+$email = trim(fgets(STDIN));
+$query = \'SELECT * FROM users WHERE email = :email\';
+$params = [\'email\' => $email];
+echo $query.PHP_EOL;
+echo json_encode($params, JSON_UNESCAPED_SLASHES);',
                         'solution_type' => 'alternative',
                         'required_keywords' => [
                         ],
