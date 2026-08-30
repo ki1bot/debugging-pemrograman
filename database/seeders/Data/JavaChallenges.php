@@ -64,8 +64,7 @@ class JavaChallenges
     }
 }',
                         'solution_type' => 'alternative',
-                        'required_keywords' => [
-                        ],
+                        'required_keywords' => [],
                     ],
                 ],
             ],
@@ -176,7 +175,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        List<String> names = new ArrayList<>(List.of("Ana", "Rifqi", "Budi"));
+        List<String> names = new ArrayList<>(List.of("Rifqi", "Ana", "Budi"));
 
         for (String name : names) {
             if (name.startsWith("R")) {
@@ -206,7 +205,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        List<String> names = new ArrayList<>(List.of("Ana", "Rifqi", "Budi"));
+        List<String> names = new ArrayList<>(List.of("Rifqi", "Ana", "Budi"));
 
         names.removeIf(name -> name.startsWith("R"));
 
@@ -385,25 +384,33 @@ public class Main {
                 'title' => 'Double-checked Locking Tanpa volatile',
                 'slug' => 'java-double-checked-locking-tanpa-volatile',
                 'description' => 'Singleton menggunakan double-checked locking tetapi field instance tidak menjamin visibility dan ordering antar-thread.',
-                'broken_code' => 'public final class Singleton {
-    private static Singleton instance;
+                'broken_code' => 'public class Main {
+    static final class Singleton {
+        private static Singleton instance;
 
-    private Singleton() {
-    }
-
-    public static Singleton getInstance() {
-        if (instance == null) {
-            synchronized (Singleton.class) {
-                if (instance == null) {
-                    instance = new Singleton();
-                }
-            }
+        private Singleton() {
         }
 
-        return instance;
+        public static Singleton getInstance() {
+            if (instance == null) {
+                synchronized (Singleton.class) {
+                    if (instance == null) {
+                        instance = new Singleton();
+                    }
+                }
+            }
+
+            return instance;
+        }
+    }
+
+    public static void main(String[] args) {
+        Singleton first = Singleton.getInstance();
+        Singleton second = Singleton.getInstance();
+        System.out.println(first == second);
     }
 }',
-                'buggy_line' => 2,
+                'buggy_line' => 3,
                 'explanation' => 'Double-checked locking membutuhkan volatile agar penulisan reference dan konstruksi object memiliki aturan visibility serta ordering yang benar antar-thread. Tanpa volatile, thread lain dapat melihat reference sebelum konstruksi sepenuhnya terlihat.',
                 'hints' => [
                     0 => [
@@ -417,22 +424,30 @@ public class Main {
                 ],
                 'solutions' => [
                     0 => [
-                        'solution_code' => 'public final class Singleton {
-    private static volatile Singleton instance;
+                        'solution_code' => 'public class Main {
+    static final class Singleton {
+        private static volatile Singleton instance;
 
-    private Singleton() {
-    }
-
-    public static Singleton getInstance() {
-        if (instance == null) {
-            synchronized (Singleton.class) {
-                if (instance == null) {
-                    instance = new Singleton();
-                }
-            }
+        private Singleton() {
         }
 
-        return instance;
+        public static Singleton getInstance() {
+            if (instance == null) {
+                synchronized (Singleton.class) {
+                    if (instance == null) {
+                        instance = new Singleton();
+                    }
+                }
+            }
+
+            return instance;
+        }
+    }
+
+    public static void main(String[] args) {
+        Singleton first = Singleton.getInstance();
+        Singleton second = Singleton.getInstance();
+        System.out.println(first == second);
     }
 }',
                         'solution_type' => 'primary',

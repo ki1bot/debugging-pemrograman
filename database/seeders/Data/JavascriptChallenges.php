@@ -49,8 +49,7 @@ for (let i = 0; i <= numbers.length - 1; i++) {
     console.log(numbers[i]);
 }',
                         'solution_type' => 'alternative',
-                        'required_keywords' => [
-                        ],
+                        'required_keywords' => [],
                     ],
                 ],
             ],
@@ -60,7 +59,7 @@ for (let i = 0; i <= numbers.length - 1; i++) {
                 'title' => 'Perbandingan Menggunakan Assignment',
                 'slug' => 'javascript-perbandingan-menggunakan-assignment',
                 'description' => 'Blok kondisi selalu dijalankan karena variabel justru diberi nilai baru ketika diperiksa.',
-                'broken_code' => 'const age = 20;
+                'broken_code' => 'let age = 20;
 if (age = 18) {
     console.log(\'Usia tepat 18 tahun\');
 }',
@@ -78,7 +77,7 @@ if (age = 18) {
                 ],
                 'solutions' => [
                     0 => [
-                        'solution_code' => 'const age = 20;
+                        'solution_code' => 'let age = 20;
 if (age === 18) {
     console.log(\'Usia tepat 18 tahun\');
 }',
@@ -91,13 +90,12 @@ if (age === 18) {
                         ],
                     ],
                     1 => [
-                        'solution_code' => 'const age = 20;
+                        'solution_code' => 'let age = 20;
 if (age == 18) {
     console.log(\'Usia tepat 18 tahun\');
 }',
                         'solution_type' => 'alternative',
-                        'required_keywords' => [
-                        ],
+                        'required_keywords' => [],
                     ],
                 ],
             ],
@@ -146,7 +144,9 @@ console.log(firstName);',
         let total = 100;
     }
     return total;
-}',
+}
+
+console.log(calculateTotal());',
                 'buggy_line' => 5,
                 'explanation' => 'Variabel yang dideklarasikan dengan let memiliki block scope. total hanya tersedia di dalam blok if sehingga tidak dapat dibaca pada return di luar blok. Deklarasikan total pada scope function.',
                 'hints' => [
@@ -167,7 +167,9 @@ console.log(firstName);',
         total = 100;
     }
     return total;
-}',
+}
+
+console.log(calculateTotal());',
                         'solution_type' => 'primary',
                         'required_keywords' => [
                             0 => 'let',
@@ -183,10 +185,11 @@ console.log(firstName);',
         return total;
     }
     return 0;
-}',
+}
+
+console.log(calculateTotal());',
                         'solution_type' => 'alternative',
-                        'required_keywords' => [
-                        ],
+                        'required_keywords' => [],
                     ],
                 ],
             ],
@@ -195,31 +198,47 @@ console.log(firstName);',
                 'difficulty' => 'menengah',
                 'title' => 'Promise Tidak Ditunggu',
                 'slug' => 'javascript-promise-tidak-ditunggu',
-                'description' => 'Function mengembalikan Promise dari response.json() alih-alih data pengguna yang sudah selesai diparsing.',
-                'broken_code' => 'async function loadUser() {
-    const response = await fetch(\'/api/user\');
+                'description' => 'Program mencoba membaca properti data ketika hasil response.json() masih berupa Promise.',
+                'broken_code' => 'async function fakeFetch() {
+    return {
+        json: async () => ({ name: \'Rifqi\' }),
+    };
+}
+
+async function loadUser() {
+    const response = await fakeFetch();
     const data = response.json();
-    return data;
-}',
-                'buggy_line' => 3,
-                'explanation' => 'response.json() bersifat asynchronous dan mengembalikan Promise. Tambahkan await agar data JSON selesai diparsing sebelum dikembalikan.',
+    console.log(data.name);
+}
+
+loadUser();',
+                'buggy_line' => 9,
+                'explanation' => 'response.json() bersifat asynchronous dan mengembalikan Promise. Tanpa await, variabel data masih berupa Promise sehingga properti name belum tersedia. Tambahkan await agar hasil parsing JSON selesai sebelum digunakan.',
                 'hints' => [
                     0 => [
-                        'content' => 'Tidak hanya fetch yang mengembalikan Promise.',
+                        'content' => 'Tidak hanya proses mengambil response yang dapat bersifat asynchronous.',
                         'point_penalty' => 10,
                     ],
                     1 => [
-                        'content' => 'Periksa nilai kembalian dari response.json().',
+                        'content' => 'Periksa nilai yang dikembalikan oleh response.json().',
                         'point_penalty' => 20,
                     ],
                 ],
                 'solutions' => [
                     0 => [
-                        'solution_code' => 'async function loadUser() {
-    const response = await fetch(\'/api/user\');
+                        'solution_code' => 'async function fakeFetch() {
+    return {
+        json: async () => ({ name: \'Rifqi\' }),
+    };
+}
+
+async function loadUser() {
+    const response = await fakeFetch();
     const data = await response.json();
-    return data;
-}',
+    console.log(data.name);
+}
+
+loadUser();',
                         'solution_type' => 'primary',
                         'required_keywords' => [
                             0 => 'promise',
@@ -229,13 +248,20 @@ console.log(firstName);',
                         ],
                     ],
                     1 => [
-                        'solution_code' => 'async function loadUser() {
-    const response = await fetch(\'/api/user\');
-    return await response.json();
-}',
+                        'solution_code' => 'async function fakeFetch() {
+    return {
+        json: async () => ({ name: \'Rifqi\' }),
+    };
+}
+
+async function loadUser() {
+    const response = await fakeFetch();
+    response.json().then((data) => console.log(data.name));
+}
+
+loadUser();',
                         'solution_type' => 'alternative',
-                        'required_keywords' => [
-                        ],
+                        'required_keywords' => [],
                     ],
                 ],
             ],
@@ -317,8 +343,7 @@ const copy = structuredClone(original);
 copy.settings.theme = \'dark\';
 console.log(original.settings.theme);',
                         'solution_type' => 'alternative',
-                        'required_keywords' => [
-                        ],
+                        'required_keywords' => [],
                     ],
                 ],
             ],
@@ -327,33 +352,47 @@ console.log(original.settings.theme);',
                 'difficulty' => 'sulit',
                 'title' => 'Async ForEach Tidak Ditunggu',
                 'slug' => 'javascript-async-foreach-tidak-ditunggu',
-                'description' => 'Function mengembalikan status selesai sebelum seluruh item benar-benar tersimpan.',
-                'broken_code' => 'async function saveAll(items) {
+                'description' => 'Function mengembalikan status selesai sebelum seluruh operasi asynchronous pada setiap item benar-benar selesai.',
+                'broken_code' => 'async function saveItem(item) {
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    console.log(`tersimpan: ${item}`);
+}
+
+async function saveAll(items) {
     items.forEach(async (item) => {
         await saveItem(item);
     });
     return \'selesai\';
-}',
-                'buggy_line' => 2,
-                'explanation' => 'forEach tidak menunggu Promise yang dikembalikan callback async. Gunakan for...of dengan await untuk proses berurutan atau Promise.all dengan map untuk proses paralel.',
+}
+
+saveAll([\'A\', \'B\', \'C\']).then((status) => console.log(status));',
+                'buggy_line' => 7,
+                'explanation' => 'forEach tidak menunggu Promise yang dikembalikan callback async. Akibatnya saveAll dapat mengembalikan status selesai sebelum seluruh saveItem selesai. Gunakan for...of dengan await untuk proses berurutan atau Promise.all dengan map untuk proses paralel.',
                 'hints' => [
                     0 => [
-                        'content' => 'Callback async tidak membuat forEach ikut menjadi await-aware.',
+                        'content' => 'Callback async tidak membuat forEach ikut menunggu Promise.',
                         'point_penalty' => 10,
                     ],
                     1 => [
-                        'content' => 'Gunakan for...of atau Promise.all.',
+                        'content' => 'Gunakan for...of atau Promise.all agar seluruh operasi selesai sebelum return.',
                         'point_penalty' => 20,
                     ],
                 ],
                 'solutions' => [
                     0 => [
-                        'solution_code' => 'async function saveAll(items) {
+                        'solution_code' => 'async function saveItem(item) {
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    console.log(`tersimpan: ${item}`);
+}
+
+async function saveAll(items) {
     for (const item of items) {
         await saveItem(item);
     }
     return \'selesai\';
-}',
+}
+
+saveAll([\'A\', \'B\', \'C\']).then((status) => console.log(status));',
                         'solution_type' => 'primary',
                         'required_keywords' => [
                             0 => 'forEach',
@@ -363,13 +402,19 @@ console.log(original.settings.theme);',
                         ],
                     ],
                     1 => [
-                        'solution_code' => 'async function saveAll(items) {
+                        'solution_code' => 'async function saveItem(item) {
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    console.log(`tersimpan: ${item}`);
+}
+
+async function saveAll(items) {
     await Promise.all(items.map((item) => saveItem(item)));
     return \'selesai\';
-}',
+}
+
+saveAll([\'A\', \'B\', \'C\']).then((status) => console.log(status));',
                         'solution_type' => 'alternative',
-                        'required_keywords' => [
-                        ],
+                        'required_keywords' => [],
                     ],
                 ],
             ],
