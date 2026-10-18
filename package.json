@@ -33,7 +33,7 @@
         "@codemirror/lang-java": "^6.0.2",
         "@codemirror/lang-javascript": "^6.2.5",
         "@codemirror/lang-php": "^6.0.2",
-        "@codemirror/lang-python": "^6.0.2",
+        "@codemirror/lang-python": "^6.2.1",
         "@codemirror/lang-sql": "^6.10.0",
         "@fontsource-variable/jetbrains-mono": "^5.3.0",
         "@hugeicons/core-free-icons": "^4.2.3",
