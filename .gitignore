@@ -10,6 +10,7 @@
 /.idea
 /.nova
 /.phpunit.cache
+/.vercel
 /.vscode
 /.zed
 /auth.json
@@ -21,6 +22,7 @@
 /storage/*.key
 /storage/pail
 /vendor
+/vercel-static
 _ide_helper.php
 Homestead.json
 Homestead.yaml
