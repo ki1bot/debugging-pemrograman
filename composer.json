@@ -56,10 +56,6 @@
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#fdba74\" \"php artisan serve --no-reload\" \"npm run dev\" --names=server,vite --kill-others"
         ],
-        "vercel": [
-            "npm ci --no-audit --no-fund",
-            "npm run build"
-        ],
         "test": [
             "@php artisan optimize:clear --ansi",
             "@php artisan test"
