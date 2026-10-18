@@ -8,7 +8,8 @@
         "api/*.php": {
             "runtime": "vercel-php@0.8.0",
             "regions": ["sin1"],
-            "maxDuration": 60
+            "maxDuration": 60,
+            "excludeFiles": "{.git/**,**/.git/**,**/.gitignore,**/.gitattributes,**/.gitmodules,**/.hg/**,**/.svn/**,**/.npmignore,**/.dockerignore,**/.DS_Store,.github/**,.vercel/**,node_modules/**,vercel-static/**,now.json,.nowignore,vercel.json,.vercelignore,.env*,**/.env*}"
         }
     },
     "routes": [
