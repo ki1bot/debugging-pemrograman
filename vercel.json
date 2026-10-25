@@ -2,11 +2,12 @@
     "$schema": "https://openapi.vercel.sh/vercel.json",
     "version": 2,
     "framework": null,
-    "buildCommand": "npm run build && node scripts/prepare-vercel-static.mjs",
+    "installCommand": "npx --yes npm@12.2.1 ci",
+    "buildCommand": "node -v && npx --yes npm@12.2.1 --version && npx --yes npm@12.2.1 run build && node scripts/prepare-vercel-static.mjs",
     "outputDirectory": "vercel-static",
     "functions": {
         "api/*.php": {
-            "runtime": "vercel-php@0.8.0",
+            "runtime": "vercel-php@0.9.0",
             "regions": ["sin1"],
             "maxDuration": 60,
             "excludeFiles": "{.git/**,**/.git/**,**/.gitignore,**/.gitattributes,**/.gitmodules,**/.hg/**,**/.svn/**,**/.npmignore,**/.dockerignore,**/.DS_Store,.github/**,.vercel/**,node_modules/**,vercel-static/**,now.json,.nowignore,vercel.json,.vercelignore,.env*,**/.env*}"

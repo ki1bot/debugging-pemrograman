@@ -1,14 +1,22 @@
-FROM node:22-alpine AS frontend
+FROM node:24.22.1-bookworm-slim AS frontend
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+RUN npm install --global npm@12.2.1 \
+    --ignore-scripts \
+    --no-audit \
+    --no-fund
+
+COPY package.json package-lock.json .npmrc ./
 
 RUN npm ci
 
 COPY . .
 
-RUN npm run build
+RUN node --version \
+    && npm --version \
+    && npm run build
+
 
 FROM composer:2 AS vendor
 
@@ -31,7 +39,8 @@ RUN composer dump-autoload \
     --classmap-authoritative \
     --no-interaction
 
-FROM php:8.4-apache
+
+FROM php:8.5.12-apache-bookworm AS runtime
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -44,7 +53,6 @@ RUN apt-get update \
         bcmath \
         intl \
         mbstring \
-        opcache \
         pdo_pgsql \
         zip \
     && rm -f \
@@ -56,8 +64,9 @@ RUN apt-get update \
         /etc/apache2/mods-enabled/mpm_prefork.load \
     && a2enmod mpm_prefork \
     && a2enmod rewrite headers expires \
-    && apache2ctl configtest \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && printf 'expose_php=Off\nsession.upload_progress.enabled=0\ndisplay_errors=Off\nlog_errors=On\n' \
+        > /usr/local/etc/php/conf.d/zz-security.ini
 
 ENV APP_ENV=production
 ENV APP_DEBUG=false
